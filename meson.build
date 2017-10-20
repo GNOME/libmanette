@@ -5,6 +5,9 @@ project('libmanette','c',
 
 gnome = import('gnome')
 
+confinc = include_directories('.')
+srcinc = include_directories('src')
+
 glib_version = '>= 2.50'
 gudev_version = '>= 1.0'
 libevdev_version = '>= 1.4.5'
@@ -28,3 +31,4 @@ add_project_arguments([
 
 subdir('src')
 subdir('tests')
+subdir('demos')

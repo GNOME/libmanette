@@ -1,0 +1,1 @@
+subdir('manette-test')
