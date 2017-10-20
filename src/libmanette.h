@@ -24,6 +24,7 @@
 G_BEGIN_DECLS
 
 #define __MANETTE_INSIDE__
+# include "manette-event.h"
 # include "manette-version.h"
 #undef __MANETTE_INSIDE__
 

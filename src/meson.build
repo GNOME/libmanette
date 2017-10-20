@@ -3,6 +3,7 @@ api_version = '0.2'
 libmanette_module = 'libmanette-' + api_version
 
 libmanette_sources = [
+  'manette-event.c',
   'manette-mapping.c',
   'manette-mapping-error.c',
 ]
@@ -11,6 +12,7 @@ libmanette_main_header = 'libmanette.h'
 
 libmanette_headers = [
   libmanette_main_header,
+  'manette-event.h',
 ]
 
 version_split = meson.project_version().split('.')
