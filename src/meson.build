@@ -2,7 +2,15 @@ api_version = '0.2'
 
 libmanette_module = 'libmanette-' + api_version
 
+libmanette_resources = gnome.compile_resources(
+  'manette_resources',
+  'libmanette.gresource.xml',
+  c_name: 'manette',
+  source_dir: '.',
+)
+
 libmanette_sources = [
+  libmanette_resources[0],
   'manette-device.c',
   'manette-event.c',
   'manette-mapping.c',
