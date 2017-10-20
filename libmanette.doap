@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Project xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+         xmlns:foaf="http://xmlns.com/foaf/0.1/"
+         xmlns:gnome="http://api.gnome.org/doap-extensions#"
+         xmlns="http://usefulinc.com/ns/doap#">
+
+  <name xml:lang="en">libmanette</name>
+  <shortdesc xml:lang="en">A simple GObject game controller library</shortdesc>
+  <description xml:lang="en">libmanette is a small GObject library giving you simple access to game controllers.</description>
+  <homepage rdf:resource="https://gitlab.gnome.org/aplazas/libmanette" />
+  <download-page rdf:resource="http://download.gnome.org/sources/libmanette/" />
+  <bug-database rdf:resource="https://gitlab.gnome.org/aplazas/libmanette/issues" />
+
+  <programming-language>C</programming-language>
+
+  <maintainer>
+    <foaf:Person>
+      <foaf:name>Adrien Plazas</foaf:name>
+      <foaf:mbox rdf:resource="mailto:kekun.plazas@laposte.net" />
+      <gnome:userid>aplazas</gnome:userid>
+    </foaf:Person>
+  </maintainer>
+</Project>
