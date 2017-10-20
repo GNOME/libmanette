@@ -56,6 +56,7 @@ manette_event_copy (const ManetteEvent *self)
 
   copy = manette_event_new ();
   memcpy(copy, self, sizeof (ManetteEvent));
+  copy->any.device = g_object_ref (self->any.device);
 
   return copy;
 }
@@ -70,6 +71,8 @@ void
 manette_event_free (ManetteEvent *self)
 {
   g_return_if_fail (self);
+
+  g_object_unref (self->any.device);
 
   g_slice_free (ManetteEvent, self);
 }
@@ -104,6 +107,22 @@ manette_event_get_time (const ManetteEvent *self)
   g_return_val_if_fail (self, 0);
 
   return self->any.time;
+}
+
+/**
+ * manette_event_get_device:
+ * @self: a #ManetteEvent
+ *
+ * Gets the #ManetteDevice associated with the %self.
+ *
+ * Returns: (transfer none): the #ManetteDevice associated with the %self
+ */
+ManetteDevice *
+manette_event_get_device (const ManetteEvent *self)
+{
+  g_return_val_if_fail (self, NULL);
+
+  return self->any.device;
 }
 
 /**

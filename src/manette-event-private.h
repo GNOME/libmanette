@@ -45,6 +45,7 @@ enum _ManetteEventType {
 struct _ManetteEventAny {
   ManetteEventType type;
   guint32 time;
+  ManetteDevice *device;
   guint16 hardware_type;
   guint16 hardware_code;
   gint32 hardware_value;
@@ -54,6 +55,7 @@ struct _ManetteEventAny {
 struct _ManetteEventButton {
   ManetteEventType type;
   guint32 time;
+  ManetteDevice *device;
   guint16 hardware_type;
   guint16 hardware_code;
   gint32 hardware_value;
@@ -64,6 +66,7 @@ struct _ManetteEventButton {
 struct _ManetteEventAbsolute {
   ManetteEventType type;
   guint32 time;
+  ManetteDevice *device;
   guint16 hardware_type;
   guint16 hardware_code;
   gint32 hardware_value;
@@ -75,6 +78,7 @@ struct _ManetteEventAbsolute {
 struct _ManetteEventHat {
   ManetteEventType type;
   guint32 time;
+  ManetteDevice *device;
   guint16 hardware_type;
   guint16 hardware_code;
   gint32 hardware_value;

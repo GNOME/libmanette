@@ -24,6 +24,7 @@
 #endif
 
 #include <glib-object.h>
+#include "manette-device.h"
 
 G_BEGIN_DECLS
 
@@ -35,6 +36,7 @@ GType manette_event_get_type (void) G_GNUC_CONST;
 
 ManetteEvent *manette_event_copy (const ManetteEvent *self);
 void manette_event_free (ManetteEvent *self);
+ManetteDevice *manette_event_get_device (const ManetteEvent *self);
 gboolean manette_event_get_button (const ManetteEvent *self,
                                    guint16            *button);
 gboolean manette_event_get_absolute (const ManetteEvent *self,
