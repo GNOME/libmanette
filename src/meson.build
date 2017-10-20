@@ -3,6 +3,7 @@ api_version = '0.2'
 libmanette_module = 'libmanette-' + api_version
 
 libmanette_sources = [
+  'manette-mapping.c',
   'manette-mapping-error.c',
 ]
 

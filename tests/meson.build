@@ -1,4 +1,5 @@
 tests = [
+  ['ManetteMapping', 'test-mapping'],
 ]
 
 foreach t : tests
