@@ -78,6 +78,29 @@ libmanette_gir_args = [
    '--quiet',
 ]
 
+libmanette_gir_includes = [
+  'GObject-2.0',
+  'Gio-2.0',
+]
+
+if gudev.found()
+  libmanette_gir_includes += [ 'GUdev-1.0' ]
+endif
+
+libmanette_gir = gnome.generate_gir(
+  libmanette_lib,
+  extra_args: libmanette_gir_args,
+  export_packages: libmanette_module,
+  sources: libmanette_headers + libmanette_sources,
+  nsversion: api_version,
+  namespace: 'Manette',
+  identifier_prefix: 'Manette',
+  includes: libmanette_gir_includes,
+  header: libmanette_main_header,
+  install: true,
+  symbol_prefix: 'manette',
+)
+
 install_headers(libmanette_headers, subdir: 'libmanette')
 
 pkg = import('pkgconfig')
