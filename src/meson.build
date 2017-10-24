@@ -101,6 +101,22 @@ libmanette_gir = gnome.generate_gir(
   symbol_prefix: 'manette',
 )
 
+libmanette_vapi_packages = [
+  'gobject-2.0',
+  'gio-2.0',
+]
+
+if gudev.found()
+  libmanette_vapi_packages += [ 'gudev-1.0' ]
+endif
+
+gnome.generate_vapi(
+  libmanette_module,
+  install: true,
+  packages: libmanette_vapi_packages,
+  sources: libmanette_gir[0],
+)
+
 install_headers(libmanette_headers, subdir: 'libmanette')
 
 pkg = import('pkgconfig')
