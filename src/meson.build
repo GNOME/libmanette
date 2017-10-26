@@ -16,6 +16,7 @@ libmanette_sources = [
   'manette-mapping.c',
   'manette-mapping-manager.c',
   'manette-mapping-error.c',
+  'manette-monitor-iter.c',
 ]
 
 libmanette_main_header = 'libmanette.h'
@@ -24,6 +25,7 @@ libmanette_headers = [
   libmanette_main_header,
   'manette-device.h',
   'manette-event.h',
+  'manette-monitor-iter.h',
 ]
 
 version_split = meson.project_version().split('.')
