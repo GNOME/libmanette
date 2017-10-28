@@ -1,6 +1,6 @@
 project('libmanette','c',
   version: '0.1.1',
-  meson_version: '>= 0.40.0',
+  meson_version: '>= 0.43.0',
 )
 
 gnome = import('gnome')
