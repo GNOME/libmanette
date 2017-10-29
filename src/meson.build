@@ -85,8 +85,8 @@ pkg = import('pkgconfig')
 pkg.generate(
   description: 'A simple GObject game controller library',
     libraries: libmanette_lib,
-         name: 'manette',
-     filebase: 'manette-' + api_version,
+         name: 'libmanette',
+     filebase: libmanette_module,
       version: meson.project_version(),
       subdirs: 'libmanette',
      requires: 'glib-2.0',
