@@ -192,7 +192,7 @@ manette_event_get_hardware_index (const ManetteEvent *self)
 /**
  * manette_event_get_button:
  * @self: a #ManetteEvent
- * @button: return location for the button
+ * @button: (out): return location for the button
  *
  * Gets the button of %self, if any.
  *
@@ -219,8 +219,8 @@ manette_event_get_button (const ManetteEvent *self,
 /**
  * manette_event_get_absolute:
  * @self: a #ManetteEvent
- * @axis: return location for the axis
- * @value: return location for the axis
+ * @axis: (out): return location for the axis
+ * @value: (out): return location for the axis
  *
  * Gets the axis of %self, if any.
  *
@@ -249,8 +249,8 @@ manette_event_get_absolute (const ManetteEvent *self,
 /**
  * manette_event_get_hat:
  * @self: a #ManetteEvent
- * @axis: return location for the hat
- * @value: return location for the hat
+ * @axis: (out): return location for the hat
+ * @value: (out): return location for the hat
  *
  * Gets the hat of %self, if any.
  *
