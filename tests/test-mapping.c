@@ -368,7 +368,6 @@ test_has_destination_input (void)
   g_assert_nonnull (mapping);
   g_assert_true (MANETTE_IS_MAPPING (mapping));
 
-  /* #define guide:b8,leftshoulder:b4,leftstick:b9,lefttrigger:a2,leftx:a0,lefty:a1,rightshoulder:b5,rightstick:b10,righttrigger:a5,rightx:a3,righty:a4,start:b7,x:b2,y:b3" */
   g_assert_true (manette_mapping_has_destination_input (mapping, EV_KEY, BTN_SOUTH));
   g_assert_true (manette_mapping_has_destination_input (mapping, EV_KEY, BTN_EAST));
   g_assert_true (manette_mapping_has_destination_input (mapping, EV_KEY, BTN_NORTH));
