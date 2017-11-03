@@ -357,6 +357,51 @@ test_hat_y_bindings (void)
   g_object_unref (mapping);
 }
 
+static void
+test_has_destination_input (void)
+{
+  ManetteMapping *mapping;
+  GError *error = NULL;
+
+  mapping = manette_mapping_new (MAPPING_STEAM_CONTROLLER, &error);
+  g_assert_no_error (error);
+  g_assert_nonnull (mapping);
+  g_assert_true (MANETTE_IS_MAPPING (mapping));
+
+  /* #define guide:b8,leftshoulder:b4,leftstick:b9,lefttrigger:a2,leftx:a0,lefty:a1,rightshoulder:b5,rightstick:b10,righttrigger:a5,rightx:a3,righty:a4,start:b7,x:b2,y:b3" */
+  g_assert_true (manette_mapping_has_destination_input (mapping, EV_KEY, BTN_SOUTH));
+  g_assert_true (manette_mapping_has_destination_input (mapping, EV_KEY, BTN_EAST));
+  g_assert_true (manette_mapping_has_destination_input (mapping, EV_KEY, BTN_NORTH));
+  g_assert_true (manette_mapping_has_destination_input (mapping, EV_KEY, BTN_WEST));
+  g_assert_true (manette_mapping_has_destination_input (mapping, EV_KEY, BTN_TL));
+  g_assert_true (manette_mapping_has_destination_input (mapping, EV_KEY, BTN_TR));
+  g_assert_true (manette_mapping_has_destination_input (mapping, EV_KEY, BTN_TL2));
+  g_assert_true (manette_mapping_has_destination_input (mapping, EV_KEY, BTN_TR2));
+  g_assert_true (manette_mapping_has_destination_input (mapping, EV_KEY, BTN_SELECT));
+  g_assert_true (manette_mapping_has_destination_input (mapping, EV_KEY, BTN_START));
+  g_assert_true (manette_mapping_has_destination_input (mapping, EV_KEY, BTN_MODE));
+  g_assert_true (manette_mapping_has_destination_input (mapping, EV_KEY, BTN_THUMBL));
+  g_assert_true (manette_mapping_has_destination_input (mapping, EV_KEY, BTN_THUMBR));
+  g_assert_true (manette_mapping_has_destination_input (mapping, EV_KEY, BTN_DPAD_UP));
+  g_assert_true (manette_mapping_has_destination_input (mapping, EV_KEY, BTN_DPAD_DOWN));
+  g_assert_true (manette_mapping_has_destination_input (mapping, EV_KEY, BTN_DPAD_LEFT));
+  g_assert_true (manette_mapping_has_destination_input (mapping, EV_KEY, BTN_DPAD_RIGHT));
+  g_assert_true (manette_mapping_has_destination_input (mapping, EV_ABS, ABS_X));
+  g_assert_true (manette_mapping_has_destination_input (mapping, EV_ABS, ABS_Y));
+  g_assert_true (manette_mapping_has_destination_input (mapping, EV_ABS, ABS_RX));
+  g_assert_true (manette_mapping_has_destination_input (mapping, EV_ABS, ABS_RY));
+
+  g_assert_false (manette_mapping_has_destination_input (mapping, EV_KEY, KEY_SPACE));
+  g_assert_false (manette_mapping_has_destination_input (mapping, EV_KEY, BTN_C));
+  g_assert_false (manette_mapping_has_destination_input (mapping, EV_KEY, BTN_Z));
+  g_assert_false (manette_mapping_has_destination_input (mapping, EV_ABS, ABS_Z));
+  g_assert_false (manette_mapping_has_destination_input (mapping, EV_ABS, ABS_RZ));
+  g_assert_false (manette_mapping_has_destination_input (mapping, EV_ABS, ABS_HAT0X));
+  g_assert_false (manette_mapping_has_destination_input (mapping, EV_ABS, ABS_HAT0Y));
+
+  g_object_unref (mapping);
+}
+
 int
 main (int   argc,
       char *argv[])
@@ -371,6 +416,7 @@ main (int   argc,
   g_test_add_func ("/ManetteMapping/test_axis_range_bindings", test_axis_range_bindings);
   g_test_add_func ("/ManetteMapping/test_hat_x_bindings", test_hat_x_bindings);
   g_test_add_func ("/ManetteMapping/test_hat_y_bindings", test_hat_y_bindings);
+  g_test_add_func ("/ManetteMapping/test_has_destination_input", test_has_destination_input);
 
   return g_test_run();
 }

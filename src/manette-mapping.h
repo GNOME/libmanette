@@ -70,6 +70,9 @@ const ManetteMappingBinding * const *manette_mapping_get_bindings (ManetteMappin
 
 ManetteMappingBinding *manette_mapping_binding_copy (ManetteMappingBinding *self);
 void manette_mapping_binding_free (ManetteMappingBinding *self);
+gboolean manette_mapping_has_destination_input (ManetteMapping *self,
+                                                guint           type,
+                                                guint           code);
 
 G_END_DECLS
 

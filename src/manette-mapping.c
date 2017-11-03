@@ -66,6 +66,35 @@ manette_mapping_init (ManetteMapping *self)
 }
 
 static gboolean
+bindings_array_has_destination_input (GArray *array,
+                                      guint   type,
+                                      guint   code)
+{
+  gsize i;
+  gsize j;
+  GArray *sub_array;
+  ManetteMappingBinding *binding;
+
+  for (i = 0; i < array->len; i++) {
+    sub_array = g_array_index (array, GArray *, i);
+    if (sub_array == NULL)
+      continue;
+
+    for (j = 0; j < sub_array->len; j++) {
+      binding = g_array_index (sub_array, ManetteMappingBinding *, j);
+      if (binding == NULL)
+        continue;
+
+      if (binding->destination.type == type &&
+          binding->destination.code == code)
+        return TRUE;
+    }
+  }
+
+  return FALSE;
+}
+
+static gboolean
 try_str_to_guint16 (gchar    *start,
                     gchar   **end,
                     guint16  *result)
@@ -579,4 +608,33 @@ manette_mapping_binding_free (ManetteMappingBinding *self)
   g_return_if_fail (self);
 
   g_slice_free (ManetteMappingBinding, self);
+}
+
+/**
+ * manette_mapping_has_destination_input:
+ * @self: a #ManetteMapping
+ * @type: the input type
+ * @code: the input code
+ *
+ * Gets whether the mapping has the given destination input.
+ *
+ * Returns: whether the device has the given destination input
+ */
+gboolean
+manette_mapping_has_destination_input (ManetteMapping *self,
+                                       guint           type,
+                                       guint           code)
+{
+  g_return_val_if_fail (MANETTE_IS_MAPPING (self), FALSE);
+
+  if (bindings_array_has_destination_input (self->axis_bindings, type, code))
+    return TRUE;
+
+  if (bindings_array_has_destination_input (self->button_bindings, type, code))
+    return TRUE;
+
+  if (bindings_array_has_destination_input (self->hat_bindings, type, code))
+    return TRUE;
+
+  return FALSE;
 }
