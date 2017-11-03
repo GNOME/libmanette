@@ -767,6 +767,30 @@ manette_device_get_guid (ManetteDevice *self)
 }
 
 /**
+ * manette_device_has_input:
+ * @self: a #ManetteDevice
+ * @type: the input type
+ * @code: the input code
+ *
+ * Gets whether the device has the given input. If the input is present it means
+ * that the device can send events for it regardless of whether the device is
+ * mapped or not.
+ *
+ * Returns: whether the device has the given input
+ */
+gboolean
+manette_device_has_input (ManetteDevice *self,
+                          guint          type,
+                          guint          code)
+{
+  g_return_val_if_fail (MANETTE_IS_DEVICE (self), FALSE);
+
+  return MANETTE_IS_MAPPING (self->mapping) ?
+    manette_mapping_has_destination_input (self->mapping, type, code) :
+    libevdev_has_event_code (self->evdev_device, type, code);
+}
+
+/**
  * manette_device_get_name:
  * @self: a #ManetteDevice
  *

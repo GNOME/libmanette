@@ -31,6 +31,9 @@ G_BEGIN_DECLS
 
 G_DECLARE_FINAL_TYPE (ManetteDevice, manette_device, MANETTE, DEVICE, GObject)
 
+gboolean manette_device_has_input (ManetteDevice *self,
+                                   guint          type,
+                                   guint          code);
 const gchar *manette_device_get_name (ManetteDevice *self);
 
 G_END_DECLS
