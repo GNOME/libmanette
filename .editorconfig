@@ -21,5 +21,10 @@ indent_size = 2
 tab_size = 2
 indent_style = space
 
+[*.json]
+indent_size = 2
+tab_size = 2
+indent_style = space
+
 [NEWS]
 max_line_length = 72
