@@ -31,6 +31,7 @@ struct _ManetteMappingManager {
   GHashTable *default_mappings;
   GHashTable *user_mappings;
   gchar *user_mappings_uri;
+  GFileMonitor *user_mappings_monitor;
 };
 
 G_DEFINE_TYPE (ManetteMappingManager, manette_mapping_manager, G_TYPE_OBJECT);
@@ -201,6 +202,36 @@ save_user_mappings (ManetteMappingManager  *self,
   g_object_unref (data_stream);
 }
 
+static void
+on_user_mappings_changed (GFileMonitor          *monitor,
+                          GFile                 *file,
+                          GFile                 *other_file,
+                          GFileMonitorEvent      event_type,
+                          ManetteMappingManager *self)
+{
+  GError *inner_error = NULL;
+
+  g_return_if_fail (MANETTE_IS_MAPPING_MANAGER (self));
+
+  g_hash_table_remove_all (self->user_mappings);
+
+  if (!g_file_query_exists (file, NULL)) {
+    g_signal_emit (self, signals[SIG_CHANGED], 0);
+
+    return;
+  }
+
+  add_from_file_uri (self, self->user_mappings_uri, self->user_mappings, &inner_error);
+  if (G_UNLIKELY (inner_error != NULL)) {
+    g_debug ("ManetteMappingManager: Can’t add mappings from %s: %s",
+             self->user_mappings_uri,
+             inner_error->message);
+    g_clear_error (&inner_error);
+  }
+
+  g_signal_emit (self, signals[SIG_CHANGED], 0);
+}
+
 /* Public */
 
 ManetteMappingManager *
@@ -208,6 +239,7 @@ manette_mapping_manager_new (void)
 {
   ManetteMappingManager *self = NULL;
   gchar *path;
+  GFile *user_mappings_file;
   GError *inner_error = NULL;
 
   self = (ManetteMappingManager*) g_object_new (MANETTE_TYPE_MAPPING_MANAGER, NULL);
@@ -241,6 +273,25 @@ manette_mapping_manager_new (void)
   }
 
   g_free (path);
+
+  user_mappings_file = g_file_new_for_uri (self->user_mappings_uri);
+  self->user_mappings_monitor = g_file_monitor_file (user_mappings_file,
+                                                     G_FILE_MONITOR_NONE,
+                                                     NULL,
+                                                     &inner_error);
+  if (G_UNLIKELY (inner_error != NULL)) {
+    g_debug ("ManetteMappingManager: Can’t monitor mappings from %s: %s",
+             self->user_mappings_uri,
+             inner_error->message);
+    g_clear_error (&inner_error);
+  }
+
+  g_object_unref (user_mappings_file);
+
+  g_signal_connect (self->user_mappings_monitor,
+                    "changed",
+                    G_CALLBACK (on_user_mappings_changed),
+                    self);
 
   add_from_file_uri (self, self->user_mappings_uri, self->user_mappings, &inner_error);
   if (G_UNLIKELY (inner_error != NULL)) {
@@ -350,6 +401,7 @@ finalize (GObject *object)
   g_hash_table_unref (self->default_mappings);
   g_hash_table_unref (self->user_mappings);
   g_free (self->user_mappings_uri);
+  g_clear_object (&self->user_mappings_monitor);
 
   G_OBJECT_CLASS (manette_mapping_manager_parent_class)->finalize (object);
 }
