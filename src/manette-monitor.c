@@ -86,9 +86,6 @@ add_device (ManetteMonitor *self,
             const gchar    *filename)
 {
   ManetteDevice *device;
-  const gchar *guid;
-  gchar *mapping_string;
-  ManetteMapping *mapping = NULL;
   GError *error = NULL;
 
   g_return_if_fail (self != NULL);
@@ -269,7 +266,7 @@ on_mappings_changed (ManetteMappingManager *mapping_manager,
   g_return_if_fail (MANETTE_IS_MONITOR (self));
 
   iterator = manette_monitor_iterate (self);
-  while (manette_monitor_iter_next (iterator, &device)
+  while (manette_monitor_iter_next (iterator, &device))
     load_mapping (self, device);
   manette_monitor_iter_free (iterator);
 }
