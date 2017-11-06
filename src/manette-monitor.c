@@ -55,10 +55,36 @@ manette_monitor_init (ManetteMonitor *self)
 }
 
 static void
+load_mapping (ManetteMonitor *self,
+              ManetteDevice  *device)
+{
+  const gchar *guid;
+  gchar *mapping_string;
+  ManetteMapping *mapping = NULL;
+  GError *error = NULL;
+
+  guid = manette_device_get_guid (device);
+  mapping_string = manette_mapping_manager_get_mapping (self->mapping_manager,
+                                                        guid);
+  mapping = manette_mapping_new (mapping_string, &error);
+  if (G_UNLIKELY (error != NULL)) {
+    g_debug ("%s", error->message);
+    g_clear_error (&error);
+  }
+
+  if (mapping_string != NULL)
+    g_free (mapping_string);
+
+  manette_device_set_mapping (device, mapping);
+
+  if (mapping != NULL)
+    g_object_unref (mapping);
+}
+
+static void
 add_device (ManetteMonitor *self,
             const gchar    *filename)
 {
-  GError *inner_error = NULL;
   ManetteDevice *device;
   const gchar *guid;
   gchar *mapping_string;
@@ -82,20 +108,7 @@ add_device (ManetteMonitor *self,
     return;
   }
 
-  guid = manette_device_get_guid (device);
-  mapping_string = manette_mapping_manager_get_mapping (self->mapping_manager,
-                                                        guid);
-  mapping = manette_mapping_new (mapping_string, &inner_error);
-  if (G_UNLIKELY (inner_error != NULL)) {
-    g_debug ("%s", inner_error->message);
-    g_clear_error (&inner_error);
-  }
-  manette_device_set_mapping (device, mapping);
-
-  if (mapping != NULL)
-    g_object_unref (mapping);
-  if (mapping_string != NULL)
-    g_free (mapping_string);
+  load_mapping (self, device);
 
   g_hash_table_insert (self->devices,
                        g_strdup (filename),
@@ -246,6 +259,21 @@ coldplug_devices (ManetteMonitor *self)
 
 #endif /* BACKEND */
 
+static void
+on_mappings_changed (ManetteMappingManager *mapping_manager,
+                     ManetteMonitor        *self)
+{
+  ManetteMonitorIter *iterator;
+  ManetteDevice *device = NULL;
+
+  g_return_if_fail (MANETTE_IS_MONITOR (self));
+
+  iterator = manette_monitor_iterate (self);
+  while (manette_monitor_iter_next (iterator, &device)
+    load_mapping (self, device);
+  manette_monitor_iter_free (iterator);
+}
+
 /* Public */
 
 ManetteMonitor *
@@ -257,6 +285,11 @@ manette_monitor_new (void)
   self->devices = g_hash_table_new_full (g_direct_hash, g_direct_equal,
                                          g_free, g_object_unref);
   self->mapping_manager = manette_mapping_manager_new ();
+
+  g_signal_connect (self->mapping_manager,
+                    "changed",
+                    G_CALLBACK (on_mappings_changed),
+                    self);
 
 #ifdef GUDEV_ENABLED
   self->client = g_udev_client_new ((const gchar *[]) { "input", NULL });
