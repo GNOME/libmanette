@@ -35,6 +35,13 @@ struct _ManetteMappingManager {
 
 G_DEFINE_TYPE (ManetteMappingManager, manette_mapping_manager, G_TYPE_OBJECT);
 
+enum {
+  SIG_CHANGED,
+  N_SIGNALS,
+};
+
+static guint signals[N_SIGNALS];
+
 #define CONFIG_DIR "libmanette"
 #define MAPPING_CONFIG_FILE "gamecontrollerdb"
 #define MAPPING_RESOURCE_URI "resource:///org/gnome/aplazas/libmanette/gamecontrollerdb"
@@ -351,6 +358,21 @@ static void
 manette_mapping_manager_class_init (ManetteMappingManagerClass *klass)
 {
   manette_mapping_manager_parent_class = g_type_class_peek_parent (klass);
+
+  /**
+   * ManetteMappingManager::changed:
+   * @self: a #ManetteMappingManager
+   *
+   * Emitted when some mappings changed.
+   */
+  signals[SIG_CHANGED] =
+    g_signal_new ("changed",
+                  MANETTE_TYPE_MAPPING_MANAGER,
+                  G_SIGNAL_RUN_LAST,
+                  0, NULL, NULL,
+                  g_cclosure_marshal_VOID__VOID,
+                  G_TYPE_NONE, 0);
+
   G_OBJECT_CLASS (klass)->finalize = finalize;
 }
 
