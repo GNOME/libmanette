@@ -84,13 +84,6 @@ union _ManetteEvent {
   ManetteEventHat hat;
 };
 
-ManetteEventType manette_event_get_event_type (const ManetteEvent *self);
-guint32 manette_event_get_time (const ManetteEvent *self);
-guint16 manette_event_get_hardware_type (const ManetteEvent *self);
-guint16 manette_event_get_hardware_code (const ManetteEvent *self);
-guint16 manette_event_get_hardware_value (const ManetteEvent *self);
-guint16 manette_event_get_hardware_index (const ManetteEvent *self);
-
 G_END_DECLS
 
 #endif /* MANETTE_EVENT_PRIVATE_H */

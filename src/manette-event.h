@@ -59,7 +59,13 @@ enum _ManetteEventType {
 
 ManetteEvent *manette_event_copy (const ManetteEvent *self);
 void manette_event_free (ManetteEvent *self);
+ManetteEventType manette_event_get_event_type (const ManetteEvent *self);
+guint32 manette_event_get_time (const ManetteEvent *self);
 ManetteDevice *manette_event_get_device (const ManetteEvent *self);
+guint16 manette_event_get_hardware_type (const ManetteEvent *self);
+guint16 manette_event_get_hardware_code (const ManetteEvent *self);
+guint16 manette_event_get_hardware_value (const ManetteEvent *self);
+guint16 manette_event_get_hardware_index (const ManetteEvent *self);
 gboolean manette_event_get_button (const ManetteEvent *self,
                                    guint16            *button);
 gboolean manette_event_get_absolute (const ManetteEvent *self,
