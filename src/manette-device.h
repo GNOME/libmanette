@@ -35,6 +35,7 @@ gboolean manette_device_has_input (ManetteDevice *self,
                                    guint          type,
                                    guint          code);
 const gchar *manette_device_get_name (ManetteDevice *self);
+const gchar *manette_device_get_guid (ManetteDevice *self);
 
 G_END_DECLS
 

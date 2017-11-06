@@ -754,7 +754,15 @@ manette_device_new (const gchar  *filename,
   return self;
 }
 
-// FIXME move to ManetteMappingManager?
+/**
+ * manette_device_get_guid:
+ * @self: a #ManetteDevice
+ *
+ * Gets the identifier used by SDL mappings to discriminate game controller
+ * devices.
+ *
+ * Returns: (transfer none): the identifier used by SDL mappings
+ */
 const gchar *
 manette_device_get_guid (ManetteDevice *self)
 {
