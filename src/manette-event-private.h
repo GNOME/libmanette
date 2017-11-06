@@ -27,20 +27,10 @@
 
 G_BEGIN_DECLS
 
-typedef enum _ManetteEventType ManetteEventType;
 typedef struct _ManetteEventAny ManetteEventAny;
 typedef struct _ManetteEventButton ManetteEventButton;
 typedef struct _ManetteEventAbsolute ManetteEventAbsolute;
 typedef struct _ManetteEventHat ManetteEventHat;
-
-enum _ManetteEventType {
-  MANETTE_EVENT_NOTHING = -1,
-  MANETTE_EVENT_BUTTON_PRESS = 0,
-  MANETTE_EVENT_BUTTON_RELEASE = 1,
-  MANETTE_EVENT_ABSOLUTE = 2,
-  MANETTE_EVENT_HAT = 3,
-  MANETTE_LAST_EVENT,
-};
 
 struct _ManetteEventAny {
   ManetteEventType type;

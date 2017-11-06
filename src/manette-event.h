@@ -30,9 +30,32 @@ G_BEGIN_DECLS
 
 #define MANETTE_TYPE_EVENT (manette_event_get_type())
 
+#define MANETTE_TYPE_EVENT_TYPE (manette_event_type_get_type ())
+
 typedef union  _ManetteEvent ManetteEvent;
+typedef enum _ManetteEventType ManetteEventType;
 
 GType manette_event_get_type (void) G_GNUC_CONST;
+GType manette_event_type_get_type (void) G_GNUC_CONST;
+
+/**
+ * ManetteEventType:
+ * @MANETTE_EVENT_NOTHING: a special code to indicate a null event
+ * @MANETTE_EVENT_BUTTON_PRESS: a button has been pressed
+ * @MANETTE_EVENT_BUTTON_RELEASE: a button has been released
+ * @MANETTE_EVENT_ABSOLUTE: an absolute axis has been moved
+ * @MANETTE_EVENT_HAT: a hat axis has been moved
+ *
+ * Specifies the type of the event.
+ */
+enum _ManetteEventType {
+  MANETTE_EVENT_NOTHING = -1,
+  MANETTE_EVENT_BUTTON_PRESS = 0,
+  MANETTE_EVENT_BUTTON_RELEASE = 1,
+  MANETTE_EVENT_ABSOLUTE = 2,
+  MANETTE_EVENT_HAT = 3,
+  MANETTE_LAST_EVENT,
+};
 
 ManetteEvent *manette_event_copy (const ManetteEvent *self);
 void manette_event_free (ManetteEvent *self);
