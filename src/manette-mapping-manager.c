@@ -57,7 +57,7 @@ add_mapping (ManetteMappingManager *self,
   const gchar *platform;
   gchar **split;
 
-  g_return_if_fail (self != NULL);
+  g_return_if_fail (MANETTE_IS_MAPPING_MANAGER (self));
   g_return_if_fail (mapping_string != NULL);
 
   if (mapping_string[0] == '\0' || mapping_string[0] == '#')
@@ -87,7 +87,7 @@ add_from_input_stream (ManetteMappingManager  *self,
   gchar *mapping_string;
   GError *inner_error = NULL;
 
-  g_return_if_fail (self != NULL);
+  g_return_if_fail (MANETTE_IS_MAPPING_MANAGER (self));
   g_return_if_fail (input_stream != NULL);
 
   data_stream = g_data_input_stream_new (input_stream);
@@ -122,7 +122,7 @@ add_from_file_uri (ManetteMappingManager  *self,
   GFileInputStream *stream;
   GError *inner_error = NULL;
 
-  g_return_if_fail (self != NULL);
+  g_return_if_fail (MANETTE_IS_MAPPING_MANAGER (self));
   g_return_if_fail (file_uri != NULL);
 
   file = g_file_new_for_uri (file_uri);
@@ -163,7 +163,7 @@ save_user_mappings (ManetteMappingManager  *self,
   GDataOutputStream *data_stream;
   GError *inner_error = NULL;
 
-  g_return_if_fail (self != NULL);
+  g_return_if_fail (MANETTE_IS_MAPPING_MANAGER (self));
 
   file = g_file_new_for_uri (self->user_mappings_uri);
   stream = g_file_replace (file, NULL, FALSE, G_FILE_CREATE_NONE, NULL, &inner_error);
@@ -310,7 +310,7 @@ manette_mapping_manager_get_default_mapping (ManetteMappingManager *self,
 {
   const gchar *mapping;
 
-  g_return_val_if_fail (self != NULL, NULL);
+  g_return_val_if_fail (MANETTE_IS_MAPPING_MANAGER (self), NULL);
   g_return_val_if_fail (guid != NULL, NULL);
 
   mapping = g_hash_table_lookup (self->default_mappings, guid);
@@ -324,7 +324,7 @@ manette_mapping_manager_get_user_mapping (ManetteMappingManager *self,
 {
   const gchar *mapping;
 
-  g_return_val_if_fail (self != NULL, NULL);
+  g_return_val_if_fail (MANETTE_IS_MAPPING_MANAGER (self), NULL);
   g_return_val_if_fail (guid != NULL, NULL);
 
   mapping = g_hash_table_lookup (self->user_mappings, guid);
@@ -338,7 +338,7 @@ manette_mapping_manager_get_mapping (ManetteMappingManager *self,
 {
   gchar *mapping;
 
-  g_return_val_if_fail (self != NULL, NULL);
+  g_return_val_if_fail (MANETTE_IS_MAPPING_MANAGER (self), NULL);
   g_return_val_if_fail (guid != NULL, NULL);
 
   mapping = manette_mapping_manager_get_user_mapping (self, guid);
@@ -356,7 +356,7 @@ manette_mapping_manager_save_mapping (ManetteMappingManager *self,
 {
   GError *inner_error = NULL;
 
-  g_return_if_fail (self != NULL);
+  g_return_if_fail (MANETTE_IS_MAPPING_MANAGER (self));
   g_return_if_fail (guid != NULL);
   g_return_if_fail (name != NULL);
   g_return_if_fail (mapping != NULL);
@@ -377,7 +377,7 @@ manette_mapping_manager_delete_mapping (ManetteMappingManager *self,
 {
   GError *inner_error = NULL;
 
-  g_return_if_fail (self != NULL);
+  g_return_if_fail (MANETTE_IS_MAPPING_MANAGER (self));
   g_return_if_fail (guid != NULL);
 
   g_hash_table_remove (self->user_mappings, guid);
