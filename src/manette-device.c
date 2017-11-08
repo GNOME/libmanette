@@ -26,6 +26,7 @@
 #include <string.h>
 #include <unistd.h>
 #include "manette-event-private.h"
+#include "manette-mapping-manager.h"
 
 struct _ManetteDevice
 {
@@ -889,4 +890,77 @@ manette_device_set_mapping (ManetteDevice  *self,
     g_object_unref (self->mapping);
 
   self->mapping = mapping ? g_object_ref (mapping) : NULL;
+}
+
+/**
+ * manette_device_has_user_mapping:
+ * @self: a #ManetteDevice
+ *
+ * Gets whether @self has a user mapping.
+ *
+ * Returns: whether @self has a user mapping
+ */
+gboolean
+manette_device_has_user_mapping (ManetteDevice *self)
+{
+  const gchar *guid;
+  ManetteMappingManager *mapping_manager;
+  gboolean has_user_mapping;
+
+  g_return_val_if_fail (MANETTE_IS_DEVICE (self), FALSE);
+
+  guid = manette_device_get_guid (self);
+  mapping_manager = manette_mapping_manager_new ();
+  has_user_mapping = manette_mapping_manager_has_user_mapping (mapping_manager, guid);
+  g_object_unref (mapping_manager);
+
+  return has_user_mapping;
+}
+
+/**
+ * manette_device_save_user_mapping:
+ * @self: a #ManetteDevice
+ * @mapping_string: the mapping string
+ *
+ * Saves @mapping_string as the user mapping for @self.
+ */
+void
+manette_device_save_user_mapping (ManetteDevice *self,
+                                  const gchar   *mapping_string)
+{
+  const gchar *guid;
+  const gchar *name;
+  ManetteMappingManager *mapping_manager;
+
+  g_return_if_fail (MANETTE_IS_DEVICE (self));
+  g_return_if_fail (mapping_string != NULL);
+
+  guid = manette_device_get_guid (self);
+  name = manette_device_get_name (self);
+  mapping_manager = manette_mapping_manager_new ();
+  manette_mapping_manager_save_mapping (mapping_manager,
+                                        guid,
+                                        name,
+                                        mapping_string);
+  g_object_unref (mapping_manager);
+}
+
+/**
+ * manette_device_remove_user_mapping:
+ * @self: a #ManetteDevice
+ *
+ * Removes the user mapping for @self.
+ */
+void
+manette_device_remove_user_mapping (ManetteDevice *self)
+{
+  const gchar *guid;
+  ManetteMappingManager *mapping_manager;
+
+  g_return_if_fail (MANETTE_IS_DEVICE (self));
+
+  guid = manette_device_get_guid (self);
+  mapping_manager = manette_mapping_manager_new ();
+  manette_mapping_manager_delete_mapping (mapping_manager, guid);
+  g_object_unref (mapping_manager);
 }
