@@ -825,6 +825,8 @@ manette_device_get_name (ManetteDevice *self)
 int
 manette_device_get_product_id (ManetteDevice *self)
 {
+  g_return_val_if_fail (MANETTE_IS_DEVICE (self), 0);
+
   return libevdev_get_id_product (self->evdev_device);
 }
 
@@ -839,6 +841,8 @@ manette_device_get_product_id (ManetteDevice *self)
 int
 manette_device_get_vendor_id (ManetteDevice *self)
 {
+  g_return_val_if_fail (MANETTE_IS_DEVICE (self), 0);
+
   return libevdev_get_id_vendor (self->evdev_device);
 }
 
@@ -853,6 +857,8 @@ manette_device_get_vendor_id (ManetteDevice *self)
 int
 manette_device_get_bustype_id (ManetteDevice *self)
 {
+  g_return_val_if_fail (MANETTE_IS_DEVICE (self), 0);
+
   return libevdev_get_id_bustype (self->evdev_device);
 }
 
@@ -867,6 +873,8 @@ manette_device_get_bustype_id (ManetteDevice *self)
 int
 manette_device_get_version_id (ManetteDevice *self)
 {
+  g_return_val_if_fail (MANETTE_IS_DEVICE (self), 0);
+
   return libevdev_get_id_version (self->evdev_device);
 }
 
@@ -875,6 +883,8 @@ void
 manette_device_set_mapping (ManetteDevice  *self,
                             ManetteMapping *mapping)
 {
+  g_return_if_fail (MANETTE_IS_DEVICE (self));
+
   if (self->mapping != NULL)
     g_object_unref (self->mapping);
 
