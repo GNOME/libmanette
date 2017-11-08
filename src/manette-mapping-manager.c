@@ -304,6 +304,16 @@ manette_mapping_manager_new (void)
   return self;
 }
 
+gboolean
+manette_mapping_manager_has_user_mapping (ManetteMappingManager *self,
+                                          const gchar           *guid)
+{
+  g_return_val_if_fail (MANETTE_IS_MAPPING_MANAGER (self), FALSE);
+  g_return_val_if_fail (guid != NULL, FALSE);
+
+  return g_hash_table_contains (self->user_mappings, guid);
+}
+
 gchar *
 manette_mapping_manager_get_default_mapping (ManetteMappingManager *self,
                                              const gchar           *guid)

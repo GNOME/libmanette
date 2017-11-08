@@ -32,6 +32,8 @@ G_BEGIN_DECLS
 G_DECLARE_FINAL_TYPE (ManetteMappingManager, manette_mapping_manager, MANETTE, MAPPING_MANAGER, GObject)
 
 ManetteMappingManager *manette_mapping_manager_new (void);
+gboolean manette_mapping_manager_has_user_mapping (ManetteMappingManager *self,
+                                                   const gchar           *guid);
 gchar *manette_mapping_manager_get_default_mapping (ManetteMappingManager *self,
                                                     const gchar           *guid);
 gchar *manette_mapping_manager_get_user_mapping (ManetteMappingManager *self,
