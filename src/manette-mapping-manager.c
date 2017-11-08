@@ -159,6 +159,7 @@ save_user_mappings (ManetteMappingManager  *self,
   gchar *mapping_string;
 
   GFile *file;
+  GFile *directory;
   GFileOutputStream *stream;
   GDataOutputStream *data_stream;
   GError *inner_error = NULL;
@@ -166,6 +167,21 @@ save_user_mappings (ManetteMappingManager  *self,
   g_return_if_fail (MANETTE_IS_MAPPING_MANAGER (self));
 
   file = g_file_new_for_uri (self->user_mappings_uri);
+  directory = g_file_get_parent (file);
+
+  if (!g_file_query_exists (directory, NULL)) {
+    g_file_make_directory_with_parents (directory, NULL, &inner_error);
+    if (G_UNLIKELY (inner_error != NULL)) {
+      g_propagate_error (error, inner_error);
+      g_object_unref (file);
+      g_object_unref (directory);
+
+      return;
+    }
+  }
+
+  g_object_unref (directory);
+
   stream = g_file_replace (file, NULL, FALSE, G_FILE_CREATE_NONE, NULL, &inner_error);
   if (G_UNLIKELY (inner_error != NULL)) {
     g_propagate_error (error, inner_error);
