@@ -168,6 +168,8 @@ parse_mapping_invert (gchar     *start,
 
     return TRUE;
   default:
+    *invert = FALSE;
+
     return TRUE;
   }
 }
