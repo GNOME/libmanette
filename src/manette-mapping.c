@@ -428,7 +428,7 @@ set_from_mapping_string (ManetteMapping *self,
   gchar **splitted_mapping;
   gchar *destination_string;
   gchar *source_string;
-  ManetteMappingBinding binding;
+  ManetteMappingBinding binding = {};
 
   mappings = g_strsplit (mapping_string, ",", 0);
   mappings_length = g_strv_length (mappings);
