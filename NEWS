@@ -1,4 +1,29 @@
 =============
+Version 0.1.2
+=============
+
+* Build system changes:
+ - Change the package name from manette to libmanette.
+ - Bump meson to 0.43.0.
+ - Enable GObject Introspection.
+ - Generate a VAPI file.
+* Add manette_device_has_input() to let users check the capabilities of
+  a gamepad. If the ManetteDevice has a mapping, it is considered to
+  have the inputs defined in the mapping and only these ones, otherwise
+  it has the ones returned by libevdev.
+* ManetteDevice now has accessors to the user's game controller
+  database, allowing to save and remove mappings for the device.
+* The mapping manager now tracks the user's game controller database and
+  will automatically reload the mappings in case of changes.
+  ManetteMonitor tracks these changes to update the devices' mappings
+  automatically.
+* Add accessors for ManetteEvent's type, time, and the unfiltered or
+  unmapped event values. This allows for example to build a mapping for
+  any device, whether it is mapped or not.
+* Various GTK-Doc fixes.
+* Various precondition fixes.
+
+=============
 Version 0.1.1
 =============
 
