@@ -181,9 +181,45 @@ on_hat_axis_event (ManetteDevice *emitter,
     g_printf ("%s: Unknown hat axis %u moved to %d\n", device_name, hat_axis, value);
 }
 
+#define PHASES 4
+
+typedef struct {
+  ManetteDevice *device;
+  guint8 phase;
+} RumbleData;
+
+typedef struct {
+  guint16 strong_magnitude;
+  guint16 weak_magnitude;
+  guint16 duration_ms;
+  guint16 wait_ms;
+} RumblePhase;
+
+gboolean
+rumble (RumbleData *data)
+{
+  static const RumblePhase phases[] = {
+    { G_MAXUINT16/16, G_MAXUINT16/2, 200, 300 },
+    { G_MAXUINT16/16, G_MAXUINT16/2, 200, 1300 },
+    { G_MAXUINT16/8, G_MAXUINT16/16, 200, 300 },
+    { G_MAXUINT16/8, G_MAXUINT16/16, 200, 1800 },
+  };
+
+  manette_device_rumble (data->device,
+                         phases[data->phase].strong_magnitude,
+                         phases[data->phase].weak_magnitude,
+                         phases[data->phase].duration_ms);
+  g_timeout_add (phases[data->phase].wait_ms, (GSourceFunc) rumble, data);
+  data->phase = (data->phase + 1) % PHASES;
+
+  return FALSE;
+}
+
 static void
 listen_to_device (ManetteDevice *device)
 {
+  RumbleData *rumble_data;
+
   g_printf ("%s: connected\n", manette_device_get_name (device));
   g_signal_connect_object (G_OBJECT (device),
                            "disconnected",
@@ -210,6 +246,11 @@ listen_to_device (ManetteDevice *device)
                            (GCallback) on_hat_axis_event,
                            NULL,
                            0);
+  if (manette_device_has_rumble (device)) {
+    rumble_data = g_new0 (RumbleData, 1);
+    rumble_data->device = g_object_ref (device);
+    rumble (rumble_data);
+  }
 }
 
 static void
