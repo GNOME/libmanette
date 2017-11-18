@@ -39,6 +39,11 @@ gboolean manette_device_has_user_mapping (ManetteDevice *self);
 void manette_device_save_user_mapping (ManetteDevice *self,
                                        const gchar   *mapping_string);
 void manette_device_remove_user_mapping (ManetteDevice *self);
+gboolean manette_device_has_rumble (ManetteDevice *self);
+gboolean manette_device_rumble (ManetteDevice *self,
+                                guint16        strong_magnitude,
+                                guint16        weak_magnitude,
+                                guint16        milliseconds);
 
 G_END_DECLS
 

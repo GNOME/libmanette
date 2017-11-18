@@ -41,6 +41,9 @@ struct _ManetteDevice
   gchar *guid;
 
   ManetteMapping *mapping;
+
+  struct ff_effect rumble_effect;
+  gint16 force_feedback_id;
 };
 
 G_DEFINE_TYPE (ManetteDevice, manette_device, G_TYPE_OBJECT)
@@ -484,6 +487,8 @@ static void
 manette_device_init (ManetteDevice *self)
 {
   self->event_source_id = -1;
+  self->rumble_effect.type = FF_RUMBLE;
+  self->rumble_effect.id = -1;
 }
 
 static gchar
@@ -673,7 +678,7 @@ manette_device_new (const gchar  *filename,
 
   self = g_object_new (MANETTE_TYPE_DEVICE, NULL);
 
-  self->fd = open (filename, O_RDONLY | O_NONBLOCK, (mode_t) 0);
+  self->fd = open (filename, O_RDWR | O_NONBLOCK, (mode_t) 0);
   if (self->fd < 0) {
     g_set_error (error,
                  G_FILE_ERROR,
@@ -963,4 +968,54 @@ manette_device_remove_user_mapping (ManetteDevice *self)
   mapping_manager = manette_mapping_manager_new ();
   manette_mapping_manager_delete_mapping (mapping_manager, guid);
   g_object_unref (mapping_manager);
+}
+
+gboolean
+manette_device_has_rumble (ManetteDevice *self)
+{
+  gulong features[4];
+
+  g_return_val_if_fail (MANETTE_IS_DEVICE (self), FALSE);
+
+  if (ioctl (self->fd, EVIOCGBIT (EV_FF, sizeof (gulong) * 4), features) == -1)
+    return FALSE;
+
+  if (!((features[FF_RUMBLE / (sizeof (glong) * 8)] >> FF_RUMBLE % (sizeof (glong) * 8)) & 1))
+    return FALSE;
+
+  return TRUE;
+}
+
+gboolean
+manette_device_rumble (ManetteDevice *self,
+                       guint16        strong_magnitude,
+                       guint16        weak_magnitude,
+                       guint16        milliseconds)
+{
+  struct input_event event;
+
+  g_return_val_if_fail (MANETTE_IS_DEVICE (self), FALSE);
+
+  self->rumble_effect.u.rumble.strong_magnitude = strong_magnitude;
+  self->rumble_effect.u.rumble.weak_magnitude = weak_magnitude;
+  self->rumble_effect.replay.length = milliseconds;
+
+  if (ioctl (self->fd, EVIOCSFF, &self->rumble_effect) == -1) {
+    g_debug ("Failed to upload the rumble effect.");
+
+    return FALSE;
+  }
+
+  event.type = EV_FF;
+  event.code = self->rumble_effect.id;
+  /* 1 to play the event, 0 to stop it. */
+  event.value = 1;
+
+  if (write (self->fd, (const void*) &event, sizeof (event)) == -1) {
+    g_debug ("Failed to start the rumble effect.");
+
+    return FALSE;
+  }
+
+  return TRUE;
 }
