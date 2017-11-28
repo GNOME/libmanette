@@ -103,15 +103,10 @@ try_str_to_guint16 (gchar    *start,
   g_return_val_if_fail (end != NULL, FALSE);
   g_return_val_if_fail (result != NULL, FALSE);
 
+  errno = 0;
   *result = strtol (start, end, 10);
 
-  switch (errno) {
-  case EINVAL:
-  case ERANGE:
-    return FALSE;
-  default:
-    return TRUE;
-  }
+  return errno == 0;
 }
 
 static gboolean
