@@ -10,8 +10,8 @@ foreach t : tests
 
   test_exe = executable(test_display_name, test_srcs,
     c_args: libmanette_c_args,
-    dependencies: libmanette_deps,
-    link_with: libmanette_lib)
+    dependencies: libmanette_dep,
+  )
 
   test('@0@ test'.format(test_display_name), test_exe)
 endforeach

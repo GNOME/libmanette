@@ -71,6 +71,7 @@ libmanette_lib = shared_library(
   libmanette_sources,
   c_args: libmanette_c_args,
   dependencies: libmanette_deps,
+  include_directories: confinc,
   install: true,
 )
 
@@ -115,6 +116,13 @@ gnome.generate_vapi(
   install: true,
   packages: libmanette_vapi_packages,
   sources: libmanette_gir[0],
+)
+
+libmanette_dep = declare_dependency(
+  link_with: libmanette_lib,
+  sources: libmanette_gir,
+  include_directories: confinc,
+  dependencies: libmanette_deps,
 )
 
 install_headers(libmanette_headers, subdir: 'libmanette')

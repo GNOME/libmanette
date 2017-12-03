@@ -25,10 +25,6 @@ configure_file(
   configuration: config_h,
 )
 
-add_project_arguments([
-  '-I' + meson.build_root(),
-], language: 'c')
-
 subdir('src')
 subdir('tests')
 subdir('demos')
