@@ -1,6 +1,6 @@
 api_version = '0.2'
 
-libmanette_module = 'libmanette-' + api_version
+libmanette_module = 'manette-' + api_version
 
 libmanette_resources = gnome.compile_resources(
   'manette_resources',
