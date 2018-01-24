@@ -73,6 +73,7 @@ libmanette_lib = shared_library(
   dependencies: libmanette_deps,
   include_directories: confinc,
   install: true,
+  soversion: 0,
 )
 
 libmanette_gir_args = [
