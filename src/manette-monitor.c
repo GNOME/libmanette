@@ -279,7 +279,7 @@ manette_monitor_new (void)
   ManetteMonitor *self = NULL;
 
   self = (ManetteMonitor*) g_object_new (MANETTE_TYPE_MONITOR, NULL);
-  self->devices = g_hash_table_new_full (g_direct_hash, g_direct_equal,
+  self->devices = g_hash_table_new_full (g_str_hash, g_str_equal,
                                          g_free, g_object_unref);
   self->mapping_manager = manette_mapping_manager_new ();
 
