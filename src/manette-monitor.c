@@ -353,7 +353,7 @@ manette_monitor_class_init (ManetteMonitorClass *klass)
                   MANETTE_TYPE_MONITOR,
                   G_SIGNAL_RUN_LAST,
                   0, NULL, NULL,
-                  g_cclosure_marshal_VOID__VOID,
+                  g_cclosure_marshal_VOID__OBJECT,
                   G_TYPE_NONE, 1,
                   MANETTE_TYPE_DEVICE);
 }
