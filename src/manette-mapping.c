@@ -440,6 +440,13 @@ set_from_mapping_string (ManetteMapping *self,
     destination_string = splitted_mapping[0];
     source_string = splitted_mapping[1];
 
+    /* Skip the platform key. */
+    if (g_strcmp0 ("platform", splitted_mapping[0]) == 0) {
+      g_strfreev (splitted_mapping);
+
+      continue;
+    }
+
     if (!parse_mapping_destination (destination_string, &binding)) {
       g_critical ("Invalid mapping destination: %s", splitted_mapping[0]);
       g_strfreev (splitted_mapping);
@@ -448,9 +455,7 @@ set_from_mapping_string (ManetteMapping *self,
     }
 
     if  (binding.destination.type == EV_MAX) {
-      if (g_strcmp0 (destination_string, "platform") != 0)
-        g_debug ("Invalid token: %s", destination_string);
-
+      g_debug ("Invalid token: %s", destination_string);
       g_strfreev (splitted_mapping);
 
       continue;
