@@ -1,4 +1,38 @@
 =============
+Version 0.2.0
+=============
+
+* Device: Add rumble support.
+* Make the devices rumble in manette-test if they support it.
+* Mapping:
+ - Initialize the bindings to 0 before using them, avoiding improper
+   values in non used fields.
+ - Ensures the binding value inversion is disabled by default, avoiding
+   an unexpected state.
+ - Clear errno before using it to avoid string to uint16 convertions to
+   fail on valid inputs.
+ - Silently skip the 'platform' mapping key as it is neither useful nor
+   erroneous.
+* Monitor:
+ - Fix the 'device-disconnected' signal marshaller.
+ - Fix the devices hash table hash and comparison functions.
+* Build system change:
+ - Make manette-test properly depend on libmanette.
+ - Change the package name from libmanette to manette.
+ - Change the soname from liblibmanette.so to libmanette.so.
+ - Fix the soname version.
+* Fix the license header of manette-version.h.in, which was accidentaly
+  not matching the one of the library.
+
+* Bugs fixes:
+ - https://gitlab.gnome.org/aplazas/libmanette/issues/1
+ - https://gitlab.gnome.org/aplazas/libmanette/issues/2
+ - https://gitlab.gnome.org/aplazas/libmanette/issues/3
+ - https://gitlab.gnome.org/aplazas/libmanette/issues/4
+ - https://gitlab.gnome.org/aplazas/libmanette/issues/5
+ - https://gitlab.gnome.org/aplazas/libmanette/issues/6
+
+=============
 Version 0.1.2
 =============
 
