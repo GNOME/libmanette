@@ -496,6 +496,67 @@ poll_events (GIOChannel   *source,
   return TRUE;
 }
 
+static GIcon *
+get_icon_for_input (const gchar   *layout,
+                    guint          type,
+                    guint          code)
+{
+  const static struct {
+    guint16 type;
+    guint16 code;
+    const gchar *string_value;
+  } values[] = {
+    { EV_KEY, BTN_NORTH, "button-north" },
+    { EV_KEY, BTN_SOUTH, "button-south" },
+    { EV_KEY, BTN_WEST, "button-west" },
+    { EV_KEY, BTN_EAST, "button-east" },
+    { EV_KEY, BTN_DPAD_UP, "dpad-up" },
+    { EV_KEY, BTN_DPAD_DOWN, "dpad-down" },
+    { EV_KEY, BTN_DPAD_LEFT, "dpad-left" },
+    { EV_KEY, BTN_DPAD_RIGHT, "dpad-right" },
+    { EV_KEY, BTN_TL, "shoulder-left" },
+    { EV_KEY, BTN_TR, "shoulder-right" },
+    { EV_KEY, BTN_TL2, "trigger-left" },
+    { EV_KEY, BTN_TR2, "trigger-right" },
+    { EV_KEY, BTN_THUMBL, "stick-left" },
+    { EV_KEY, BTN_THUMBR, "stick-right" },
+    { EV_KEY, BTN_START, "start" },
+    { EV_KEY, BTN_SELECT, "select" },
+    { EV_KEY, BTN_MODE, "mode" },
+  };
+  const gint length = sizeof (values) / sizeof (values[0]);
+  gint i;
+  const gchar *input = NULL;
+  g_autofree char *layout_uri = NULL;
+  g_autofree char *default_uri = NULL;
+  g_autoptr (GFile) file = NULL;
+  char *uri = NULL;
+
+  for (i = 0; i < length; i++)
+    if (values[i].type == type && values[i].code == code) {
+      input = values[i].string_value;
+
+      break;
+    }
+
+  if (input == NULL)
+    return NULL;
+
+  if (layout != NULL) {
+    layout_uri = g_strdup_printf ("resource:///org/gnome/Manette/icons/%s-%s-symbolic.svg", input, layout);
+
+    if (g_resources_get_info (uri, G_RESOURCE_LOOKUP_FLAGS_NONE, NULL, NULL, NULL))
+      uri = layout_uri;
+  }
+
+  if (uri == NULL)
+    uri = default_uri = g_strdup_printf ("resource:///org/gnome/Manette/icons/%s-symbolic.svg", input);
+
+  file = g_file_new_for_uri (uri);
+
+  return G_ICON (g_file_icon_new (file));
+}
+
 /**
  * manette_device_new: (skip):
  * @filename: the filename of the device
@@ -643,6 +704,50 @@ manette_device_has_input (ManetteDevice *self,
   return MANETTE_IS_MAPPING (self->mapping) ?
     manette_mapping_has_destination_input (self->mapping, type, code) :
     libevdev_has_event_code (self->evdev_device, type, code);
+}
+
+/**
+ * manette_device_get_icon_for_input:
+ * @self: a #ManetteDevice
+ * @type: the input type
+ * @code: the input code
+ *
+ * Gets an icon representing a specific input of this device. If the look of
+ * this device is known, an icon matching the actual input is returned,
+ * otherwise a safe default matching the concept of the input is returned.
+ *
+ * See manette_device_get_default_icon_for_input() for more information.
+ *
+ * Returns: (transfer full): an icon representing a specific input of this device
+ */
+GIcon *
+manette_device_get_icon_for_input (ManetteDevice *self,
+                                   guint          type,
+                                   guint          code)
+{
+  /* FIXME */
+  gchar *layout = NULL;
+
+  g_return_val_if_fail (MANETTE_IS_DEVICE (self), NULL);
+
+  return get_icon_for_input (layout, type, code);
+}
+
+/**
+ * manette_device_get_default_icon_for_input:
+ * @type: the input type
+ * @code: the input code
+ *
+ * Gets an icon representing a safe default matching the concept of a specific
+ * input.
+ *
+ * Returns: (transfer full): an icon representing a safe default matching the concept of a specific input
+ */
+GIcon *
+manette_device_get_default_icon_for_input (guint type,
+                                           guint code)
+{
+  return get_icon_for_input (NULL, type, code);
 }
 
 /**

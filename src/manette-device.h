@@ -23,6 +23,7 @@
 # error "Only <libmanette.h> can be included directly."
 #endif
 
+#include <gio/gio.h>
 #include <glib-object.h>
 
 G_BEGIN_DECLS
@@ -34,6 +35,11 @@ G_DECLARE_FINAL_TYPE (ManetteDevice, manette_device, MANETTE, DEVICE, GObject)
 gboolean manette_device_has_input (ManetteDevice *self,
                                    guint          type,
                                    guint          code);
+GIcon *manette_device_get_icon_for_input (ManetteDevice *self,
+                                          guint          type,
+                                          guint          code);
+GIcon *manette_device_get_default_icon_for_input (guint type,
+                                                  guint code);
 const gchar *manette_device_get_name (ManetteDevice *self);
 gboolean manette_device_has_user_mapping (ManetteDevice *self);
 void manette_device_save_user_mapping (ManetteDevice *self,
