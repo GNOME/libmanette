@@ -32,8 +32,8 @@
      bordercolor="#666666"
      borderopacity="1"
      inkscape:current-layer="layer11"
-     inkscape:cx="15.195831"
-     inkscape:cy="14.46534"
+     inkscape:cx="-40.304169"
+     inkscape:cy="13.46534"
      gridtolerance="10"
      inkscape:guide-bbox="true"
      guidetolerance="10"
@@ -92,12 +92,6 @@
      id="layer11"
      inkscape:label="apps"
      transform="translate(-283,-601)">
-    <path
-       class="warning"
-       style="opacity:1;fill:#44aa00;fill-opacity:1;stroke:none;stroke-width:0;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
-       d="M 32 17 A 15 15 0 0 0 17 32 A 15 15 0 0 0 32 47 A 15 15 0 0 0 47 32 A 15 15 0 0 0 32 17 z "
-       transform="translate(283,601)"
-       id="circle832" />
     <path
        style="opacity:1;fill:#bebebe;fill-opacity:1;stroke:none;stroke-width:0;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
        d="M 32 16 A 16 16 0 0 0 16 32 A 16 16 0 0 0 32 48 A 16 16 0 0 0 48 32 A 16 16 0 0 0 32 16 z M 32 18.875 A 13 13 0 0 1 45 31.875 A 13 13 0 0 1 32 44.875 A 13 13 0 0 1 19 31.875 A 13 13 0 0 1 32 18.875 z "
