@@ -10,11 +10,11 @@
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    sodipodi:docname="button-south-xbox360-symbolic.svg"
-   height="24"
+   height="64"
    id="svg7384"
    inkscape:version="0.92.2 2405546, 2018-03-11"
    version="1.1"
-   width="24">
+   width="64">
   <metadata
      id="metadata90">
     <rdf:RDF>
@@ -32,8 +32,8 @@
      bordercolor="#666666"
      borderopacity="1"
      inkscape:current-layer="layer11"
-     inkscape:cx="6.6314199"
-     inkscape:cy="6.2364977"
+     inkscape:cx="15.195831"
+     inkscape:cy="14.46534"
      gridtolerance="10"
      inkscape:guide-bbox="true"
      guidetolerance="10"
@@ -59,7 +59,7 @@
      inkscape:window-width="2560"
      inkscape:window-x="0"
      inkscape:window-y="27"
-     inkscape:zoom="32">
+     inkscape:zoom="4">
     <inkscape:grid
        empspacing="2"
        enabled="true"
@@ -81,72 +81,65 @@
      id="layer9"
      inkscape:label="status"
      style="display:inline"
-     transform="translate(-283,-641)" />
+     transform="translate(-283,-601)" />
   <g
      inkscape:groupmode="layer"
      id="layer10"
      inkscape:label="devices"
-     transform="translate(-283,-641)" />
+     transform="translate(-283,-601)" />
   <g
      inkscape:groupmode="layer"
      id="layer11"
      inkscape:label="apps"
-     transform="translate(-283,-641)">
-    <circle
-       style="opacity:1;fill:#33b111;fill-opacity:1;stroke:none;stroke-width:0;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
-       id="path837"
-       cx="295"
-       cy="653"
-       r="7.5" />
+     transform="translate(-283,-601)">
+    <path
+       style="opacity:1;fill:#44aa00;fill-opacity:1;stroke:none;stroke-width:0;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       d="M 32 17 A 15 15 0 0 0 17 32 A 15 15 0 0 0 32 47 A 15 15 0 0 0 47 32 A 15 15 0 0 0 32 17 z "
+       transform="translate(283,601)"
+       id="circle832" />
     <path
        style="opacity:1;fill:#bebebe;fill-opacity:1;stroke:none;stroke-width:0;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
-       d="M 12 4 A 8 8 0 0 0 4 12 A 8 8 0 0 0 12 20 A 8 8 0 0 0 20 12 A 8 8 0 0 0 12 4 z M 12 5 A 7 7 0 0 1 19 12 A 7 7 0 0 1 12 19 A 7 7 0 0 1 5 12 A 7 7 0 0 1 12 5 z "
-       transform="translate(283,641)"
-       id="circle826" />
-    <text
-       xml:space="preserve"
-       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:13.33333302px;line-height:1.25;font-family:Cantarell;-inkscape-font-specification:'Cantarell Bold';letter-spacing:0px;word-spacing:0px;fill:#bebebe;fill-opacity:1;stroke:none"
-       x="290.61334"
-       y="657"
-       id="text830"><tspan
-         sodipodi:role="line"
-         id="tspan828"
-         x="290.61334"
-         y="657"
-         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:13.33333302px;font-family:Cantarell;-inkscape-font-specification:'Cantarell Bold';fill:#bebebe;fill-opacity:1">A</tspan></text>
+       d="M 32 16 A 16 16 0 0 0 16 32 A 16 16 0 0 0 32 48 A 16 16 0 0 0 48 32 A 16 16 0 0 0 32 16 z M 32 18.875 A 13 13 0 0 1 45 31.875 A 13 13 0 0 1 32 44.875 A 13 13 0 0 1 19 31.875 A 13 13 0 0 1 32 18.875 z "
+       transform="translate(283,601)"
+       id="path828" />
+    <path
+       style="font-style:normal;font-weight:normal;font-size:6.66666651px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#bebebe;fill-opacity:1;stroke:none"
+       d="M 30.320312 21.546875 L 23.386719 40 L 26.693359 40 L 28.453125 35.09375 L 35.519531 35.09375 L 37.333984 40 L 40.613281 40 L 33.654297 21.546875 L 30.320312 21.546875 z M 31.919922 25.119141 L 34.400391 32.107422 L 29.519531 32.107422 L 31.919922 25.119141 z "
+       transform="translate(283,601)"
+       id="text837" />
   </g>
   <g
      inkscape:groupmode="layer"
      id="layer13"
      inkscape:label="places"
-     transform="translate(-283,-641)" />
+     transform="translate(-283,-601)" />
   <g
      inkscape:groupmode="layer"
      id="layer14"
      inkscape:label="mimetypes"
-     transform="translate(-283,-641)" />
+     transform="translate(-283,-601)" />
   <g
      inkscape:groupmode="layer"
      id="layer15"
      inkscape:label="emblems"
      style="display:inline"
-     transform="translate(-283,-641)" />
+     transform="translate(-283,-601)" />
   <g
      inkscape:groupmode="layer"
      id="g71291"
      inkscape:label="emotes"
      style="display:inline"
-     transform="translate(-283,-641)" />
+     transform="translate(-283,-601)" />
   <g
      inkscape:groupmode="layer"
      id="g4953"
      inkscape:label="categories"
      style="display:inline"
-     transform="translate(-283,-641)" />
+     transform="translate(-283,-601)" />
   <g
      inkscape:groupmode="layer"
      id="layer12"
      inkscape:label="actions"
      style="display:inline"
-     transform="translate(-283,-641)" />
+     transform="translate(-283,-601)" />
 </svg>

@@ -10,11 +10,11 @@
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    sodipodi:docname="button-south-symbolic.svg"
-   height="24"
+   height="64"
    id="svg7384"
    inkscape:version="0.92.2 2405546, 2018-03-11"
    version="1.1"
-   width="24">
+   width="64">
   <metadata
      id="metadata90">
     <rdf:RDF>
@@ -32,8 +32,8 @@
      bordercolor="#666666"
      borderopacity="1"
      inkscape:current-layer="layer11"
-     inkscape:cx="-1.271071"
-     inkscape:cy="8.4171021"
+     inkscape:cx="27.582686"
+     inkscape:cy="-12.30522"
      gridtolerance="10"
      inkscape:guide-bbox="true"
      guidetolerance="10"
@@ -45,7 +45,7 @@
      inkscape:pageopacity="1"
      inkscape:pageshadow="2"
      showborder="false"
-     showgrid="false"
+     showgrid="true"
      showguides="true"
      inkscape:snap-bbox="true"
      inkscape:snap-bbox-midpoints="false"
@@ -57,9 +57,9 @@
      inkscape:window-height="1376"
      inkscape:window-maximized="0"
      inkscape:window-width="1280"
-     inkscape:window-x="0"
+     inkscape:window-x="1280"
      inkscape:window-y="27"
-     inkscape:zoom="2">
+     inkscape:zoom="1">
     <inkscape:grid
        empspacing="2"
        enabled="true"
@@ -81,72 +81,70 @@
      id="layer9"
      inkscape:label="status"
      style="display:inline"
-     transform="translate(-283,-641)" />
+     transform="translate(-283,-601)" />
   <g
      inkscape:groupmode="layer"
      id="layer10"
      inkscape:label="devices"
-     transform="translate(-283,-641)" />
+     transform="translate(-283,-601)" />
   <g
      inkscape:groupmode="layer"
      id="layer11"
      inkscape:label="apps"
-     transform="translate(-283,-641)">
+     transform="translate(-283,-601)">
     <path
        style="opacity:1;fill:#bebebe;fill-opacity:1;stroke:none;stroke-width:0;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
-       d="M 12,-8 A 4.5,4.5 0 0 0 7.5,-3.5 4.5,4.5 0 0 0 12,1 4.5,4.5 0 0 0 16.5,-3.5 4.5,4.5 0 0 0 12,-8 Z m 0,1 A 3.5,3.5 0 0 1 15.5,-3.5 3.5,3.5 0 0 1 12,0 3.5,3.5 0 0 1 8.5,-3.5 3.5,3.5 0 0 1 12,-7 Z"
-       transform="translate(283,649)"
-       id="path970"
-       inkscape:connector-curvature="0" />
-    <circle
-       r="4.5"
-       cy="660.5"
-       cx="295"
-       id="circle976"
-       style="opacity:1;fill:#bebebe;fill-opacity:1;stroke:none;stroke-width:0;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+       d="M 32 40 A 12 12 0 0 0 20 52 A 12 12 0 0 0 32 64 A 12 12 0 0 0 44 52 A 12 12 0 0 0 32 40 z "
+       transform="translate(283,601)"
+       id="circle976" />
     <path
-       id="path983"
-       d="m 302.5,648.5 a 4.5,4.5 0 0 0 -4.5,4.5 4.5,4.5 0 0 0 4.5,4.5 4.5,4.5 0 0 0 4.5,-4.5 4.5,4.5 0 0 0 -4.5,-4.5 z m 0,1 a 3.5,3.5 0 0 1 3.5,3.5 3.5,3.5 0 0 1 -3.5,3.5 3.5,3.5 0 0 1 -3.5,-3.5 3.5,3.5 0 0 1 3.5,-3.5 z"
        style="opacity:1;fill:#bebebe;fill-opacity:1;stroke:none;stroke-width:0;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
-       inkscape:connector-curvature="0" />
+       d="M 32 0 A 12 12 0 0 0 20 12 A 12 12 0 0 0 32 24 A 12 12 0 0 0 44 12 A 12 12 0 0 0 32 0 z M 32 3 A 9 9 0 0 1 41 12 A 9 9 0 0 1 32 21 A 9 9 0 0 1 23 12 A 9 9 0 0 1 32 3 z "
+       transform="translate(283,601)"
+       id="circle828" />
     <path
-       inkscape:connector-curvature="0"
        style="opacity:1;fill:#bebebe;fill-opacity:1;stroke:none;stroke-width:0;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
-       d="m 287.5,648.5 a 4.5,4.5 0 0 0 -4.5,4.5 4.5,4.5 0 0 0 4.5,4.5 4.5,4.5 0 0 0 4.5,-4.5 4.5,4.5 0 0 0 -4.5,-4.5 z m 0,1 a 3.5,3.5 0 0 1 3.5,3.5 3.5,3.5 0 0 1 -3.5,3.5 3.5,3.5 0 0 1 -3.5,-3.5 3.5,3.5 0 0 1 3.5,-3.5 z"
-       id="path985" />
+       d="M 12 20 A 12 12 0 0 0 0 32 A 12 12 0 0 0 12 44 A 12 12 0 0 0 24 32 A 12 12 0 0 0 12 20 z M 12 23 A 9 9 0 0 1 21 32 A 9 9 0 0 1 12 41 A 9 9 0 0 1 3 32 A 9 9 0 0 1 12 23 z "
+       transform="translate(283,601)"
+       id="circle830" />
+    <path
+       style="opacity:1;fill:#bebebe;fill-opacity:1;stroke:none;stroke-width:0;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       d="M 52 20 A 12 12 0 0 0 40 32 A 12 12 0 0 0 52 44 A 12 12 0 0 0 64 32 A 12 12 0 0 0 52 20 z M 52 23 A 9 9 0 0 1 61 32 A 9 9 0 0 1 52 41 A 9 9 0 0 1 43 32 A 9 9 0 0 1 52 23 z "
+       transform="translate(283,601)"
+       id="circle832" />
   </g>
   <g
      inkscape:groupmode="layer"
      id="layer13"
      inkscape:label="places"
-     transform="translate(-283,-641)" />
+     transform="translate(-283,-601)" />
   <g
      inkscape:groupmode="layer"
      id="layer14"
      inkscape:label="mimetypes"
-     transform="translate(-283,-641)" />
+     transform="translate(-283,-601)" />
   <g
      inkscape:groupmode="layer"
      id="layer15"
      inkscape:label="emblems"
      style="display:inline"
-     transform="translate(-283,-641)" />
+     transform="translate(-283,-601)" />
   <g
      inkscape:groupmode="layer"
      id="g71291"
      inkscape:label="emotes"
      style="display:inline"
-     transform="translate(-283,-641)" />
+     transform="translate(-283,-601)" />
   <g
      inkscape:groupmode="layer"
      id="g4953"
      inkscape:label="categories"
      style="display:inline"
-     transform="translate(-283,-641)" />
+     transform="translate(-283,-601)" />
   <g
      inkscape:groupmode="layer"
      id="layer12"
      inkscape:label="actions"
      style="display:inline"
-     transform="translate(-283,-641)" />
+     transform="translate(-283,-601)" />
 </svg>
