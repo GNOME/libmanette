@@ -93,6 +93,7 @@
      inkscape:label="apps"
      transform="translate(-283,-601)">
     <path
+       class="warning"
        style="opacity:1;fill:#44aa00;fill-opacity:1;stroke:none;stroke-width:0;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
        d="M 32 17 A 15 15 0 0 0 17 32 A 15 15 0 0 0 32 47 A 15 15 0 0 0 47 32 A 15 15 0 0 0 32 17 z "
        transform="translate(283,601)"
