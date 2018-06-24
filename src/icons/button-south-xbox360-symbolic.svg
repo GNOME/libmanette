@@ -9,7 +9,7 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   sodipodi:docname="button-south-symbolic.svg"
+   sodipodi:docname="button-south-xbox360-symbolic.svg"
    height="24"
    id="svg7384"
    inkscape:version="0.92.2 2405546, 2018-03-11"
@@ -32,8 +32,8 @@
      bordercolor="#666666"
      borderopacity="1"
      inkscape:current-layer="layer11"
-     inkscape:cx="-1.271071"
-     inkscape:cy="8.4171021"
+     inkscape:cx="6.6314199"
+     inkscape:cy="6.2364977"
      gridtolerance="10"
      inkscape:guide-bbox="true"
      guidetolerance="10"
@@ -55,11 +55,11 @@
      inkscape:snap-others="false"
      inkscape:snap-to-guides="true"
      inkscape:window-height="1376"
-     inkscape:window-maximized="0"
-     inkscape:window-width="1280"
+     inkscape:window-maximized="1"
+     inkscape:window-width="2560"
      inkscape:window-x="0"
      inkscape:window-y="27"
-     inkscape:zoom="2">
+     inkscape:zoom="32">
     <inkscape:grid
        empspacing="2"
        enabled="true"
@@ -92,28 +92,28 @@
      id="layer11"
      inkscape:label="apps"
      transform="translate(-283,-641)">
-    <path
-       style="opacity:1;fill:#bebebe;fill-opacity:1;stroke:none;stroke-width:0;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
-       d="M 12,-8 A 4.5,4.5 0 0 0 7.5,-3.5 4.5,4.5 0 0 0 12,1 4.5,4.5 0 0 0 16.5,-3.5 4.5,4.5 0 0 0 12,-8 Z m 0,1 A 3.5,3.5 0 0 1 15.5,-3.5 3.5,3.5 0 0 1 12,0 3.5,3.5 0 0 1 8.5,-3.5 3.5,3.5 0 0 1 12,-7 Z"
-       transform="translate(283,649)"
-       id="path970"
-       inkscape:connector-curvature="0" />
     <circle
-       r="4.5"
-       cy="660.5"
+       style="opacity:1;fill:#33b111;fill-opacity:1;stroke:none;stroke-width:0;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="path837"
        cx="295"
-       id="circle976"
-       style="opacity:1;fill:#bebebe;fill-opacity:1;stroke:none;stroke-width:0;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+       cy="653"
+       r="7.5" />
     <path
-       id="path983"
-       d="m 302.5,648.5 a 4.5,4.5 0 0 0 -4.5,4.5 4.5,4.5 0 0 0 4.5,4.5 4.5,4.5 0 0 0 4.5,-4.5 4.5,4.5 0 0 0 -4.5,-4.5 z m 0,1 a 3.5,3.5 0 0 1 3.5,3.5 3.5,3.5 0 0 1 -3.5,3.5 3.5,3.5 0 0 1 -3.5,-3.5 3.5,3.5 0 0 1 3.5,-3.5 z"
        style="opacity:1;fill:#bebebe;fill-opacity:1;stroke:none;stroke-width:0;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
-       inkscape:connector-curvature="0" />
-    <path
-       inkscape:connector-curvature="0"
-       style="opacity:1;fill:#bebebe;fill-opacity:1;stroke:none;stroke-width:0;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
-       d="m 287.5,648.5 a 4.5,4.5 0 0 0 -4.5,4.5 4.5,4.5 0 0 0 4.5,4.5 4.5,4.5 0 0 0 4.5,-4.5 4.5,4.5 0 0 0 -4.5,-4.5 z m 0,1 a 3.5,3.5 0 0 1 3.5,3.5 3.5,3.5 0 0 1 -3.5,3.5 3.5,3.5 0 0 1 -3.5,-3.5 3.5,3.5 0 0 1 3.5,-3.5 z"
-       id="path985" />
+       d="M 12 4 A 8 8 0 0 0 4 12 A 8 8 0 0 0 12 20 A 8 8 0 0 0 20 12 A 8 8 0 0 0 12 4 z M 12 5 A 7 7 0 0 1 19 12 A 7 7 0 0 1 12 19 A 7 7 0 0 1 5 12 A 7 7 0 0 1 12 5 z "
+       transform="translate(283,641)"
+       id="circle826" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:13.33333302px;line-height:1.25;font-family:Cantarell;-inkscape-font-specification:'Cantarell Bold';letter-spacing:0px;word-spacing:0px;fill:#bebebe;fill-opacity:1;stroke:none"
+       x="290.61334"
+       y="657"
+       id="text830"><tspan
+         sodipodi:role="line"
+         id="tspan828"
+         x="290.61334"
+         y="657"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:13.33333302px;font-family:Cantarell;-inkscape-font-specification:'Cantarell Bold';fill:#bebebe;fill-opacity:1">A</tspan></text>
   </g>
   <g
      inkscape:groupmode="layer"

@@ -4,6 +4,7 @@
     <file>gamecontrollerdb</file>
     <file preprocess="xml-stripblanks">icons/button-east-symbolic.svg</file>
     <file preprocess="xml-stripblanks">icons/button-south-symbolic.svg</file>
+    <file preprocess="xml-stripblanks">icons/button-south-xbox360-symbolic.svg</file>
     <file preprocess="xml-stripblanks">icons/dpad-down-symbolic.svg</file>
     <file preprocess="xml-stripblanks">icons/dpad-symbolic.svg</file>
   </gresource>
