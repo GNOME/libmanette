@@ -63,7 +63,54 @@ static guint signals[N_SIGNALS];
 #define GUID_DATA_LENGTH 8
 #define GUID_STRING_LENGTH 32 // (GUID_DATA_LENGTH * sizeof (guint16))
 
+typedef struct {
+  ManetteDevice *self;
+  guint          signal_id;
+  ManetteEvent  *event;
+} ManetteDeviceEventSignalData;
+
 /* Private */
+
+static ManetteDeviceEventSignalData *
+manette_device_event_signal_data_new (ManetteDevice *self,
+                                      guint          signal_id,
+                                      ManetteEvent  *event)
+{
+  ManetteDeviceEventSignalData *signal_data = g_new (ManetteDeviceEventSignalData, 1);
+
+  signal_data->self = g_object_ref (self);
+  signal_data->signal_id = signal_id;
+  signal_data->event = manette_event_copy (event);
+
+  return signal_data;
+}
+
+static void
+manette_device_event_signal_data_free (ManetteDeviceEventSignalData *signal_data)
+{
+  g_object_unref (signal_data->self);
+  manette_event_free (signal_data->event);
+  g_free (signal_data);
+}
+
+static gboolean
+manette_device_event_signal_data_emit (ManetteDeviceEventSignalData *signal_data)
+{
+  g_signal_emit (signal_data->self, signal_data->signal_id, 0, signal_data->event);
+
+  return FALSE;
+}
+
+static void
+emit_event_signal_deferred (ManetteDevice *self,
+                            guint          signal_id,
+                            ManetteEvent  *event)
+{
+  g_idle_add_full (G_PRIORITY_DEFAULT_IDLE,
+                   (GSourceFunc) manette_device_event_signal_data_emit,
+                   manette_device_event_signal_data_new (self, signal_id, event),
+                   (GDestroyNotify) manette_device_event_signal_data_free);
+}
 
 static gboolean
 has_key (struct libevdev *device,
@@ -112,19 +159,19 @@ forward_event (ManetteDevice *self,
 {
   switch (manette_event_get_event_type (event)) {
   case MANETTE_EVENT_ABSOLUTE:
-    g_signal_emit (self, signals[SIG_ABSOLUTE_AXIS_EVENT], 0, event);
+    emit_event_signal_deferred (self, signals[SIG_ABSOLUTE_AXIS_EVENT], event);
 
     return;
   case MANETTE_EVENT_BUTTON_PRESS:
-    g_signal_emit (self, signals[SIG_BUTTON_PRESS_EVENT], 0, event);
+    emit_event_signal_deferred (self, signals[SIG_BUTTON_PRESS_EVENT], event);
 
     return;
   case MANETTE_EVENT_BUTTON_RELEASE:
-    g_signal_emit (self, signals[SIG_BUTTON_RELEASE_EVENT], 0, event);
+    emit_event_signal_deferred (self, signals[SIG_BUTTON_RELEASE_EVENT], event);
 
     return;
   case MANETTE_EVENT_HAT:
-    g_signal_emit (self, signals[SIG_HAT_AXIS_EVENT], 0, event);
+    emit_event_signal_deferred (self, signals[SIG_HAT_AXIS_EVENT], event);
 
     return;
   default:
@@ -203,7 +250,7 @@ map_absolute_event (ManetteDevice        *self,
       return;
     }
 
-    g_signal_emit (self, signals[signal], 0, mapped_event);
+    emit_event_signal_deferred (self, signals[signal], mapped_event);
 
     manette_event_free (mapped_event);
   }
@@ -267,7 +314,7 @@ map_button_event (ManetteDevice      *self,
       return;
     }
 
-    g_signal_emit (self, signals[signal], 0, mapped_event);
+    emit_event_signal_deferred (self, signals[signal], mapped_event);
 
     manette_event_free (mapped_event);
   }
@@ -325,7 +372,7 @@ map_hat_event (ManetteDevice   *self,
       return;
     }
 
-    g_signal_emit (self, signals[signal], 0, mapped_event);
+    emit_event_signal_deferred (self, signals[signal], mapped_event);
 
     manette_event_free (mapped_event);
   }
@@ -625,7 +672,7 @@ on_evdev_event (ManetteDevice      *self,
   }
 
   // Send the unmapped event first.
-  g_signal_emit (self, signals[SIG_EVENT], 0, &manette_event);
+  emit_event_signal_deferred (self, signals[SIG_EVENT], &manette_event);
 
   // Then map or forward the event using dedicated signals.
   if (self->mapping == NULL)
