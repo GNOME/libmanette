@@ -1,4 +1,12 @@
 =============
+Version 0.2.1
+=============
+
+* Defer the emission of input device events by putting them into idle
+  event sources.
+* Update the game controller database.
+
+=============
 Version 0.2.0
 =============
 
