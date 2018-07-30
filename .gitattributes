@@ -1,0 +1,4 @@
+demos/manette-test/org.gnome.Manette.Test.json export-ignore
+.editorconfig export-ignore
+.gitattributes export-ignore
+.gitignore export-ignore
