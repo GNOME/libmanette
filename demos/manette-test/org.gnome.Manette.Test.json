@@ -1,39 +1,39 @@
 {
-  "app-id": "org.gnome.Manette.Test",
-  "runtime": "org.gnome.Platform",
-  "runtime-version": "3.26",
-  "sdk": "org.gnome.Sdk",
-  "command": "manette-test",
-  "finish-args": [
-    "--device=all"
-  ],
-  "build-options": {
-    "cflags": "-O2 -g",
-    "cxxflags": "-O2 -g",
-    "env": {
-      "V": "1"
-    }
-  },
-  "modules": [
-    {
-      "name": "libevdev",
-      "sources": [
-        {
-          "type": "git",
-          "url": "https://anongit.freedesktop.org/git/libevdev.git"
+    "app-id" : "org.gnome.Manette.Test",
+    "runtime" : "org.gnome.Platform",
+    "runtime-version" : "3.26",
+    "sdk" : "org.gnome.Sdk",
+    "command" : "manette-test",
+    "finish-args" : [
+        "--device=all"
+    ],
+    "build-options" : {
+        "cflags" : "-O2 -g",
+        "cxxflags" : "-O2 -g",
+        "env" : {
+            "V" : "1"
         }
-      ]
     },
-    {
-      "name": "test",
-      "buildsystem": "meson",
-      "builddir": true,
-      "sources": [
+    "modules" : [
         {
-          "type": "git",
-          "url": "https://gitlab.gnome.org/aplazas/libmanette.git"
+            "name" : "libevdev",
+            "sources" : [
+                {
+                    "type" : "git",
+                    "url" : "https://anongit.freedesktop.org/git/libevdev.git"
+                }
+            ]
+        },
+        {
+            "name" : "test",
+            "buildsystem" : "meson",
+            "builddir" : true,
+            "sources" : [
+                {
+                    "type" : "git",
+                    "url" : "https://gitlab.gnome.org/aplazas/libmanette.git"
+                }
+            ]
         }
-      ]
-    }
-  ]
+    ]
 }
