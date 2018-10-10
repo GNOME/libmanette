@@ -1,7 +1,7 @@
 {
     "app-id" : "org.gnome.Manette.Test",
     "runtime" : "org.gnome.Platform",
-    "runtime-version" : "3.26",
+    "runtime-version" : "master",
     "sdk" : "org.gnome.Sdk",
     "command" : "manette-test",
     "finish-args" : [
