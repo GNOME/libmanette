@@ -13,6 +13,7 @@ libmanette_sources = [
   libmanette_resources[0],
   'manette-device.c',
   'manette-event.c',
+  'manette-event-mapping.c',
   'manette-mapping.c',
   'manette-mapping-manager.c',
   'manette-mapping-error.c',

@@ -25,6 +25,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include "manette-event-mapping-private.h"
 #include "manette-event-private.h"
 #include "manette-mapping-manager.h"
 
@@ -70,6 +71,23 @@ typedef struct {
 } ManetteDeviceEventSignalData;
 
 /* Private */
+
+static guint
+event_type_to_signal (ManetteEventType event_type)
+{
+  switch (event_type) {
+  case MANETTE_EVENT_BUTTON_PRESS:
+    return SIG_BUTTON_PRESS_EVENT;
+  case MANETTE_EVENT_BUTTON_RELEASE:
+    return SIG_BUTTON_RELEASE_EVENT;
+  case MANETTE_EVENT_ABSOLUTE:
+    return SIG_ABSOLUTE_AXIS_EVENT;
+  case MANETTE_EVENT_HAT:
+    return SIG_HAT_AXIS_EVENT;
+  default:
+    return N_SIGNALS;
+  }
+}
 
 static ManetteDeviceEventSignalData *
 manette_device_event_signal_data_new (ManetteDevice *self,
@@ -157,248 +175,23 @@ static void
 forward_event (ManetteDevice *self,
                ManetteEvent  *event)
 {
-  switch (manette_event_get_event_type (event)) {
-  case MANETTE_EVENT_ABSOLUTE:
-    emit_event_signal_deferred (self, signals[SIG_ABSOLUTE_AXIS_EVENT], event);
+  guint signal = event_type_to_signal (manette_event_get_event_type (event));
 
-    return;
-  case MANETTE_EVENT_BUTTON_PRESS:
-    emit_event_signal_deferred (self, signals[SIG_BUTTON_PRESS_EVENT], event);
-
-    return;
-  case MANETTE_EVENT_BUTTON_RELEASE:
-    emit_event_signal_deferred (self, signals[SIG_BUTTON_RELEASE_EVENT], event);
-
-    return;
-  case MANETTE_EVENT_HAT:
-    emit_event_signal_deferred (self, signals[SIG_HAT_AXIS_EVENT], event);
-
-    return;
-  default:
-    return;
-  }
-}
-
-static void
-map_absolute_event (ManetteDevice        *self,
-                    ManetteEventAbsolute *event)
-{
-  const ManetteMappingBinding * const *bindings;
-  const ManetteMappingBinding * binding;
-  ManetteEvent *mapped_event;
-  guint signal;
-  gdouble absolute_value;
-  gboolean pressed;
-
-  bindings = manette_mapping_get_bindings (self->mapping,
-                                           MANETTE_MAPPING_INPUT_TYPE_AXIS,
-                                           event->hardware_index);
-  if (bindings == NULL)
-    return;
-
-  for (; *bindings != NULL; bindings++) {
-    binding = *bindings;
-
-    if (binding->source.range == MANETTE_MAPPING_RANGE_NEGATIVE &&
-        event->value > 0.)
-      continue;
-
-    if (binding->source.range == MANETTE_MAPPING_RANGE_POSITIVE &&
-        event->value < 0.)
-      continue;
-
-
-    mapped_event = manette_event_copy ((ManetteEvent *) event);
-
-    switch (binding->destination.type) {
-    case EV_ABS:
-      absolute_value = binding->source.invert ? -event->value : event->value;
-
-      signal = SIG_ABSOLUTE_AXIS_EVENT;
-      mapped_event->any.type = MANETTE_EVENT_ABSOLUTE;
-      mapped_event->absolute.axis = binding->destination.code;
-      switch (binding->destination.range) {
-      case MANETTE_MAPPING_RANGE_FULL:
-        mapped_event->absolute.value = absolute_value;
-
-        break;
-      case MANETTE_MAPPING_RANGE_NEGATIVE:
-        mapped_event->absolute.value = (absolute_value / 2) - 1;
-
-        break;
-      case MANETTE_MAPPING_RANGE_POSITIVE:
-        mapped_event->absolute.value = (absolute_value / 2) + 1;
-
-        break;
-      default:
-        break;
-      }
-
-      break;
-    case EV_KEY:
-      pressed = binding->source.invert ? event->value < -0. : event->value > 0.;
-
-      signal = pressed ? SIG_BUTTON_PRESS_EVENT : SIG_BUTTON_RELEASE_EVENT;
-      mapped_event->any.type = pressed ? MANETTE_EVENT_BUTTON_PRESS :
-                                         MANETTE_EVENT_BUTTON_RELEASE;
-      mapped_event->button.button = binding->destination.code;
-
-      break;
-    default:
-      manette_event_free (mapped_event);
-
-      return;
-    }
-
-    emit_event_signal_deferred (self, signals[signal], mapped_event);
-
-    manette_event_free (mapped_event);
-  }
-}
-
-static void
-map_button_event (ManetteDevice      *self,
-                  ManetteEventButton *event)
-{
-  const ManetteMappingBinding * const *bindings;
-  const ManetteMappingBinding * binding;
-  ManetteEvent *mapped_event;
-  guint signal;
-  gboolean pressed;
-
-  bindings = manette_mapping_get_bindings (self->mapping,
-                                           MANETTE_MAPPING_INPUT_TYPE_BUTTON,
-                                           event->hardware_index);
-  if (bindings == NULL)
-    return;
-
-  for (; *bindings != NULL; bindings++) {
-    binding = *bindings;
-
-    mapped_event = manette_event_copy ((ManetteEvent *) event);
-
-    pressed = event->type == MANETTE_EVENT_BUTTON_PRESS;
-
-    switch (binding->destination.type) {
-    case EV_ABS:
-      signal = SIG_ABSOLUTE_AXIS_EVENT;
-      mapped_event->any.type = MANETTE_EVENT_ABSOLUTE;
-      mapped_event->absolute.axis = binding->destination.code;
-      switch (binding->destination.range) {
-      case MANETTE_MAPPING_RANGE_NEGATIVE:
-        mapped_event->absolute.value = pressed ? -1 : 0;
-
-        break;
-      case MANETTE_MAPPING_RANGE_FULL:
-      case MANETTE_MAPPING_RANGE_POSITIVE:
-        mapped_event->absolute.value = pressed ? 1 : 0;
-
-        break;
-      default:
-        mapped_event->absolute.value = 0;
-
-        break;
-      }
-
-      break;
-    case EV_KEY:
-      signal = pressed ? SIG_BUTTON_PRESS_EVENT : SIG_BUTTON_RELEASE_EVENT;
-      mapped_event->any.type = pressed ? MANETTE_EVENT_BUTTON_PRESS :
-                                         MANETTE_EVENT_BUTTON_RELEASE;
-      mapped_event->button.button = binding->destination.code;
-
-      break;
-    default:
-      manette_event_free (mapped_event);
-
-      return;
-    }
-
-    emit_event_signal_deferred (self, signals[signal], mapped_event);
-
-    manette_event_free (mapped_event);
-  }
-}
-
-static void
-map_hat_event (ManetteDevice   *self,
-               ManetteEventHat *event)
-{
-  const ManetteMappingBinding * const *bindings;
-  const ManetteMappingBinding * binding;
-  ManetteEvent *mapped_event;
-  guint signal;
-  gboolean pressed;
-
-  bindings = manette_mapping_get_bindings (self->mapping,
-                                           MANETTE_MAPPING_INPUT_TYPE_HAT,
-                                           event->hardware_index);
-  if (bindings == NULL)
-    return;
-
-  for (; *bindings != NULL; bindings++) {
-    binding = *bindings;
-
-    if (binding->source.range == MANETTE_MAPPING_RANGE_NEGATIVE &&
-        event->value > 0)
-      continue;
-
-    if (binding->source.range == MANETTE_MAPPING_RANGE_POSITIVE &&
-        event->value < 0)
-      continue;
-
-    mapped_event = manette_event_copy ((ManetteEvent *) event);
-
-    pressed = abs (event->value);
-
-    switch (binding->destination.type) {
-    case EV_ABS:
-      signal = SIG_ABSOLUTE_AXIS_EVENT;
-      mapped_event->any.type = MANETTE_EVENT_ABSOLUTE;
-      mapped_event->absolute.axis = binding->destination.code;
-      mapped_event->absolute.value = abs (event->value);
-
-      break;
-    case EV_KEY:
-      signal = pressed ? SIG_BUTTON_PRESS_EVENT : SIG_BUTTON_RELEASE_EVENT;
-      mapped_event->any.type = pressed ? MANETTE_EVENT_BUTTON_PRESS :
-                                         MANETTE_EVENT_BUTTON_RELEASE;
-      mapped_event->button.button = binding->destination.code;
-
-      break;
-    default:
-      manette_event_free (mapped_event);
-
-      return;
-    }
-
-    emit_event_signal_deferred (self, signals[signal], mapped_event);
-
-    manette_event_free (mapped_event);
-  }
+  if (signal != N_SIGNALS)
+    emit_event_signal_deferred (self, signals[signal], event);
 }
 
 static void
 map_event (ManetteDevice *self,
-           ManetteEvent    *event)
+           ManetteEvent  *event)
 {
-  switch (manette_event_get_event_type (event)) {
-  case MANETTE_EVENT_BUTTON_PRESS:
-  case MANETTE_EVENT_BUTTON_RELEASE:
-    map_button_event (self, &event->button);
+  GSList *mapped_events = manette_map_event (self->mapping, event);
+  GSList *l = NULL;
 
-    break;
-  case MANETTE_EVENT_ABSOLUTE:
-    map_absolute_event (self, &event->absolute);
+  for (l = mapped_events; l != NULL; l = l ->next)
+    forward_event (self, l->data);
 
-    break;
-  case MANETTE_EVENT_HAT:
-    map_hat_event (self, &event->hat);
-
-    break;
-  default:
-    break;
-  }
+  g_slist_free_full (mapped_events, (GDestroyNotify) manette_event_free);
 }
 
 static void
