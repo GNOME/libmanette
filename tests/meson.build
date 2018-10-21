@@ -1,4 +1,5 @@
 tests = [
+  ['ManetteEventMapping', 'test-event-mapping'],
   ['ManetteMapping', 'test-mapping'],
   ['ManetteMappingManager', 'test-mapping-manager'],
 ]
