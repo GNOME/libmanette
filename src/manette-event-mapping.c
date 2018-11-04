@@ -138,7 +138,8 @@ map_absolute_event (ManetteMapping       *mapping,
 
       break;
     case EV_KEY:
-      pressed = binding->source.invert ? event->value < -0. : event->value > 0.;
+      pressed = binding->source.invert ? event->value == 0. :
+                                         event->value != 0.;
 
       mapped_event->any.type = pressed ? MANETTE_EVENT_BUTTON_PRESS :
                                          MANETTE_EVENT_BUTTON_RELEASE;
