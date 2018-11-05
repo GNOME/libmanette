@@ -400,6 +400,9 @@ centered_absolute_value (struct input_absinfo *abs_info,
   max_centered = max_normalized / 2;
   value_centered = (value_normalized - max_normalized) + max_centered;
 
+  if (value_centered > -abs_info->flat && value_centered < abs_info->flat)
+    value_centered = 0;
+
   divisor = value_centered < 0 ? max_centered + 1 : max_centered;;
 
   return ((gdouble) value_centered) / ((gdouble) divisor);
