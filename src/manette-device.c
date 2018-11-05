@@ -385,7 +385,6 @@ static gdouble
 centered_absolute_value (struct input_absinfo *abs_info,
                          gint32                value)
 {
-  gint64 min_absolute;
   gint64 max_normalized;
   gint64 value_normalized;
   gint64 max_centered;
@@ -394,10 +393,9 @@ centered_absolute_value (struct input_absinfo *abs_info,
 
   g_return_val_if_fail (abs_info != NULL, 0.0);
 
-  min_absolute = llabs ((gint64) abs_info->minimum);
-
-  max_normalized = ((gint64) abs_info->maximum) + min_absolute;
-  value_normalized = ((gint64) value) + min_absolute;
+  /* Adapt the value and the maximum to a minimum of 0. */
+  max_normalized = ((gint64) abs_info->maximum) - abs_info->minimum;
+  value_normalized = ((gint64) value) - abs_info->minimum;
 
   max_centered = max_normalized / 2;
   value_centered = (value_normalized - max_normalized) + max_centered;
