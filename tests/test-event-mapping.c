@@ -25,6 +25,7 @@
 #define MAPPING_AXIS "00000000000000000000000000000000,axis,leftx:a0,lefty:a1,-rightx:-a2,+rightx:+a2,-righty:+a3~,+righty:-a3~,"
 #define MAPPING_HAT "00000000000000000000000000000000,hat,dpleft:h0.8,dpright:h0.2,dpup:h0.1,dpdown:h0.4,"
 #define MAPPING_AXIS_DPAD "00000000000000000000000000000000,button,dpleft:-a0,dpright:+a0,dpup:-a1,dpdown:+a1,"
+#define MAPPING_AXIS_TRIGGER "00000000000000000000000000000000,trigger,lefttrigger:a0,righttrigger:a1,"
 
 #define DUMMY_TIMESTAMP 0x76543210
 
@@ -362,6 +363,95 @@ test_axis_dpad_mapping (void)
   g_object_unref (mapping);
 }
 
+static void
+test_axis_trigger_mapping (void)
+{
+  ManetteMapping *mapping;
+  ManetteEvent event = {};
+  GSList *mapped_events;
+  ManetteEvent *mapped_event;
+  GError *error = NULL;
+
+  mapping = manette_mapping_new (MAPPING_AXIS_TRIGGER, &error);
+  g_assert_no_error (error);
+  g_assert_nonnull (mapping);
+  g_assert_true (MANETTE_IS_MAPPING (mapping));
+
+  event.any.type = MANETTE_EVENT_ABSOLUTE;
+  event.any.time = DUMMY_TIMESTAMP;
+  event.any.hardware_type = EV_ABS;
+  event.any.hardware_code = ABS_X;
+  event.any.hardware_index = 0;
+  event.absolute.axis = ABS_RX;
+  event.absolute.value = 1.0;
+
+  mapped_events = manette_map_event (mapping, &event);
+  g_assert_cmpint (g_slist_length (mapped_events), ==, 1);
+
+  mapped_event = mapped_events->data;
+  g_assert_cmpint (mapped_event->any.type, ==, MANETTE_EVENT_BUTTON_PRESS);
+  cmp_event_any_except_type (mapped_event, &event);
+  g_assert_cmpuint (mapped_event->button.button, ==, BTN_TL2);
+
+  g_slist_free_full (mapped_events, (GDestroyNotify) manette_event_free);
+
+  event.any.type = MANETTE_EVENT_ABSOLUTE;
+  event.any.time = DUMMY_TIMESTAMP;
+  event.any.hardware_type = EV_ABS;
+  event.any.hardware_code = ABS_X;
+  event.any.hardware_index = 0;
+  event.absolute.axis = ABS_RX;
+  event.absolute.value = -1.0;
+
+  mapped_events = manette_map_event (mapping, &event);
+  g_assert_cmpint (g_slist_length (mapped_events), ==, 1);
+
+  mapped_event = mapped_events->data;
+  g_assert_cmpint (mapped_event->any.type, ==, MANETTE_EVENT_BUTTON_RELEASE);
+  cmp_event_any_except_type (mapped_event, &event);
+  g_assert_cmpuint (mapped_event->button.button, ==, BTN_TL2);
+
+  g_slist_free_full (mapped_events, (GDestroyNotify) manette_event_free);
+
+  event.any.type = MANETTE_EVENT_ABSOLUTE;
+  event.any.time = DUMMY_TIMESTAMP;
+  event.any.hardware_type = EV_ABS;
+  event.any.hardware_code = ABS_Y;
+  event.any.hardware_index = 1;
+  event.absolute.axis = ABS_RY;
+  event.absolute.value = 1.0;
+
+  mapped_events = manette_map_event (mapping, &event);
+  g_assert_cmpint (g_slist_length (mapped_events), ==, 1);
+
+  mapped_event = mapped_events->data;
+  g_assert_cmpint (mapped_event->any.type, ==, MANETTE_EVENT_BUTTON_PRESS);
+  cmp_event_any_except_type (mapped_event, &event);
+  g_assert_cmpuint (mapped_event->button.button, ==, BTN_TR2);
+
+  g_slist_free_full (mapped_events, (GDestroyNotify) manette_event_free);
+
+  event.any.type = MANETTE_EVENT_ABSOLUTE;
+  event.any.time = DUMMY_TIMESTAMP;
+  event.any.hardware_type = EV_ABS;
+  event.any.hardware_code = ABS_Y;
+  event.any.hardware_index = 1;
+  event.absolute.axis = ABS_RY;
+  event.absolute.value = -1.0;
+
+  mapped_events = manette_map_event (mapping, &event);
+  g_assert_cmpint (g_slist_length (mapped_events), ==, 1);
+
+  mapped_event = mapped_events->data;
+  g_assert_cmpint (mapped_event->any.type, ==, MANETTE_EVENT_BUTTON_RELEASE);
+  cmp_event_any_except_type (mapped_event, &event);
+  g_assert_cmpuint (mapped_event->button.button, ==, BTN_TR2);
+
+  g_slist_free_full (mapped_events, (GDestroyNotify) manette_event_free);
+
+  g_object_unref (mapping);
+}
+
 int
 main (int   argc,
       char *argv[])
@@ -374,6 +464,7 @@ main (int   argc,
   g_test_add_func ("/ManetteEventMapping/test_axis_mapping", test_axis_mapping);
   g_test_add_func ("/ManetteEventMapping/test_hat_mapping", test_hat_mapping);
   g_test_add_func ("/ManetteEventMapping/test_axis_dpad_mapping", test_axis_dpad_mapping);
+  g_test_add_func ("/ManetteEventMapping/test_axis_trigger_mapping", test_axis_trigger_mapping);
 
   return g_test_run();
 }
