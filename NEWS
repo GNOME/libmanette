@@ -1,4 +1,15 @@
 =============
+Version 0.2.2
+=============
+
+* Device:
+ - Handle absolute axes with min > 0.
+ - Handle the axes' flat to support axes to d-pad mapping.
+* Mapping:
+ - Support negative analog axis to button mappings.
+ - Support full-range axis to button mappings.
+
+=============
 Version 0.2.1
 =============
 
