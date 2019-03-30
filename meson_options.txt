@@ -1,0 +1,6 @@
+option (
+  'gudev',
+  type: 'feature',
+  description: 'Find devices via udev',
+  value: 'auto'
+)

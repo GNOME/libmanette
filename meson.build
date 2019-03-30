@@ -1,6 +1,6 @@
 project('libmanette','c',
   version: '0.2.2',
-  meson_version: '>= 0.43.0',
+  meson_version: '>= 0.47.0',
 )
 
 gnome = import('gnome')
@@ -15,7 +15,7 @@ libevdev_version = '>= 1.4.5'
 gio = dependency ('gio-2.0', version: glib_version)
 glib = dependency ('glib-2.0', version: glib_version)
 gobject = dependency ('gobject-2.0', version: glib_version)
-gudev = dependency ('gudev-1.0', version: gudev_version, required : false)
+gudev = dependency ('gudev-1.0', version: gudev_version, required : get_option('gudev'))
 libevdev = dependency ('libevdev', version: libevdev_version)
 
 config_h = configuration_data()
