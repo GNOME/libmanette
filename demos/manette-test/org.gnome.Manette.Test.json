@@ -27,6 +27,9 @@
         {
             "name" : "test",
             "buildsystem" : "meson",
+            "config-opts": [
+                "-Dgudev=disabled"
+            ],
             "builddir" : true,
             "sources" : [
                 {
