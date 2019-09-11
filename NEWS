@@ -1,4 +1,12 @@
 =============
+Version 0.2.3
+=============
+
+* Build system changes:
+ - Add 'gudev' option, allowing to explicitly build without gudev.
+* Fix build on Fedora 30.
+
+=============
 Version 0.2.2
 =============
 
