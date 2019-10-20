@@ -4,3 +4,17 @@ option (
   description: 'Find devices via udev',
   value: 'auto'
 )
+
+option (
+  'introspection',
+  type: 'boolean',
+  description: 'Generate introspection data (requires gobject-introspection)',
+  value: true
+)
+
+option (
+  'vapi',
+  type: 'boolean',
+  description: 'Generate vapi data (requires vapigen and introspection option)',
+  value: true
+)

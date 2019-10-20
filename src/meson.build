@@ -90,39 +90,45 @@ if gudev.found()
   libmanette_gir_includes += [ 'GUdev-1.0' ]
 endif
 
-libmanette_gir = gnome.generate_gir(
-  libmanette_lib,
-  extra_args: libmanette_gir_args,
-  export_packages: libmanette_module,
-  sources: libmanette_headers + libmanette_sources,
-  nsversion: api_version,
-  namespace: 'Manette',
-  identifier_prefix: 'Manette',
-  includes: libmanette_gir_includes,
-  header: libmanette_main_header,
-  install: true,
-  symbol_prefix: 'manette',
-)
+built_girs = []
+if get_option('introspection')
+  libmanette_gir = gnome.generate_gir(
+    libmanette_lib,
+    extra_args: libmanette_gir_args,
+    export_packages: libmanette_module,
+    sources: libmanette_headers + libmanette_sources,
+    nsversion: api_version,
+    namespace: 'Manette',
+    identifier_prefix: 'Manette',
+    includes: libmanette_gir_includes,
+    header: libmanette_main_header,
+    install: true,
+    symbol_prefix: 'manette',
+  )
+  built_girs += [ libmanette_gir ]
 
-libmanette_vapi_packages = [
-  'gobject-2.0',
-  'gio-2.0',
-]
+  if get_option('vapi')
+    libmanette_vapi_packages = [
+      'gobject-2.0',
+      'gio-2.0',
+    ]
 
-if gudev.found()
-  libmanette_vapi_packages += [ 'gudev-1.0' ]
+    if gudev.found()
+      libmanette_vapi_packages += [ 'gudev-1.0' ]
+    endif
+
+    gnome.generate_vapi(
+      libmanette_module,
+      install: true,
+      packages: libmanette_vapi_packages,
+      sources: libmanette_gir[0],
+    )
+  endif
 endif
-
-gnome.generate_vapi(
-  libmanette_module,
-  install: true,
-  packages: libmanette_vapi_packages,
-  sources: libmanette_gir[0],
-)
 
 libmanette_dep = declare_dependency(
   link_with: libmanette_lib,
-  sources: libmanette_gir,
+  sources: built_girs,
   include_directories: confinc,
   dependencies: libmanette_deps,
 )
