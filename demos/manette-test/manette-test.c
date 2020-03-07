@@ -85,6 +85,7 @@ on_device_disconnected (ManetteDevice *emitter,
                         gpointer       user_data)
 {
   g_printf ("%s: disconnected\n", manette_device_get_name (emitter));
+  g_object_unref (emitter);
 }
 
 static void
@@ -204,6 +205,9 @@ rumble (RumbleData *data)
     { G_MAXUINT16/8, G_MAXUINT16/16, 200, 300 },
     { G_MAXUINT16/8, G_MAXUINT16/16, 200, 1800 },
   };
+
+  if (!MANETTE_IS_DEVICE (data->device))
+    return FALSE;
 
   manette_device_rumble (data->device,
                          phases[data->phase].strong_magnitude,
