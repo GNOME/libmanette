@@ -33,10 +33,6 @@ G_BEGIN_DECLS
 #define MANETTE_TYPE_EVENT_TYPE (manette_event_type_get_type ())
 
 typedef union  _ManetteEvent ManetteEvent;
-typedef enum _ManetteEventType ManetteEventType;
-
-GType manette_event_get_type (void) G_GNUC_CONST;
-GType manette_event_type_get_type (void) G_GNUC_CONST;
 
 /**
  * ManetteEventType:
@@ -48,14 +44,17 @@ GType manette_event_type_get_type (void) G_GNUC_CONST;
  *
  * Specifies the type of the event.
  */
-enum _ManetteEventType {
+typedef enum {
   MANETTE_EVENT_NOTHING = -1,
   MANETTE_EVENT_BUTTON_PRESS = 0,
   MANETTE_EVENT_BUTTON_RELEASE = 1,
   MANETTE_EVENT_ABSOLUTE = 2,
   MANETTE_EVENT_HAT = 3,
   MANETTE_LAST_EVENT,
-};
+} ManetteEventType;
+
+GType manette_event_get_type (void) G_GNUC_CONST;
+GType manette_event_type_get_type (void) G_GNUC_CONST;
 
 ManetteEvent *manette_event_copy (const ManetteEvent *self);
 void manette_event_free (ManetteEvent *self);

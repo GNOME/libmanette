@@ -32,21 +32,19 @@ G_BEGIN_DECLS
 
 G_DECLARE_FINAL_TYPE (ManetteMapping, manette_mapping, MANETTE, MAPPING, GObject)
 
-typedef enum _ManetteMappingInputType ManetteMappingInputType;
-typedef enum _ManetteMappingRange ManetteMappingRange;
 typedef struct _ManetteMappingBinding ManetteMappingBinding;
 
-enum _ManetteMappingInputType {
+typedef enum {
   MANETTE_MAPPING_INPUT_TYPE_AXIS,
   MANETTE_MAPPING_INPUT_TYPE_BUTTON,
   MANETTE_MAPPING_INPUT_TYPE_HAT,
-};
+} ManetteMappingInputType;
 
-enum _ManetteMappingRange {
+typedef enum {
   MANETTE_MAPPING_RANGE_NEGATIVE = -1,
   MANETTE_MAPPING_RANGE_FULL = 0,
   MANETTE_MAPPING_RANGE_POSITIVE = 1,
-};
+} ManetteMappingRange;
 
 struct _ManetteMappingBinding {
   struct {
