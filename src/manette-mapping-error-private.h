@@ -1,4 +1,4 @@
-/* manette-mapping-error.h
+/* manette-mapping-error-private.h
  *
  * Copyright (C) 2017 Adrien Plazas <kekun.plazas@laposte.net>
  *

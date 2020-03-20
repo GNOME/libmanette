@@ -26,7 +26,7 @@
  #include <gio/gio.h>
 #endif
 #include "manette-device-private.h"
-#include "manette-mapping-manager.h"
+#include "manette-mapping-manager-private.h"
 #include "manette-monitor-iter-private.h"
 
 #ifndef GUDEV_ENABLED

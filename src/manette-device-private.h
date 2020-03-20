@@ -24,7 +24,7 @@
 #endif
 
 #include "manette-device.h"
-#include "manette-mapping.h"
+#include "manette-mapping-private.h"
 
 G_BEGIN_DECLS
 

@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "../src/manette-mapping-manager.h"
+#include "../src/manette-mapping-manager-private.h"
 
 static void
 test_valid (void)

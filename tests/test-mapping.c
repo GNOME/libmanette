@@ -17,7 +17,7 @@
  */
 
 #include <linux/input-event-codes.h>
-#include "../src/manette-mapping.h"
+#include "../src/manette-mapping-private.h"
 
 #define MAPPING_STEAM_CONTROLLER "03000000de280000fc11000001000000,Steam Controller,a:b0,b:b1,back:b6,dpdown:h0.4,dpleft:h0.8,dpright:h0.2,dpup:h0.1,guide:b8,leftshoulder:b4,leftstick:b9,lefttrigger:a2,leftx:a0,lefty:a1,rightshoulder:b5,rightstick:b10,righttrigger:a5,rightx:a3,righty:a4,start:b7,x:b2,y:b3,"
 #define MAPPING_BUTTON "00000000000000000000000000000000,button,a:b0,b:b1,x:b2,y:b3,"

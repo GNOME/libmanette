@@ -1,4 +1,4 @@
-/* manette-mapping.h
+/* manette-mapping-private.h
  *
  * Copyright (C) 2017 Adrien Plazas <kekun.plazas@laposte.net>
  *
@@ -24,7 +24,7 @@
 #endif
 
 #include <glib-object.h>
-#include "manette-mapping-error.h"
+#include "manette-mapping-error-private.h"
 
 G_BEGIN_DECLS
 

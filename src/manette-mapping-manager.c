@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "manette-mapping-manager.h"
+#include "manette-mapping-manager-private.h"
 
 #include <glib.h>
 #include <glib-object.h>

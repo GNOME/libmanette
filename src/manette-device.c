@@ -27,7 +27,7 @@
 #include <unistd.h>
 #include "manette-event-mapping-private.h"
 #include "manette-event-private.h"
-#include "manette-mapping-manager.h"
+#include "manette-mapping-manager-private.h"
 
 struct _ManetteDevice
 {

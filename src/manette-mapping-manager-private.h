@@ -1,4 +1,4 @@
-/* manette-mapping-manager.h
+/* manette-mapping-manager-private.h
  *
  * Copyright (C) 2017 Adrien Plazas <kekun.plazas@laposte.net>
  *
