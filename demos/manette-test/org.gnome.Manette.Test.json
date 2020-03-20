@@ -25,7 +25,7 @@
             ]
         },
         {
-            "name" : "test",
+            "name" : "libmanette",
             "buildsystem" : "meson",
             "config-opts": [
                 "-Dgudev=disabled"
