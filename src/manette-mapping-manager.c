@@ -45,7 +45,7 @@ static guint signals[N_SIGNALS];
 
 #define CONFIG_DIR "libmanette"
 #define MAPPING_CONFIG_FILE "gamecontrollerdb"
-#define MAPPING_RESOURCE_URI "resource:///org/gnome/aplazas/libmanette/gamecontrollerdb"
+#define MAPPING_RESOURCE_URI "resource:///org/gnome/Manette/gamecontrollerdb"
 
 /* Private */
 
