@@ -9,7 +9,7 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   sodipodi:docname="button-south-xbox360-symbolic.svg"
+   sodipodi:docname="button-north-xbox360-symbolic.svg"
    height="64"
    id="svg7384"
    inkscape:version="0.92.4 5da689c313, 2019-01-14"
@@ -32,8 +32,8 @@
      bordercolor="#666666"
      borderopacity="1"
      inkscape:current-layer="layer11"
-     inkscape:cx="-28.760959"
-     inkscape:cy="21.601947"
+     inkscape:cx="15.162928"
+     inkscape:cy="33.96656"
      gridtolerance="10"
      inkscape:guide-bbox="true"
      guidetolerance="10"
@@ -59,7 +59,7 @@
      inkscape:window-width="2560"
      inkscape:window-x="0"
      inkscape:window-y="27"
-     inkscape:zoom="14.756106">
+     inkscape:zoom="25.841539">
     <inkscape:grid
        empspacing="2"
        enabled="true"
@@ -99,14 +99,16 @@
        id="path828" />
     <text
        xml:space="preserve"
-       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:26.66666603px;line-height:1.25;font-family:Cantarell;-inkscape-font-specification:'Cantarell Bold';text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#bebebe;fill-opacity:1;stroke:none"
-       x="315.01331"
-       y="642"
-       id="text826"><tspan
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:26.66697884px;line-height:1.25;font-family:Cantarell;-inkscape-font-specification:'Cantarell Bold';text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#bebebe;fill-opacity:1;stroke:none;stroke-width:1.0000118"
+       x="315.00961"
+       y="642.00757"
+       id="text826"
+       transform="scale(1.0000118,0.99998821)"><tspan
          sodipodi:role="line"
          id="tspan824"
-         x="315.01331"
-         y="642">A</tspan></text>
+         x="315.00961"
+         y="642.00757"
+         style="stroke-width:1.0000118">Y</tspan></text>
   </g>
   <g
      inkscape:groupmode="layer"
