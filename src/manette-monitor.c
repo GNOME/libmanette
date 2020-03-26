@@ -236,7 +236,7 @@ coldplug_devices (ManetteMonitor *self)
 }
 
 static void
-init_backend (ManetteOmonitor *self)
+init_backend (ManetteMonitor *self)
 {
   self->client = g_udev_client_new ((const gchar *[]) { "input", NULL });
   g_signal_connect_object (self->client,
