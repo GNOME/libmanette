@@ -21,6 +21,16 @@ flatpak:
     APP_ID: 'org.gnome.Manette.Test'
     GIT_SUBMODULE_STRATEGY: recursive
 
+fedora:
+  image: fedora:32
+  stage: test
+  before_script:
+    - dnf install -y gcc glib2-devel gobject-introspection-devel libevdev-devel libgudev-devel meson vala
+  script:
+    - meson _build
+    - ninja -C _build
+    - ninja -C _build test
+
 review:
   dependencies:
     - 'flatpak'
