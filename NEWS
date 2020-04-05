@@ -1,4 +1,15 @@
 =============
+Version 0.2.4
+=============
+
+* Build system changes:
+ - Add the 'introspection' and 'vapi' options, allowing to build without
+   producing GObject Introspection or Vala bindings.
+* Support hot-plugging in the fallback backend.
+* Update the game controller mapping database.
+* Various code cleanups.
+
+=============
 Version 0.2.3
 =============
 
