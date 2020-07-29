@@ -415,8 +415,8 @@ on_evdev_event (ManetteDevice      *self,
   ManetteEvent manette_event;
 
   manette_event.any.device = self;
-  manette_event.any.time = evdev_event->time.tv_sec * 1000 +
-                           evdev_event->time.tv_usec / 1000;
+  manette_event.any.time = evdev_event->input_event_sec * 1000 +
+                           evdev_event->input_event_usec / 1000;
   manette_event.any.hardware_type = evdev_event->type;
   manette_event.any.hardware_code = evdev_event->code;
   manette_event.any.hardware_value = evdev_event->value;
