@@ -1,4 +1,10 @@
 =============
+Version 0.2.5
+=============
+
+* Fix the build with musl by using input_event_sec and input_event_usec.
+
+=============
 Version 0.2.4
 =============
 
