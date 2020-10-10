@@ -168,8 +168,10 @@ udev_device_property_is (GUdevDevice *udev_device,
                          const gchar *property,
                          const gchar *value)
 {
-  return g_udev_device_has_property (udev_device, property) &&
-         (g_strcmp0 (g_udev_device_get_property (udev_device, property), value) == 0);
+  g_assert (property != NULL);
+  g_assert (value != NULL);
+
+  return g_strcmp0 (g_udev_device_get_property (udev_device, property), value) == 0;
 }
 
 static gboolean
