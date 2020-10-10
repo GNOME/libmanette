@@ -500,7 +500,9 @@ manette_monitor_class_init (ManetteMonitorClass *klass)
  * manette_monitor_iterate:
  * @self: a #ManetteMonitor
  *
- * Returns: (transfer full): a new #ManetteMonitorIter
+ * Creates a new #ManetteMonitorIter iterating on @self.
+ *
+ * Returns: (transfer full): a new #ManetteMonitorIter iterating on @self
  */
 ManetteMonitorIter *
 manette_monitor_iterate (ManetteMonitor *self)
