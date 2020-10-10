@@ -483,14 +483,11 @@ on_evdev_event (ManetteDevice      *self,
 }
 
 static gboolean
-poll_events (GIOChannel   *source,
-             GIOCondition  condition,
-             gpointer      data)
+poll_events (GIOChannel    *source,
+             GIOCondition   condition,
+             ManetteDevice *self)
 {
-  ManetteDevice *self;
   struct input_event evdev_event;
-
-  self = MANETTE_DEVICE (data);
 
   g_return_val_if_fail (MANETTE_IS_DEVICE (self), FALSE);
 
@@ -567,7 +564,7 @@ manette_device_new (const gchar  *filename,
 
   // Poll the events in the main loop.
   channel = g_io_channel_unix_new (self->fd);
-  self->event_source_id = (glong) g_io_add_watch (channel, G_IO_IN, poll_events, self);
+  self->event_source_id = (glong) g_io_add_watch (channel, G_IO_IN, (GIOFunc) poll_events, self);
   buttons_number = 0;
 
   // Initialize the axes buttons and hats.
