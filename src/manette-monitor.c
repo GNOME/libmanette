@@ -408,6 +408,13 @@ on_mappings_changed (ManetteMappingManager *mapping_manager,
 
 /* Public */
 
+/**
+ * manette_monitor_new:
+ *
+ * Creates a new #ManetteMonitor object.
+ *
+ * Returns: (transfer full): a new #ManetteMonitor
+ */
 ManetteMonitor *
 manette_monitor_new (void)
 {
