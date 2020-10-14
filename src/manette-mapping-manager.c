@@ -219,7 +219,7 @@ save_user_mappings (ManetteMappingManager  *self,
 }
 
 static void
-on_user_mappings_changed (GFileMonitor          *monitor,
+user_mappings_changed_cb (GFileMonitor          *monitor,
                           GFile                 *file,
                           GFile                 *other_file,
                           GFileMonitorEvent      event_type,
@@ -306,7 +306,7 @@ manette_mapping_manager_new (void)
 
   g_signal_connect (self->user_mappings_monitor,
                     "changed",
-                    G_CALLBACK (on_user_mappings_changed),
+                    G_CALLBACK (user_mappings_changed_cb),
                     self);
 
   add_from_file_uri (self, self->user_mappings_uri, self->user_mappings, &inner_error);
