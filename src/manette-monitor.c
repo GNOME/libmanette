@@ -244,6 +244,19 @@ init_backend (ManetteMonitor *self)
 
 #else /* BACKEND FALLBACK */
 
+/* This eliminates all other files that can be in /dev/input, like js*, mouse*,
+ * by-id/, etc.
+ * There isn't really any need to check if there's only digits after "event", as
+ * it would induce a bit of performance loss for this hypothetical case…
+ */
+static gboolean
+is_evdev_device (GFile *file)
+{
+  g_autofree char *event_file_basename = g_file_get_basename (file);
+
+  return g_str_has_prefix (event_file_basename, "event");
+}
+
 static gboolean
 is_accessible (GFile *file)
 {
@@ -311,6 +324,9 @@ file_monitor_changed_cb (GFileMonitor      *monitor,
                          GFileMonitorEvent  event_type,
                          ManetteMonitor    *self)
 {
+  if (!is_evdev_device (file))
+    return;
+
   switch (event_type) {
   case G_FILE_MONITOR_EVENT_CREATED:
     file_created (self, file);
@@ -345,8 +361,12 @@ coldplug_devices (ManetteMonitor *self)
 
   while ((name = g_dir_read_name (dir)) != NULL) {
     g_autofree gchar *filename = NULL;
+    g_autoptr (GFile) file = NULL;
+
     filename = g_build_filename (INPUT_DIRECTORY, name, NULL);
-    add_device (self, filename);
+    file = g_file_new_for_path (filename);
+    if (is_evdev_device (file) && is_accessible (file))
+      add_device (self, filename);
   }
 }
 
