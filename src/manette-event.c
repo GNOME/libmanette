@@ -39,11 +39,7 @@ G_DEFINE_BOXED_TYPE (ManetteEvent, manette_event, manette_event_copy, manette_ev
 ManetteEvent *
 manette_event_new (void)
 {
-  ManetteEvent *self;
-
-  self = g_slice_new0 (ManetteEvent);
-
-  return self;
+  return g_slice_new0 (ManetteEvent);
 }
 
 /**
