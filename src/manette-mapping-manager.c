@@ -198,7 +198,7 @@ user_mappings_changed_cb (GFileMonitor          *monitor,
 
   g_hash_table_remove_all (self->user_mappings);
 
-  if (!g_file_query_exists (file, NULL)) {
+  if (G_UNLIKELY (event_type == G_FILE_MONITOR_EVENT_DELETED)) {
     g_signal_emit (self, signals[SIG_CHANGED], 0);
 
     return;
