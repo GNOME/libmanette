@@ -732,7 +732,14 @@ manette_device_get_version_id (ManetteDevice *self)
   return libevdev_get_id_version (self->evdev_device);
 }
 
-// FIXME documentation
+/**
+ * manette_device_set_mapping:
+ * @self: a #ManetteDevice
+ * @mapping: a #ManetteMapping
+ *
+ * Associate @mapping to @self to map its hardware events into standard gamepad
+ * ones.
+ */
 void
 manette_device_set_mapping (ManetteDevice  *self,
                             ManetteMapping *mapping)
