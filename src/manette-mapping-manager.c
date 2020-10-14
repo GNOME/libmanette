@@ -419,7 +419,7 @@ manette_mapping_manager_delete_mapping (ManetteMappingManager *self,
 /* Type */
 
 static void
-finalize (GObject *object)
+manette_mapping_manager_finalize (GObject *object)
 {
   ManetteMappingManager *self = MANETTE_MAPPING_MANAGER (object);
 
@@ -451,7 +451,7 @@ manette_mapping_manager_class_init (ManetteMappingManagerClass *klass)
                   g_cclosure_marshal_VOID__VOID,
                   G_TYPE_NONE, 0);
 
-  G_OBJECT_CLASS (klass)->finalize = finalize;
+  G_OBJECT_CLASS (klass)->finalize = manette_mapping_manager_finalize;
 }
 
 static void
