@@ -141,7 +141,6 @@ save_user_mappings (ManetteMappingManager  *self,
                     GError                **error)
 {
   GHashTableIter iter;
-  gpointer key, value;
   gchar *guid;
   gchar *sdl_string;
   const gchar *name;
@@ -174,10 +173,8 @@ save_user_mappings (ManetteMappingManager  *self,
   data_stream = g_data_output_stream_new (G_OUTPUT_STREAM (stream));
 
   g_hash_table_iter_init (&iter, self->user_mappings);
-  while (g_hash_table_iter_next (&iter, &key, &value)) {
-    guid = (gchar *) key;
+  while (g_hash_table_iter_next (&iter, (gpointer) &guid, (gpointer) &sdl_string)) {
     name = g_hash_table_lookup (self->names, guid);
-    sdl_string = (gchar *) value;
 
     mapping_string = g_strdup_printf ("%s,%s,%s\n", guid, name, sdl_string);
 
