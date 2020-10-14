@@ -27,9 +27,12 @@
 struct _ManetteMappingManager {
   GObject parent_instance;
 
+  /* Associates the GUID with the device's name */
   GHashTable *names;
+  /* Those two associates a GUID with its full corresponding SDL mapping string */
   GHashTable *default_mappings;
   GHashTable *user_mappings;
+
   gchar *user_mappings_uri;
   GFileMonitor *user_mappings_monitor;
 };
