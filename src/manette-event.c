@@ -106,9 +106,11 @@ manette_event_get_event_type (const ManetteEvent *self)
  * manette_event_get_time:
  * @self: a #ManetteEvent
  *
- * Gets the time stamp of @self.
+ * Gets the timestamp of when @self was received by the input driver that takes
+ * care of its device. Use this timestamp to ensure external factors such as
+ * synchronous disk writes don't influence your timing computations.
  *
- * Returns: the time stamp of @self
+ * Returns: the timestamp of when @self was received by the input driver
  */
 guint32
 manette_event_get_time (const ManetteEvent *self)
