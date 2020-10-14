@@ -41,7 +41,7 @@ map_button_event (ManetteMapping     *mapping,
 
     binding = *bindings;
 
-    pressed = event->type == MANETTE_EVENT_BUTTON_PRESS;
+    pressed = (event->type == MANETTE_EVENT_BUTTON_PRESS);
 
     switch (binding->destination.type) {
     case EV_ABS:
