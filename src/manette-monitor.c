@@ -191,10 +191,10 @@ udev_device_is_manette (GUdevDevice *udev_device)
 }
 
 static void
-handle_udev_client_callback (GUdevClient *sender,
-                             const gchar *action,
-                             GUdevDevice *udev_device,
-                             gpointer     data)
+udev_client_uevent_cb (GUdevClient    *sender,
+                       const gchar    *action,
+                       GUdevDevice    *udev_device,
+                       ManetteMonitor *self)
 {
   ManetteMonitor *self;
 
@@ -248,7 +248,7 @@ init_backend (ManetteMonitor *self)
   self->client = g_udev_client_new ((const gchar *[]) { "input", NULL });
   g_signal_connect_object (self->client,
                            "uevent",
-                           (GCallback) handle_udev_client_callback,
+                           (GCallback) udev_client_uevent_cb,
                            self,
                            0);
 }
@@ -316,11 +316,11 @@ file_deleted (ManetteMonitor *self,
 }
 
 static void
-handle_file_monitor_callback (GFileMonitor      *monitor,
-                              GFile             *file,
-                              GFile             *other_file,
-                              GFileMonitorEvent  event_type,
-                              ManetteMonitor    *self)
+file_monitor_changed_cb (GFileMonitor      *monitor,
+                         GFile             *file,
+                         GFile             *other_file,
+                         GFileMonitorEvent  event_type,
+                         ManetteMonitor    *self)
 {
   switch (event_type) {
   case G_FILE_MONITOR_EVENT_CREATED:
@@ -381,7 +381,7 @@ init_backend (ManetteMonitor *self)
   else
     g_signal_connect_object (self->monitor,
                              "changed",
-                             (GCallback) handle_file_monitor_callback,
+                             (GCallback) file_monitor_changed_cb,
                              self,
                              0);
 
@@ -392,7 +392,7 @@ init_backend (ManetteMonitor *self)
 #endif /* BACKEND */
 
 static void
-on_mappings_changed (ManetteMappingManager *mapping_manager,
+mappings_changed_cb (ManetteMappingManager *mapping_manager,
                      ManetteMonitor        *self)
 {
   ManetteMonitorIter *iterator;
@@ -427,7 +427,7 @@ manette_monitor_new (void)
 
   g_signal_connect (self->mapping_manager,
                     "changed",
-                    G_CALLBACK (on_mappings_changed),
+                    G_CALLBACK (mappings_changed_cb),
                     self);
 
   init_backend (self);
