@@ -196,10 +196,6 @@ udev_client_uevent_cb (GUdevClient    *sender,
                        GUdevDevice    *udev_device,
                        ManetteMonitor *self)
 {
-  ManetteMonitor *self;
-
-  self = MANETTE_MONITOR (data);
-
   g_return_if_fail (self != NULL);
   g_return_if_fail (action != NULL);
   g_return_if_fail (udev_device != NULL);
