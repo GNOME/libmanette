@@ -439,7 +439,7 @@ manette_monitor_new (void)
 /* Type */
 
 static void
-finalize (GObject *object)
+manette_monitor_finalize (GObject *object)
 {
   ManetteMonitor *self = MANETTE_MONITOR (object);
 
@@ -461,7 +461,7 @@ static void
 manette_monitor_class_init (ManetteMonitorClass *klass)
 {
   manette_monitor_parent_class = g_type_class_peek_parent (klass);
-  G_OBJECT_CLASS (klass)->finalize = finalize;
+  G_OBJECT_CLASS (klass)->finalize = manette_monitor_finalize;
 
   /**
    * ManetteMonitor::device-connected:
