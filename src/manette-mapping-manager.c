@@ -57,8 +57,7 @@ add_mapping (ManetteMappingManager *self,
   const gchar *platform;
   g_auto (GStrv) split = NULL;
 
-  g_return_if_fail (MANETTE_IS_MAPPING_MANAGER (self));
-  g_return_if_fail (mapping_string != NULL);
+  g_assert (mapping_string != NULL);
 
   if (mapping_string[0] == '\0' || mapping_string[0] == '#')
     return;
@@ -85,8 +84,7 @@ add_from_input_stream (ManetteMappingManager  *self,
   g_autoptr (GDataInputStream) data_stream = NULL;
   GError *inner_error = NULL;
 
-  g_return_if_fail (MANETTE_IS_MAPPING_MANAGER (self));
-  g_return_if_fail (input_stream != NULL);
+  g_assert (input_stream != NULL);
 
   data_stream = g_data_input_stream_new (input_stream);
   while (TRUE) {
@@ -117,8 +115,7 @@ add_from_file_uri (ManetteMappingManager  *self,
   g_autoptr (GFileInputStream) stream = NULL;
   GError *inner_error = NULL;
 
-  g_return_if_fail (MANETTE_IS_MAPPING_MANAGER (self));
-  g_return_if_fail (file_uri != NULL);
+  g_assert (file_uri != NULL);
 
   file = g_file_new_for_uri (file_uri);
   stream = g_file_read (file, NULL, &inner_error);
@@ -152,8 +149,6 @@ save_user_mappings (ManetteMappingManager  *self,
   g_autoptr (GFileOutputStream) stream = NULL;
   g_autoptr (GDataOutputStream) data_stream = NULL;
   GError *inner_error = NULL;
-
-  g_return_if_fail (MANETTE_IS_MAPPING_MANAGER (self));
 
   file = g_file_new_for_uri (self->user_mappings_uri);
   directory = g_file_get_parent (file);
@@ -200,8 +195,6 @@ user_mappings_changed_cb (GFileMonitor          *monitor,
                           ManetteMappingManager *self)
 {
   g_autoptr (GError) inner_error = NULL;
-
-  g_return_if_fail (MANETTE_IS_MAPPING_MANAGER (self));
 
   g_hash_table_remove_all (self->user_mappings);
 

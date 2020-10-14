@@ -156,7 +156,7 @@ is_game_controller (struct libevdev *device)
 {
   gboolean has_joystick_axes_or_buttons;
 
-  g_return_val_if_fail (device != NULL, FALSE);
+  g_assert (device != NULL);
 
   /* Same detection code as udev-builtin-input_id.c in systemd
    * joysticks don’t necessarily have buttons; e. g.
@@ -204,7 +204,7 @@ map_event (ManetteDevice *self,
 static void
 remove_event_source (ManetteDevice *self)
 {
-  g_return_if_fail (self != NULL);
+  g_assert (self != NULL);
 
   if (self->event_source_id < 0)
     return;
@@ -397,7 +397,7 @@ centered_absolute_value (struct input_absinfo *abs_info,
   gint64 value_centered;
   gint64 divisor;
 
-  g_return_val_if_fail (abs_info != NULL, 0.0);
+  g_assert (abs_info != NULL);
 
   /* Adapt the value and the maximum to a minimum of 0. */
   max_normalized = ((gint64) abs_info->maximum) - abs_info->minimum;
@@ -488,7 +488,7 @@ poll_events (GIOChannel    *source,
 {
   struct input_event evdev_event;
 
-  g_return_val_if_fail (MANETTE_IS_DEVICE (self), FALSE);
+  g_assert (MANETTE_IS_DEVICE (self));
 
   while (libevdev_has_event_pending (self->evdev_device))
     if (libevdev_next_event (self->evdev_device,

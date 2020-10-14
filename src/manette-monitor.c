@@ -99,8 +99,8 @@ add_device (ManetteMonitor *self,
   g_autoptr (ManetteDevice) device = NULL;
   g_autoptr (GError) error = NULL;
 
-  g_return_if_fail (self != NULL);
-  g_return_if_fail (filename != NULL);
+  g_assert (self != NULL);
+  g_assert (filename != NULL);
 
   if (g_hash_table_contains (self->devices, filename))
     return;
@@ -146,8 +146,8 @@ add_device_for_udev_device (ManetteMonitor *self,
 {
   const gchar *filename;
 
-  g_return_if_fail (self != NULL);
-  g_return_if_fail (udev_device != NULL);
+  g_assert (self != NULL);
+  g_assert (udev_device != NULL);
 
   filename = g_udev_device_get_device_file (udev_device);
   add_device (self, filename);
@@ -175,7 +175,7 @@ udev_device_property_is (GUdevDevice *udev_device,
 static gboolean
 udev_device_is_manette (GUdevDevice *udev_device)
 {
-  g_return_val_if_fail (udev_device != NULL, FALSE);
+  g_assert (udev_device != NULL);
 
   return udev_device_property_is (udev_device, "ID_INPUT_JOYSTICK", "1") ||
          udev_device_property_is (udev_device, ".INPUT_CLASS", "joystick");
@@ -187,9 +187,9 @@ udev_client_uevent_cb (GUdevClient    *sender,
                        GUdevDevice    *udev_device,
                        ManetteMonitor *self)
 {
-  g_return_if_fail (self != NULL);
-  g_return_if_fail (action != NULL);
-  g_return_if_fail (udev_device != NULL);
+  g_assert (action != NULL);
+  g_assert (udev_device != NULL);
+  g_assert (self != NULL);
 
   if (g_udev_device_get_device_file (udev_device) == NULL)
     return;
@@ -380,8 +380,6 @@ mappings_changed_cb (ManetteMappingManager *mapping_manager,
 {
   g_autoptr (ManetteMonitorIter) iterator = NULL;
   ManetteDevice *device = NULL;
-
-  g_return_if_fail (MANETTE_IS_MONITOR (self));
 
   iterator = manette_monitor_iterate (self);
   while (manette_monitor_iter_next (iterator, &device))
