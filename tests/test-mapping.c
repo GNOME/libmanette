@@ -28,13 +28,12 @@ static void
 test_null (void)
 {
   ManetteMapping *mapping;
-  GError *error = NULL;
+  g_autoptr (GError) error = NULL;
 
   mapping = manette_mapping_new (NULL, &error);
   g_assert_error (error,
                   MANETTE_MAPPING_ERROR,
                   MANETTE_MAPPING_ERROR_NOT_A_MAPPING);
-  g_error_free (error);
 
   g_assert_null (mapping);
 }
@@ -43,13 +42,12 @@ static void
 test_empty (void)
 {
   ManetteMapping *mapping;
-  GError *error = NULL;
+  g_autoptr (GError) error = NULL;
 
   mapping = manette_mapping_new ("", &error);
   g_assert_error (error,
                   MANETTE_MAPPING_ERROR,
                   MANETTE_MAPPING_ERROR_NOT_A_MAPPING);
-  g_error_free (error);
 
   g_assert_null (mapping);
 }
@@ -57,20 +55,19 @@ test_empty (void)
 static void
 test_valid (void)
 {
-  ManetteMapping *mapping;
+  g_autoptr (ManetteMapping) mapping = NULL;
   GError *error = NULL;
 
   mapping = manette_mapping_new (MAPPING_STEAM_CONTROLLER, &error);
   g_assert_no_error (error);
   g_assert_nonnull (mapping);
   g_assert_true (MANETTE_IS_MAPPING (mapping));
-  g_object_unref (mapping);
 }
 
 static void
 test_button_bindings (void)
 {
-  ManetteMapping *mapping;
+  g_autoptr (ManetteMapping) mapping = NULL;
   const ManetteMappingBinding * const *bindings;
   const ManetteMappingBinding *binding;
   GError *error = NULL;
@@ -147,14 +144,12 @@ test_button_bindings (void)
   g_assert_cmpint (binding->destination.type, ==, EV_KEY);
   g_assert_cmpint (binding->destination.code, ==, BTN_NORTH);
   g_assert_cmpint (binding->destination.range, ==, MANETTE_MAPPING_RANGE_FULL);
-
-  g_object_unref (mapping);
 }
 
 static void
 test_axis_bindings (void)
 {
-  ManetteMapping *mapping;
+  g_autoptr (ManetteMapping) mapping = NULL;
   const ManetteMappingBinding * const *bindings;
   const ManetteMappingBinding *binding;
   GError *error = NULL;
@@ -197,14 +192,12 @@ test_axis_bindings (void)
   g_assert_cmpint (binding->destination.type, ==, EV_ABS);
   g_assert_cmpint (binding->destination.code, ==, ABS_Y);
   g_assert_cmpint (binding->destination.range, ==, MANETTE_MAPPING_RANGE_FULL);
-
-  g_object_unref (mapping);
 }
 
 static void
 test_axis_range_bindings (void)
 {
-  ManetteMapping *mapping;
+  g_autoptr (ManetteMapping) mapping = NULL;
   const ManetteMappingBinding * const *bindings;
   const ManetteMappingBinding *binding;
   GError *error = NULL;
@@ -267,14 +260,12 @@ test_axis_range_bindings (void)
   g_assert_cmpint (binding->destination.type, ==, EV_ABS);
   g_assert_cmpint (binding->destination.code, ==, ABS_RY);
   g_assert_cmpint (binding->destination.range, ==, MANETTE_MAPPING_RANGE_POSITIVE);
-
-  g_object_unref (mapping);
 }
 
 static void
 test_hat_x_bindings (void)
 {
-  ManetteMapping *mapping;
+  g_autoptr (ManetteMapping) mapping = NULL;
   const ManetteMappingBinding * const *bindings;
   const ManetteMappingBinding *binding;
   GError *error = NULL;
@@ -310,14 +301,12 @@ test_hat_x_bindings (void)
   g_assert_cmpint (binding->destination.type, ==, EV_KEY);
   g_assert_cmpint (binding->destination.code, ==, BTN_DPAD_RIGHT);
   g_assert_cmpint (binding->destination.range, ==, MANETTE_MAPPING_RANGE_FULL);
-
-  g_object_unref (mapping);
 }
 
 static void
 test_hat_y_bindings (void)
 {
-  ManetteMapping *mapping;
+  g_autoptr (ManetteMapping) mapping = NULL;
   const ManetteMappingBinding * const *bindings;
   const ManetteMappingBinding *binding;
   GError *error = NULL;
@@ -353,14 +342,12 @@ test_hat_y_bindings (void)
   g_assert_cmpint (binding->destination.type, ==, EV_KEY);
   g_assert_cmpint (binding->destination.code, ==, BTN_DPAD_DOWN);
   g_assert_cmpint (binding->destination.range, ==, MANETTE_MAPPING_RANGE_FULL);
-
-  g_object_unref (mapping);
 }
 
 static void
 test_has_destination_input (void)
 {
-  ManetteMapping *mapping;
+  g_autoptr (ManetteMapping) mapping = NULL;
   GError *error = NULL;
 
   mapping = manette_mapping_new (MAPPING_STEAM_CONTROLLER, &error);
@@ -397,8 +384,6 @@ test_has_destination_input (void)
   g_assert_false (manette_mapping_has_destination_input (mapping, EV_ABS, ABS_RZ));
   g_assert_false (manette_mapping_has_destination_input (mapping, EV_ABS, ABS_HAT0X));
   g_assert_false (manette_mapping_has_destination_input (mapping, EV_ABS, ABS_HAT0Y));
-
-  g_object_unref (mapping);
 }
 
 int

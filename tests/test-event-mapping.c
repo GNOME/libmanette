@@ -45,13 +45,12 @@ static void
 test_null (void)
 {
   ManetteMapping *mapping;
-  GError *error = NULL;
+  g_autoptr (GError) error = NULL;
 
   mapping = manette_mapping_new (NULL, &error);
   g_assert_error (error,
                   MANETTE_MAPPING_ERROR,
                   MANETTE_MAPPING_ERROR_NOT_A_MAPPING);
-  g_error_free (error);
 
   g_assert_null (mapping);
 }
@@ -59,7 +58,7 @@ test_null (void)
 static void
 test_empty_mapping (void)
 {
-  ManetteMapping *mapping;
+  g_autoptr (ManetteMapping) mapping = NULL;
   ManetteEvent event = {};
   GSList *mapped_events;
   GError *error = NULL;
@@ -79,14 +78,12 @@ test_empty_mapping (void)
 
   mapped_events = manette_map_event (mapping, &event);
   g_assert_cmpint (g_slist_length (mapped_events), ==, 0);
-
-  g_object_unref (mapping);
 }
 
 static void
 test_button_mapping (void)
 {
-  ManetteMapping *mapping;
+  g_autoptr (ManetteMapping) mapping = NULL;
   ManetteEvent event = {};
   GSList *mapped_events;
   ManetteEvent *mapped_event;
@@ -113,14 +110,12 @@ test_button_mapping (void)
   g_assert_cmpuint (mapped_event->button.button, ==, BTN_SOUTH);
 
   g_slist_free_full (mapped_events, (GDestroyNotify) manette_event_free);
-
-  g_object_unref (mapping);
 }
 
 static void
 test_axis_mapping (void)
 {
-  ManetteMapping *mapping;
+  g_autoptr (ManetteMapping) mapping = NULL;
   ManetteEvent event = {};
   GSList *mapped_events;
   ManetteEvent *mapped_event;
@@ -163,14 +158,12 @@ test_axis_mapping (void)
   g_assert_cmpfloat (mapped_event->absolute.value, ==, 0);
 
   g_slist_free_full (mapped_events, (GDestroyNotify) manette_event_free);
-
-  g_object_unref (mapping);
 }
 
 static void
 test_hat_mapping (void)
 {
-  ManetteMapping *mapping;
+  g_autoptr (ManetteMapping) mapping = NULL;
   ManetteEvent event = {};
   GSList *mapped_events;
   ManetteEvent *mapped_event;
@@ -224,14 +217,12 @@ test_hat_mapping (void)
   g_assert_cmpuint (mapped_event->button.button, ==, BTN_DPAD_RIGHT);
 
   g_slist_free_full (mapped_events, (GDestroyNotify) manette_event_free);
-
-  g_object_unref (mapping);
 }
 
 static void
 test_axis_dpad_mapping (void)
 {
-  ManetteMapping *mapping;
+  g_autoptr (ManetteMapping) mapping = NULL;
   ManetteEvent event = {};
   GSList *mapped_events;
   ManetteEvent *mapped_event;
@@ -359,14 +350,12 @@ test_axis_dpad_mapping (void)
   g_assert_cmpuint (mapped_event->button.button, ==, BTN_DPAD_DOWN);
 
   g_slist_free_full (mapped_events, (GDestroyNotify) manette_event_free);
-
-  g_object_unref (mapping);
 }
 
 static void
 test_axis_trigger_mapping (void)
 {
-  ManetteMapping *mapping;
+  g_autoptr (ManetteMapping) mapping = NULL;
   ManetteEvent event = {};
   GSList *mapped_events;
   ManetteEvent *mapped_event;
@@ -448,8 +437,6 @@ test_axis_trigger_mapping (void)
   g_assert_cmpuint (mapped_event->button.button, ==, BTN_TR2);
 
   g_slist_free_full (mapped_events, (GDestroyNotify) manette_event_free);
-
-  g_object_unref (mapping);
 }
 
 int

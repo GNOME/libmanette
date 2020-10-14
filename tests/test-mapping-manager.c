@@ -21,12 +21,11 @@
 static void
 test_valid (void)
 {
-  ManetteMappingManager *mapping_manager;
+  g_autoptr (ManetteMappingManager) mapping_manager = NULL;
 
   mapping_manager = manette_mapping_manager_new ();
   g_assert_nonnull (mapping_manager);
   g_assert_true (MANETTE_IS_MAPPING_MANAGER (mapping_manager));
-  g_object_unref (mapping_manager);
 }
 
 int

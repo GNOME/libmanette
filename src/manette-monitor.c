@@ -75,9 +75,9 @@ load_mapping (ManetteMonitor *self,
               ManetteDevice  *device)
 {
   const gchar *guid;
-  gchar *mapping_string;
-  ManetteMapping *mapping = NULL;
-  GError *error = NULL;
+  g_autofree gchar *mapping_string = NULL;
+  g_autoptr (ManetteMapping) mapping = NULL;
+  g_autoptr (GError) error = NULL;
 
   guid = manette_device_get_guid (device);
   mapping_string = manette_mapping_manager_get_mapping (self->mapping_manager,
@@ -85,24 +85,19 @@ load_mapping (ManetteMonitor *self,
   mapping = manette_mapping_new (mapping_string, &error);
   if (G_UNLIKELY (error != NULL)) {
     g_debug ("%s", error->message);
-    g_clear_error (&error);
+
+    return;
   }
 
-  if (mapping_string != NULL)
-    g_free (mapping_string);
-
   manette_device_set_mapping (device, mapping);
-
-  if (mapping != NULL)
-    g_object_unref (mapping);
 }
 
 static void
 add_device (ManetteMonitor *self,
             const gchar    *filename)
 {
-  ManetteDevice *device;
-  GError *error = NULL;
+  g_autoptr (ManetteDevice) device = NULL;
+  g_autoptr (GError) error = NULL;
 
   g_return_if_fail (self != NULL);
   g_return_if_fail (filename != NULL);
@@ -115,9 +110,6 @@ add_device (ManetteMonitor *self,
     if (!g_error_matches (error, G_FILE_ERROR, G_FILE_ERROR_NXIO))
       g_debug ("Failed to open %s: %s", filename, error->message);
 
-    g_error_free (error);
-    error = NULL;
-
     return;
   }
 
@@ -127,7 +119,6 @@ add_device (ManetteMonitor *self,
                        g_strdup (filename),
                        g_object_ref (device));
   g_signal_emit (self, signals[SIG_DEVICE_CONNECTED], 0, device);
-  g_object_unref (device);
 }
 
 static void
@@ -339,26 +330,22 @@ file_monitor_changed_cb (GFileMonitor      *monitor,
 static void
 coldplug_devices (ManetteMonitor *self)
 {
-  GDir *dir;
+  g_autoptr (GDir) dir = NULL;
   const gchar *name = NULL;
-  gchar *filename;
-  GError *error = NULL;
+  g_autoptr (GError) error = NULL;
 
   dir = g_dir_open (INPUT_DIRECTORY, (guint) 0, &error);
   if (G_UNLIKELY (error != NULL)) {
     g_debug ("%s", error->message);
-    g_error_free (error);
 
     return;
   }
 
   while ((name = g_dir_read_name (dir)) != NULL) {
+    g_autofree gchar *filename = NULL;
     filename = g_build_filename (INPUT_DIRECTORY, name, NULL);
     add_device (self, filename);
-    g_free (filename);
   }
-
-  g_dir_close (dir);
 }
 
 static void
@@ -391,7 +378,7 @@ static void
 mappings_changed_cb (ManetteMappingManager *mapping_manager,
                      ManetteMonitor        *self)
 {
-  ManetteMonitorIter *iterator;
+  g_autoptr (ManetteMonitorIter) iterator = NULL;
   ManetteDevice *device = NULL;
 
   g_return_if_fail (MANETTE_IS_MONITOR (self));
@@ -399,7 +386,6 @@ mappings_changed_cb (ManetteMappingManager *mapping_manager,
   iterator = manette_monitor_iterate (self);
   while (manette_monitor_iter_next (iterator, &device))
     load_mapping (self, device);
-  manette_monitor_iter_free (iterator);
 }
 
 /* Public */

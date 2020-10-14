@@ -269,9 +269,9 @@ int
 main (int    argc,
       char **argv)
 {
-  GMainLoop *main_loop;
-  ManetteMonitor *monitor;
-  ManetteMonitorIter *iter;
+  g_autoptr (GMainLoop) main_loop = NULL;
+  g_autoptr (ManetteMonitor) monitor = NULL;
+  g_autoptr (ManetteMonitorIter) iter = NULL;
   ManetteDevice *device;
 
   monitor = manette_monitor_new ();
@@ -284,13 +284,9 @@ main (int    argc,
   iter = manette_monitor_iterate (monitor);
   while (manette_monitor_iter_next (iter, &device))
     listen_to_device (device);
-  manette_monitor_iter_free (iter);
 
   main_loop = g_main_loop_new (NULL, FALSE);
   g_main_loop_run (main_loop);
-
-  g_main_loop_unref (main_loop);
-  g_object_unref (monitor);
 
   return 0;
 }
