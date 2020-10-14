@@ -104,6 +104,8 @@ add_from_input_stream (ManetteMappingManager  *self,
     if (mapping_string == NULL)
       break;
 
+    g_strstrip (mapping_string);
+
     add_mapping (self, mapping_string, mappings);
   }
 }
