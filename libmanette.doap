@@ -8,9 +8,9 @@
   <name xml:lang="en">libmanette</name>
   <shortdesc xml:lang="en">A simple GObject game controller library</shortdesc>
   <description xml:lang="en">libmanette is a small GObject library giving you simple access to game controllers.</description>
-  <homepage rdf:resource="https://gitlab.gnome.org/aplazas/libmanette" />
+  <homepage rdf:resource="https://gitlab.gnome.org/GNOME/libmanette" />
   <download-page rdf:resource="http://download.gnome.org/sources/libmanette/" />
-  <bug-database rdf:resource="https://gitlab.gnome.org/aplazas/libmanette/issues" />
+  <bug-database rdf:resource="https://gitlab.gnome.org/GNOME/libmanette/issues" />
 
   <programming-language>C</programming-language>
 
