@@ -27,4 +27,6 @@ configure_file(
 
 subdir('src')
 subdir('tests')
-subdir('demos')
+if get_option('demos')
+  subdir('demos')
+endif
