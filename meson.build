@@ -26,7 +26,9 @@ configure_file(
 )
 
 subdir('src')
-subdir('tests')
+if get_option('build-tests')
+  subdir('tests')
+endif
 if get_option('demos')
   subdir('demos')
 endif
