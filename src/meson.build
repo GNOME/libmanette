@@ -47,7 +47,7 @@ configure_file(
   output: 'manette-version.h',
   configuration: version_conf,
   install: true,
-  install_dir: join_paths(get_option('includedir'), 'libmanette')
+  install_dir: get_option('includedir') / 'libmanette'
 )
 
 libmanette_c_args = [
@@ -145,5 +145,5 @@ pkg.generate(
       version: meson.project_version(),
       subdirs: 'libmanette',
      requires: 'glib-2.0',
-  install_dir: join_paths(get_option('libdir'), 'pkgconfig')
+  install_dir: get_option('libdir') / 'pkgconfig'
 )
