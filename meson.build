@@ -8,6 +8,9 @@ gnome = import('gnome')
 confinc = include_directories('.')
 srcinc = include_directories('src')
 
+libmanette_api_version = '0.2'
+libmanette_module = 'manette-' + libmanette_api_version
+
 glib_version = '>= 2.50'
 gudev_version = '>= 1.0'
 libevdev_version = '>= 1.4.5'

@@ -1,7 +1,3 @@
-api_version = '0.2'
-
-libmanette_module = 'manette-' + api_version
-
 libmanette_resources = gnome.compile_resources(
   'manette_resources',
   'libmanette.gresource.xml',
@@ -97,7 +93,7 @@ if get_option('introspection')
     extra_args: libmanette_gir_args,
     export_packages: libmanette_module,
     sources: libmanette_headers + libmanette_sources,
-    nsversion: api_version,
+    nsversion: libmanette_api_version,
     namespace: 'Manette',
     identifier_prefix: 'Manette',
     includes: libmanette_gir_includes,
