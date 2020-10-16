@@ -11,6 +11,7 @@ libexecdir = prefix / get_option('libexecdir')
 confinc = include_directories('.')
 srcinc = include_directories('src')
 
+libmanette_version = meson.project_version()
 libmanette_api_version = '0.2'
 libmanette_module = 'manette-' + libmanette_api_version
 
@@ -38,3 +39,25 @@ endif
 if get_option('demos')
   subdir('demos')
 endif
+
+summary = [
+  '',
+  '------',
+  'manette @0@ (@1@)'.format(libmanette_version, libmanette_api_version),
+  '',
+  '                   Demos: @0@'.format(get_option('demos')),
+  '             Build tests: @0@'.format(get_option('build-tests')),
+  '           Install tests: @0@'.format(get_option('install-tests')),
+  'Documentation and introspection:',
+  '           Introspection: @0@'.format(get_option('introspection')),
+  '           Vala bindings: @0@'.format(get_option('vapi')),
+  'Dependencies:',
+  '                   gudev: @0@'.format(get_option('gudev').enabled()),
+  'Directories:',
+  '                  prefix: @0@'.format(prefix),
+  '              libexecdir: @0@'.format(libexecdir),
+  '------',
+  ''
+]
+
+message('\n'.join(summary))
