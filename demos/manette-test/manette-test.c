@@ -81,7 +81,7 @@ get_hat_name (guint16 axis)
 }
 
 static void
-on_device_disconnected (ManetteDevice *emitter,
+device_disconnected_cb (ManetteDevice *emitter,
                         gpointer       user_data)
 {
   g_printf ("%s: disconnected\n", manette_device_get_name (emitter));
@@ -89,7 +89,7 @@ on_device_disconnected (ManetteDevice *emitter,
 }
 
 static void
-on_absolute_axis_event (ManetteDevice *emitter,
+absolute_axis_event_cb (ManetteDevice *emitter,
                         ManetteEvent  *event,
                         gpointer       user_data)
 {
@@ -113,7 +113,7 @@ on_absolute_axis_event (ManetteDevice *emitter,
 }
 
 static void
-on_button_press_event (ManetteDevice *emitter,
+button_press_event_cb (ManetteDevice *emitter,
                        ManetteEvent  *event,
                        gpointer       user_data)
 {
@@ -136,7 +136,7 @@ on_button_press_event (ManetteDevice *emitter,
 }
 
 static void
-on_button_release_event (ManetteDevice *emitter,
+button_release_event_cb (ManetteDevice *emitter,
                          ManetteEvent  *event,
                          gpointer       user_data)
 {
@@ -159,7 +159,7 @@ on_button_release_event (ManetteDevice *emitter,
 }
 
 static void
-on_hat_axis_event (ManetteDevice *emitter,
+hat_axis_event_cb (ManetteDevice *emitter,
                    ManetteEvent  *event,
                    gpointer       user_data)
 {
@@ -227,27 +227,27 @@ listen_to_device (ManetteDevice *device)
   g_printf ("%s: connected\n", manette_device_get_name (device));
   g_signal_connect_object (G_OBJECT (device),
                            "disconnected",
-                           (GCallback) on_device_disconnected,
+                           (GCallback) device_disconnected_cb,
                            NULL,
                            0);
   g_signal_connect_object (G_OBJECT (device),
                            "absolute-axis-event",
-                           (GCallback) on_absolute_axis_event,
+                           (GCallback) absolute_axis_event_cb,
                            NULL,
                            0);
   g_signal_connect_object (G_OBJECT (device),
                            "button-press-event",
-                           (GCallback) on_button_press_event,
+                           (GCallback) button_press_event_cb,
                            NULL,
                            0);
   g_signal_connect_object (G_OBJECT (device),
                            "button-release-event",
-                           (GCallback) on_button_release_event,
+                           (GCallback) button_release_event_cb,
                            NULL,
                            0);
   g_signal_connect_object (G_OBJECT (device),
                            "hat-axis-event",
-                           (GCallback) on_hat_axis_event,
+                           (GCallback) hat_axis_event_cb,
                            NULL,
                            0);
   if (manette_device_has_rumble (device)) {
@@ -258,7 +258,7 @@ listen_to_device (ManetteDevice *device)
 }
 
 static void
-on_device_connected (ManetteMonitor *emitter,
+device_connected_cb (ManetteMonitor *emitter,
                      ManetteDevice  *device,
                      gpointer        user_data)
 {
@@ -277,7 +277,7 @@ main (int    argc,
   monitor = manette_monitor_new ();
   g_signal_connect_object (G_OBJECT (monitor),
                            "device-connected",
-                           (GCallback) on_device_connected,
+                           (GCallback) device_connected_cb,
                            NULL,
                            0);
 
