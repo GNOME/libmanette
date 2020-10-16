@@ -1,20 +1,9 @@
-option (
-  'gudev',
-  type: 'feature',
-  description: 'Find devices via udev',
-  value: 'auto'
-)
+# Documentation and introspection
+option('introspection', type: 'boolean', value: 'true',
+  description : 'Build introspection data (requires gobject-introspection)')
+option('vapi', type: 'boolean', value: 'true',
+  description : 'Build Vala bindings (requires vapigen and introspection option)')
 
-option (
-  'introspection',
-  type: 'boolean',
-  description: 'Generate introspection data (requires gobject-introspection)',
-  value: true
-)
-
-option (
-  'vapi',
-  type: 'boolean',
-  description: 'Generate vapi data (requires vapigen and introspection option)',
-  value: true
-)
+# Dependencies
+option('gudev', type: 'feature', value: 'auto',
+  description : 'Enable finding devices via udev')
