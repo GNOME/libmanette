@@ -705,6 +705,7 @@ manette_device_get_vendor_id (ManetteDevice *self)
  * @self: a #ManetteDevice
  *
  * Gets the device's bustype ID.
+ * This corresponds to BUS_* as defined in linux/input-event-codes.h
  *
  * Returns: the bustype ID of @self
  */
