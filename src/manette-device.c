@@ -525,7 +525,7 @@ manette_device_new (const gchar  *filename,
   if (self->fd < 0) {
     g_set_error (error,
                  G_FILE_ERROR,
-                 G_FILE_ERROR_FAILED,
+                 g_file_error_from_errno (errno),
                  "Unable to open “%s”: %s",
                  filename,
                  strerror (errno));
@@ -537,7 +537,7 @@ manette_device_new (const gchar  *filename,
   if (libevdev_set_fd (self->evdev_device, self->fd) < 0) {
     g_set_error (error,
                  G_FILE_ERROR,
-                 G_FILE_ERROR_FAILED,
+                 g_file_error_from_errno (errno),
                  "Evdev is unable to open “%s”: %s",
                  filename,
                  strerror (errno));
