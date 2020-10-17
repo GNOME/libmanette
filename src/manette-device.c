@@ -548,7 +548,7 @@ manette_device_new (const gchar  *filename,
   if (!is_game_controller (self->evdev_device)) {
     g_set_error (error,
                  G_FILE_ERROR,
-                 G_FILE_ERROR_NXIO,
+                 G_FILE_ERROR_FAILED,
                  "“%s” is not a game controller.",
                  filename);
 
