@@ -672,7 +672,9 @@ manette_device_get_name (ManetteDevice *self)
  * manette_device_get_product_id:
  * @self: a #ManetteDevice
  *
- * Gets the device's product ID.
+ * Gets the device's product ID. You can find some product IDs defined in the
+ * kernel's code, in drivers/hid/hid-ids.h. Just note that there isn't all
+ * devices there, but sufficiently enough most of the time.
  *
  * Returns: the product ID of @self
  */
@@ -688,7 +690,9 @@ manette_device_get_product_id (ManetteDevice *self)
  * manette_device_get_vendor_id:
  * @self: a #ManetteDevice
  *
- * Gets the device's vendor ID.
+ * Gets the device's vendor ID. You can find some vendor IDs defined in the
+ * kernel's code, in drivers/hid/hid-ids.h. Just note that there isn't all
+ * devices there, but sufficiently enough most of the time.
  *
  * Returns: the vendor ID of @self
  */
