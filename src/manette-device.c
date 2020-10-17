@@ -521,12 +521,12 @@ manette_device_new (const gchar  *filename,
 
   // Initialize the axes buttons and hats.
   for (i = BTN_JOYSTICK; i < KEY_MAX; i++)
-    if (libevdev_has_event_code (self->evdev_device, (guint) EV_KEY, i)) {
+    if (has_key (self->evdev_device, i)) {
       self->key_map[i - BTN_MISC] = (guint8) buttons_number;
       buttons_number++;
     }
   for (i = BTN_MISC; i < BTN_JOYSTICK; i++)
-    if (libevdev_has_event_code (self->evdev_device, (guint) EV_KEY, i)) {
+    if (has_key (self->evdev_device, i)) {
       self->key_map[i - BTN_MISC] = (guint8) buttons_number;
       buttons_number++;
     }
@@ -540,7 +540,7 @@ manette_device_new (const gchar  *filename,
 
       continue;
     }
-    if (libevdev_has_event_code (self->evdev_device, (guint) EV_ABS, i)) {
+    if (has_abs (self->evdev_device, i)) {
       const struct input_absinfo *absinfo;
 
       absinfo = libevdev_get_abs_info (self->evdev_device, i);
