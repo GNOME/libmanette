@@ -67,9 +67,6 @@ enum {
 
 static guint signals[N_SIGNALS];
 
-#define GUID_DATA_LENGTH 8
-#define GUID_STRING_LENGTH 32 // (GUID_DATA_LENGTH * sizeof (guint16))
-
 typedef struct {
   ManetteDevice *self;
   guint          signal_id;
@@ -336,54 +333,14 @@ manette_device_init (ManetteDevice *self)
   self->rumble_effect.id = -1;
 }
 
-static gchar
-guint16_get_hex (guint16 value,
-                 guint8  nibble)
-{
-  static const gchar hex_to_ascii_map[] = "0123456789abcdef";
-
-  g_assert (nibble < 4);
-
-  return hex_to_ascii_map[((value >> (4 * nibble)) & 0xf)];
-}
-
-static gchar *
-guint16s_to_hex_string (guint16 *data)
-{
-  gchar *result;
-  gint data_i;
-  gint result_i;
-  guint16 element;
-
-  result = g_malloc (GUID_STRING_LENGTH + 1);
-  result[GUID_STRING_LENGTH] = '\0';
-  for (data_i = 0, result_i = 0; data_i < GUID_DATA_LENGTH; data_i++) {
-    element = data[data_i];
-    result[result_i++] = guint16_get_hex (element, 1);
-    result[result_i++] = guint16_get_hex (element, 0);
-    result[result_i++] = guint16_get_hex (element, 3);
-    result[result_i++] = guint16_get_hex (element, 2);
-  }
-
-  return result;
-}
-
-// FIXME What about using 4 well crafted %x?
 static gchar *
 compute_guid_string (struct libevdev *device)
 {
-  guint16 guid_array[GUID_DATA_LENGTH] = { 0 };
-
-  guid_array[0] = (guint16) GINT_TO_LE (libevdev_get_id_bustype (device));
-  guid_array[1] = 0;
-  guid_array[2] = (guint16) GINT_TO_LE (libevdev_get_id_vendor (device));
-  guid_array[3] = 0;
-  guid_array[4] = (guint16) GINT_TO_LE (libevdev_get_id_product (device));
-  guid_array[5] = 0;
-  guid_array[6] = (guint16) GINT_TO_LE (libevdev_get_id_version (device));
-  guid_array[7] = 0;
-
-  return guint16s_to_hex_string (guid_array);
+  return g_strdup_printf ("%08x%08x%08x%08x",
+                          GINT_TO_BE (libevdev_get_id_bustype (device)),
+                          GINT_TO_BE (libevdev_get_id_vendor (device)),
+                          GINT_TO_BE (libevdev_get_id_product (device)),
+                          GINT_TO_BE (libevdev_get_id_version (device)));
 }
 
 static gdouble
