@@ -51,7 +51,6 @@ struct _ManetteDevice
   ManetteMapping *mapping;
 
   struct ff_effect rumble_effect;
-  gint16 force_feedback_id;
 };
 
 G_DEFINE_TYPE (ManetteDevice, manette_device, G_TYPE_OBJECT)
