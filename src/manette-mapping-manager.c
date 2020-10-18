@@ -197,7 +197,7 @@ user_mappings_changed_cb (GFileMonitor          *monitor,
                           GFileMonitorEvent      event_type,
                           ManetteMappingManager *self)
 {
-  g_autoptr (GError) inner_error = NULL;
+  g_autoptr (GError) error = NULL;
 
   g_hash_table_remove_all (self->user_mappings);
 
@@ -207,11 +207,11 @@ user_mappings_changed_cb (GFileMonitor          *monitor,
     return;
   }
 
-  add_from_file_uri (self, self->user_mappings_uri, self->user_mappings, &inner_error);
-  if (G_UNLIKELY (inner_error != NULL)) {
+  add_from_file_uri (self, self->user_mappings_uri, self->user_mappings, &error);
+  if (G_UNLIKELY (error != NULL)) {
     g_debug ("ManetteMappingManager: Can’t add mappings from %s: %s",
              self->user_mappings_uri,
-             inner_error->message);
+             error->message);
   }
 
   g_signal_emit (self, signals[SIG_CHANGED], 0);
@@ -225,7 +225,7 @@ manette_mapping_manager_new (void)
   ManetteMappingManager *self = NULL;
   g_autofree gchar *path = NULL;
   g_autoptr (GFile) user_mappings_file = NULL;
-  GError *inner_error = NULL;
+  GError *error = NULL;
 
   self = (ManetteMappingManager*) g_object_new (MANETTE_TYPE_MAPPING_MANAGER, NULL);
 
@@ -237,21 +237,21 @@ manette_mapping_manager_new (void)
   if (self->user_mappings == NULL)
     self->user_mappings = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
 
-  add_from_file_uri (self, MAPPING_RESOURCE_URI, self->default_mappings, &inner_error);
-  if (G_UNLIKELY (inner_error != NULL)) {
+  add_from_file_uri (self, MAPPING_RESOURCE_URI, self->default_mappings, &error);
+  if (G_UNLIKELY (error != NULL)) {
     g_critical ("ManetteMappingManager: Can’t add mappings from %s: %s",
                 MAPPING_RESOURCE_URI,
-                inner_error->message);
-    g_clear_error (&inner_error);
+                error->message);
+    g_clear_error (&error);
   }
 
   path = g_build_filename (g_get_user_config_dir (), CONFIG_DIR, MAPPING_CONFIG_FILE, NULL);
 
-  self->user_mappings_uri = g_filename_to_uri (path, NULL, &inner_error);
-  if (G_UNLIKELY (inner_error != NULL)) {
+  self->user_mappings_uri = g_filename_to_uri (path, NULL, &error);
+  if (G_UNLIKELY (error != NULL)) {
     g_debug ("ManetteMappingManager: Can't build path for user config: %s",
-             inner_error->message);
-    g_clear_error (&inner_error);
+             error->message);
+    g_clear_error (&error);
 
     return self;
   }
@@ -260,12 +260,12 @@ manette_mapping_manager_new (void)
   self->user_mappings_monitor = g_file_monitor_file (user_mappings_file,
                                                      G_FILE_MONITOR_NONE,
                                                      NULL,
-                                                     &inner_error);
-  if (G_UNLIKELY (inner_error != NULL)) {
+                                                     &error);
+  if (G_UNLIKELY (error != NULL)) {
     g_debug ("ManetteMappingManager: Can’t monitor mappings from %s: %s",
              self->user_mappings_uri,
-             inner_error->message);
-    g_clear_error (&inner_error);
+             error->message);
+    g_clear_error (&error);
   }
 
   g_signal_connect (self->user_mappings_monitor,
@@ -273,12 +273,12 @@ manette_mapping_manager_new (void)
                     G_CALLBACK (user_mappings_changed_cb),
                     self);
 
-  add_from_file_uri (self, self->user_mappings_uri, self->user_mappings, &inner_error);
-  if (G_UNLIKELY (inner_error != NULL)) {
+  add_from_file_uri (self, self->user_mappings_uri, self->user_mappings, &error);
+  if (G_UNLIKELY (error != NULL)) {
     g_debug ("ManetteMappingManager: Can’t add mappings from %s: %s",
              self->user_mappings_uri,
-             inner_error->message);
-    g_clear_error (&inner_error);
+             error->message);
+    g_clear_error (&error);
   }
 
   return self;
@@ -344,7 +344,7 @@ manette_mapping_manager_save_mapping (ManetteMappingManager *self,
                                       const gchar           *name,
                                       const gchar           *mapping)
 {
-  g_autoptr (GError) inner_error = NULL;
+  g_autoptr (GError) error = NULL;
 
   g_return_if_fail (MANETTE_IS_MAPPING_MANAGER (self));
   g_return_if_fail (guid != NULL);
@@ -354,16 +354,16 @@ manette_mapping_manager_save_mapping (ManetteMappingManager *self,
   g_hash_table_insert (self->user_mappings, g_strdup (guid), g_strdup (mapping));
   g_hash_table_insert (self->names, g_strdup (guid), g_strdup (name));
 
-  save_user_mappings (self, &inner_error);
-  if (G_UNLIKELY (inner_error != NULL))
-    g_critical ("ManetteMappingManager: Can’t save user mappings: %s", inner_error->message);
+  save_user_mappings (self, &error);
+  if (G_UNLIKELY (error != NULL))
+    g_critical ("ManetteMappingManager: Can’t save user mappings: %s", error->message);
 }
 
 void
 manette_mapping_manager_delete_mapping (ManetteMappingManager *self,
                                         const gchar           *guid)
 {
-  g_autoptr (GError) inner_error = NULL;
+  g_autoptr (GError) error = NULL;
 
   g_return_if_fail (MANETTE_IS_MAPPING_MANAGER (self));
   g_return_if_fail (guid != NULL);
@@ -371,9 +371,9 @@ manette_mapping_manager_delete_mapping (ManetteMappingManager *self,
   g_hash_table_remove (self->user_mappings, guid);
   g_hash_table_remove (self->names, guid);
 
-  save_user_mappings (self, &inner_error);
-  if (G_UNLIKELY (inner_error != NULL))
-    g_critical ("ManetteMappingManager: Can’t save user mappings: %s", inner_error->message);
+  save_user_mappings (self, &error);
+  if (G_UNLIKELY (error != NULL))
+    g_critical ("ManetteMappingManager: Can’t save user mappings: %s", error->message);
 }
 
 /* Type */
