@@ -115,9 +115,9 @@ manette_event_get_time (const ManetteEvent *self)
  * manette_event_get_device:
  * @self: a #ManetteEvent
  *
- * Gets the #ManetteDevice associated with the %self.
+ * Gets the #ManetteDevice associated with the @self.
  *
- * Returns: (transfer none): the #ManetteDevice associated with the %self
+ * Returns: (transfer none): the #ManetteDevice associated with the @self
  */
 ManetteDevice *
 manette_event_get_device (const ManetteEvent *self)
@@ -131,9 +131,9 @@ manette_event_get_device (const ManetteEvent *self)
  * manette_event_get_hardware_type:
  * @self: a #ManetteEvent
  *
- * Gets the hardware type of %self.
+ * Gets the hardware type of @self.
  *
- * Returns: the hardware type of %self
+ * Returns: the hardware type of @self
  */
 guint16
 manette_event_get_hardware_type (const ManetteEvent *self)
@@ -147,9 +147,9 @@ manette_event_get_hardware_type (const ManetteEvent *self)
  * manette_event_get_hardware_code:
  * @self: a #ManetteEvent
  *
- * Gets the hardware code of %self.
+ * Gets the hardware code of @self.
  *
- * Returns: the hardware code of %self
+ * Returns: the hardware code of @self
  */
 guint16
 manette_event_get_hardware_code (const ManetteEvent *self)
@@ -163,9 +163,9 @@ manette_event_get_hardware_code (const ManetteEvent *self)
  * manette_event_get_hardware_value:
  * @self: a #ManetteEvent
  *
- * Gets the hardware value of %self.
+ * Gets the hardware value of @self.
  *
- * Returns: the hardware value of %self
+ * Returns: the hardware value of @self
  */
 guint16
 manette_event_get_hardware_value (const ManetteEvent *self)
@@ -179,9 +179,9 @@ manette_event_get_hardware_value (const ManetteEvent *self)
  * manette_event_get_hardware_index:
  * @self: a #ManetteEvent
  *
- * Gets the hardware index of %self.
+ * Gets the hardware index of @self.
  *
- * Returns: the hardware index of %self
+ * Returns: the hardware index of @self
  */
 guint16
 manette_event_get_hardware_index (const ManetteEvent *self)
@@ -196,7 +196,7 @@ manette_event_get_hardware_index (const ManetteEvent *self)
  * @self: a #ManetteEvent
  * @button: (out): return location for the button
  *
- * Gets the button of %self, if any.
+ * Gets the button of @self, if any.
  *
  * Returns: whether the button was retrieved
  */
@@ -224,7 +224,7 @@ manette_event_get_button (const ManetteEvent *self,
  * @axis: (out): return location for the axis
  * @value: (out): return location for the axis
  *
- * Gets the axis of %self, if any.
+ * Gets the axis of @self, if any.
  *
  * Returns: whether the axis was retrieved
  */
@@ -254,7 +254,7 @@ manette_event_get_absolute (const ManetteEvent *self,
  * @axis: (out): return location for the hat
  * @value: (out): return location for the hat
  *
- * Gets the hat of %self, if any.
+ * Gets the hat of @self, if any.
  *
  * Returns: whether the hat was retrieved
  */
