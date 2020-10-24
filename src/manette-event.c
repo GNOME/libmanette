@@ -40,7 +40,7 @@ manette_event_new (void)
 }
 
 /**
- * manette_event_copy: (skip):
+ * manette_event_copy: (skip)
  * @self: a #ManetteEvent
  *
  * Creates a copy of a #ManetteEvent.
@@ -63,7 +63,7 @@ manette_event_copy (const ManetteEvent *self)
 }
 
 /**
- * manette_event_free: (skip):
+ * manette_event_free: (skip)
  * @self: a #ManetteEvent
  *
  * Frees @self.

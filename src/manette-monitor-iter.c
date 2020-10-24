@@ -48,7 +48,7 @@ manette_monitor_iter_new (GHashTable *devices)
 }
 
 /**
- * manette_monitor_iter_copy: (skip):
+ * manette_monitor_iter_copy: (skip)
  * @self: a #ManetteMonitorIter
  *
  * Creates a copy of a #ManetteMonitorIter.
@@ -73,7 +73,7 @@ manette_monitor_iter_copy (ManetteMonitorIter *self)
 /* Public */
 
 /**
- * manette_monitor_iter_free: (skip):
+ * manette_monitor_iter_free: (skip)
  * @self: a #ManetteMonitorIter
  *
  * Frees a #ManetteMonitorIter.

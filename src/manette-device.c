@@ -497,7 +497,7 @@ poll_events (GIOChannel   *source,
 }
 
 /**
- * manette_device_new: (skip):
+ * manette_device_new: (skip)
  * @filename: the filename of the device
  * @error: return location for a #GError, or %NULL
  *
