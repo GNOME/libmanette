@@ -1,0 +1,12 @@
+ent_conf = configuration_data()
+ent_conf.set('PACKAGE', 'libmanette')
+ent_conf.set('PACKAGE_BUGREPORT', 'https://gitlab.gnome.org/GNOME/libmanette/issues')
+ent_conf.set('PACKAGE_NAME', 'libmanette')
+ent_conf.set('PACKAGE_STRING', 'libmanette')
+ent_conf.set('PACKAGE_TARNAME', 'libmanette-' + libmanette_version)
+ent_conf.set('PACKAGE_URL', 'https://gitlab.gnome.org/GNOME/libmanette')
+ent_conf.set('PACKAGE_VERSION', libmanette_version)
+ent_conf.set('PACKAGE_API_VERSION', libmanette_api_version)
+ent_conf.set('PACKAGE_API_NAME', libmanette_module)
+configure_file(input: 'gtkdocentities.ent.in', output: 'gtkdocentities.ent', configuration: ent_conf)
+

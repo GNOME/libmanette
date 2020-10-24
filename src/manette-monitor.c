@@ -16,6 +16,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/**
+ * SECTION:manette-monitor
+ * @short_description: An object monitoring the availability of devices
+ * @title: ManetteMonitor
+ * @See_also: #ManetteDevice
+ */
+
 #include "manette-monitor.h"
 
 #include <glib.h>

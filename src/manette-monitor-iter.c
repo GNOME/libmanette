@@ -16,6 +16,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/**
+ * SECTION:manette-monitor-iter
+ * @short_description: An object iterating over the available devices
+ * @title: ManetteMonitorIter
+ * @See_also: #ManetteDevice, #ManetteMonitor
+ */
+
 #include "manette-monitor-iter-private.h"
 
 struct _ManetteMonitorIter

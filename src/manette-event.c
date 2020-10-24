@@ -16,6 +16,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/**
+ * SECTION:manette-event
+ * @short_description: An event emitted by a device
+ * @title: ManetteEvent
+ * @See_also: #ManetteDevice
+ */
+
 #include "manette-event-private.h"
 
 #include <string.h>

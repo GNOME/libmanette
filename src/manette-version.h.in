@@ -16,20 +16,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/**
+ * SECTION:manette-version
+ * @short_description: Version checking
+ * @title: Version
+ *
+ * libmanette provides macros to check the version of the library
+ * at compile-time.
+ */
+
 #ifndef LIBMANETTE_VERSION_H
 #define LIBMANETTE_VERSION_H
 
 #if !defined(__MANETTE_INSIDE__) && !defined(MANETTE_COMPILATION)
 # error "Only <libmanette.h> can be included directly."
 #endif
-
-/**
- * SECTION:libmanetteversion
- * @short_description: libmanette version checking
- *
- * libmanette provides macros to check the version of the library
- * at compile-time
- */
 
 /**
  * LIBMANETTE_MAJOR_VERSION:

@@ -36,6 +36,9 @@ subdir('src')
 if get_option('build-tests')
   subdir('tests')
 endif
+if get_option('doc')
+  subdir('doc')
+endif
 if get_option('demos')
   subdir('demos')
 endif
@@ -49,6 +52,7 @@ summary = [
   '             Build tests: @0@'.format(get_option('build-tests')),
   '           Install tests: @0@'.format(get_option('install-tests')),
   'Documentation and introspection:',
+  '           Documentation: @0@'.format(get_option('doc')),
   '           Introspection: @0@'.format(get_option('introspection')),
   '           Vala bindings: @0@'.format(get_option('vapi')),
   'Dependencies:',

@@ -16,6 +16,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/**
+ * SECTION:manette-device
+ * @short_description: An object representing a physical gamepad
+ * @title: ManetteDevice
+ * @See_also: #ManetteMonitor
+ */
+
 #include "manette-device-private.h"
 
 #include <errno.h>
