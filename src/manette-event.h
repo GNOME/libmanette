@@ -41,6 +41,7 @@ typedef union  _ManetteEvent ManetteEvent;
  * @MANETTE_EVENT_BUTTON_RELEASE: a button has been released
  * @MANETTE_EVENT_ABSOLUTE: an absolute axis has been moved
  * @MANETTE_EVENT_HAT: a hat axis has been moved
+ * @MANETTE_LAST_EVENT: the number of event types
  *
  * Specifies the type of the event.
  */
