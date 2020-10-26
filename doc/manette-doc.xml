@@ -36,10 +36,6 @@
 
     <xi:include href="xml/manette-device.xml"/>
     <xi:include href="xml/manette-event.xml"/>
-    <!-- <xi:include href="xml/manette-event-mapping.xml"/> -->
-    <!-- <xi:include href="xml/manette-mapping.xml"/> -->
-    <!-- <xi:include href="xml/manette-mapping-error.xml"/> -->
-    <!-- <xi:include href="xml/manette-mapping-manager.xml"/> -->
     <xi:include href="xml/manette-monitor.xml"/>
     <xi:include href="xml/manette-monitor-iter.xml"/>
   </chapter>
