@@ -13,6 +13,26 @@
       <para>
         This document is the API reference for libmanette &package_version;.
       </para>
+      <para>
+        <ulink type="http" url="&package_url;">libmanette</ulink> is a small
+        GObject library giving you simple access to game controllers.
+      </para>
+      <para>
+        This library is intended for software needing a painless access to game
+        controllers from any programming language and with little dependencies.
+      </para>
+      <para>
+        It supports the de-facto standard gamepads as defined by the
+        <ulink type="http" url="https://www.w3.org/TR/gamepad/">W3C standard Gamepad specification</ulink>
+        or as implemented by the
+        <ulink type="http" url="https://wiki.libsdl.org/CategoryGameController">SDL GameController</ulink>.
+        More game controller kinds could be supported in the future if needed.
+        Mapping of the devices is handled transparently and internally by the
+        library using the popular SDL mapping string format.
+      </para>
+      <para>
+        The API is inspired by the device and event handling of GDK, so anybody
+        used to GTK+ should feel right at home.
       </para>
       <para>
         If you find any issues in this API reference, please report it using
