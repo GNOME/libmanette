@@ -8,13 +8,11 @@
 ]>
 <book id="index">
   <bookinfo>
-    <title>RetroGTK Reference Manual</title>
+    <title>libmanette Reference Manual</title>
     <releaseinfo>
-      <para>This document is the API reference for RetroGTK &package_version;.</para>
       <para>
-        <ulink type="http" url="&package_url;">RetroGTK</ulink> is a
-        <ulink type="http" url="https://www.libretro.com/">Libretro</ulink>
-        frontend as a library.
+        This document is the API reference for libmanette &package_version;.
+      </para>
       </para>
       <para>
         If you find any issues in this API reference, please report it using
@@ -23,13 +21,13 @@
     </releaseinfo>
 
     <copyright>
-      <year>2014-2020</year>
+      <year>2017-2020</year>
       <holder>Adrien Plazas</holder>
     </copyright>
   </bookinfo>
 
   <chapter id="overview">
-    <title>RetroGTK Overview</title>
+    <title>libmanette Overview</title>
   </chapter>
 
   <chapter id="core-api">
