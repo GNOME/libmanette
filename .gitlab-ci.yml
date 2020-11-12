@@ -5,7 +5,6 @@ stages:
   - build
 
 variables:
-  BUNDLE: 'manette-test-git.flatpak'
   FLATPAK_BUILD_DIR: app
   SHARED_MESON_ARGS: >-
     --buildtype=release
