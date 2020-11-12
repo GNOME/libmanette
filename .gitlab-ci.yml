@@ -3,6 +3,7 @@ include: https://gitlab.gnome.org/GNOME/citemplates/raw/master/flatpak/flatpak_c
 stages:
   - pre
   - build
+  - publish
 
 variables:
   FLATPAK_BUILD_DIR: app
@@ -42,3 +43,36 @@ unit-tests:
   script:
     - flatpak build ${FLATPAK_BUILD_DIR} meson --prefix=/app ${SHARED_MESON_ARGS} ${MESON_ARGS} _build
     - flatpak build ${FLATPAK_BUILD_DIR} ninja -C _build test
+
+doc:
+  image: registry.gitlab.gnome.org/gnome/gnome-runtime-images/gnome:master
+  stage: build
+  dependencies:
+    - dependencies
+  tags:
+    - flatpak
+  variables:
+    MESON_ARGS: >-
+      -Dbuild-tests=false
+      -Ddoc=true
+      -Dgudev=disabled
+      -Dintrospection=false
+  script:
+    - flatpak build ${FLATPAK_BUILD_DIR} meson --prefix=/app ${SHARED_MESON_ARGS} ${MESON_ARGS} _build
+    - flatpak build ${FLATPAK_BUILD_DIR} ninja -C _build manette-doc
+    - mv _build/doc/html/ _doc/
+  artifacts:
+    paths:
+      - _doc
+
+pages:
+  stage: publish
+  dependencies:
+    - doc
+  script:
+    - mv _doc/ public/
+  artifacts:
+    paths:
+      - public
+  only:
+    - master
