@@ -39,7 +39,7 @@ flatpak:
     APP_ID: 'org.gnome.Manette.Test'
     GIT_SUBMODULE_STRATEGY: recursive
 
-fedora:
+unit-tests:
   image: fedora:32
   stage: build
   before_script:
