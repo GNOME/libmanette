@@ -7,7 +7,7 @@ stages:
 variables:
   BUNDLE: 'manette-test-git.flatpak'
 
-check-api-visibility:
+lint:
   stage: pre
   script:
     - tools/check-api-visibility.sh
