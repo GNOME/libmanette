@@ -30,15 +30,6 @@ dependencies:
     paths:
       - ${FLATPAK_BUILD_DIR}
 
-flatpak:
-  extends: '.flatpak'
-  variables:
-    MANIFEST_PATH: 'demos/manette-test/org.gnome.Manette.Test.json'
-    RUNTIME_REPO: 'https://nightly.gnome.org/gnome-nightly.flatpakrepo'
-    FLATPAK_MODULE: 'libmanette'
-    APP_ID: 'org.gnome.Manette.Test'
-    GIT_SUBMODULE_STRATEGY: recursive
-
 unit-tests:
   image: registry.gitlab.gnome.org/gnome/gnome-runtime-images/gnome:master
   stage: build
