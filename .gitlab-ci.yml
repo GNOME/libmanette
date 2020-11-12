@@ -2,7 +2,7 @@ include: 'https://gitlab.gnome.org/GNOME/citemplates/raw/master/flatpak/flatpak_
 
 stages:
   - pre
-  - test
+  - build
 
 variables:
   BUNDLE: 'manette-test-git.flatpak'
@@ -23,7 +23,7 @@ flatpak:
 
 fedora:
   image: fedora:32
-  stage: test
+  stage: build
   before_script:
     - dnf install -y gcc glib2-devel gobject-introspection-devel libevdev-devel libgudev-devel meson vala
   script:
