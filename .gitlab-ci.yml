@@ -1,13 +1,14 @@
 include: 'https://gitlab.gnome.org/GNOME/citemplates/raw/master/flatpak/flatpak_ci_initiative.yml'
 
 stages:
+  - pre
   - test
 
 variables:
   BUNDLE: 'manette-test-git.flatpak'
 
 check-api-visibility:
-  stage: test
+  stage: pre
   script:
     - tools/check-api-visibility.sh
 
