@@ -40,11 +40,15 @@ flatpak:
     GIT_SUBMODULE_STRATEGY: recursive
 
 unit-tests:
-  image: fedora:32
+  image: registry.gitlab.gnome.org/gnome/gnome-runtime-images/gnome:master
   stage: build
-  before_script:
-    - dnf install -y gcc glib2-devel gobject-introspection-devel libevdev-devel libgudev-devel meson vala
+  dependencies:
+    - dependencies
+  tags:
+    - flatpak
+  variables:
+    MESON_ARGS: >-
+      -Dgudev=disabled
   script:
-    - meson _build
-    - ninja -C _build
-    - ninja -C _build test
+    - flatpak build ${FLATPAK_BUILD_DIR} meson --prefix=/app ${SHARED_MESON_ARGS} ${MESON_ARGS} _build
+    - flatpak build ${FLATPAK_BUILD_DIR} ninja -C _build test
