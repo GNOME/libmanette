@@ -8,10 +8,10 @@
 ]>
 <book id="index">
   <bookinfo>
-    <title>libmanette Reference Manual</title>
+    <title>&package_name; Reference Manual</title>
     <releaseinfo>
       <para>
-        This document is the API reference for libmanette &package_version;.
+        This document is the API reference for &package_name; &package_version;.
         The latest version can be found online at
         <ulink role="online-location" url="https://gnome.pages.gitlab.gnome.org/libmanette/">https://gnome.pages.gitlab.gnome.org/libmanette/</ulink>.
       </para>
@@ -28,7 +28,7 @@
   </bookinfo>
 
   <chapter id="overview">
-    <title>libmanette Overview</title>
+    <title>&package_name; Overview</title>
 
     <para>
       &package_name;, the simple GObject game controller library.
