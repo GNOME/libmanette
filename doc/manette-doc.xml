@@ -12,6 +12,8 @@
     <releaseinfo>
       <para>
         This document is the API reference for libmanette &package_version;.
+        The latest version can be found online at
+        <ulink role="online-location" url="https://gnome.pages.gitlab.gnome.org/libmanette/">https://gnome.pages.gitlab.gnome.org/libmanette/</ulink>.
       </para>
       <para>
         <ulink type="http" url="&package_url;">libmanette</ulink> is a small
