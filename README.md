@@ -1,21 +1,19 @@
 # libmanette
 
-libmanette is a small GObject library giving you simple access to game
-controllers.
+The simple GObject game controller library.
 
-This library is intended for software needing a painless access to game
-controllers from any programming language and with little dependencies.
+libmanette offers painless access to game controllers, from any programming
+language and with little dependencies. 
 
-It supports the de-facto standard gamepads as defined by the
-[W3C standard Gamepad specification](https://www.w3.org/TR/gamepad/) or as
+It supports the de-facto standard gamepad, as defined by the
+[W3C standard gamepad specification](https://www.w3.org/TR/gamepad/) or as
 implemented by the
-[SDL GameController](https://wiki.libsdl.org/CategoryGameController). More game
-controller kinds could be supported in the future if needed. Mapping of the
-devices is handled transparently and internally by the library using the popular
-SDL mapping string format.
+[SDL GameController](https://wiki.libsdl.org/CategoryGameController).
+Convertion of raw gamepad events into usable ones is handled transparently using
+an embedded library of mappings in the popular SDL mapping string format.
 
 The API is inspired by the device and event handling of GDK, so anybody used to
-GTK+ should feel right at home.
+[GTK](https://gtk.org/) should feel right at home.
 
 ## Building and Installing the Library
 
