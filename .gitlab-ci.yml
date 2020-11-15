@@ -64,15 +64,3 @@ doc:
   artifacts:
     paths:
       - _doc
-
-pages:
-  stage: publish
-  dependencies:
-    - doc
-  script:
-    - mv _doc/ public/
-  artifacts:
-    paths:
-      - public
-  only:
-    - master
