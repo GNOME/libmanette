@@ -6,8 +6,8 @@
          xmlns="http://usefulinc.com/ns/doap#">
 
   <name xml:lang="en">libmanette</name>
-  <shortdesc xml:lang="en">A simple GObject game controller library</shortdesc>
-  <description xml:lang="en">libmanette is a small GObject library giving you simple access to game controllers.</description>
+  <shortdesc xml:lang="en">The simple GObject game controller library</shortdesc>
+  <description xml:lang="en">libmanette offers painless access to game controllers, from any programming language and with little dependencies.</description>
   <homepage rdf:resource="https://gitlab.gnome.org/GNOME/libmanette" />
   <download-page rdf:resource="http://download.gnome.org/sources/libmanette/" />
   <bug-database rdf:resource="https://gitlab.gnome.org/GNOME/libmanette/issues" />
