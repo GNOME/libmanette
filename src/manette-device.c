@@ -746,10 +746,7 @@ manette_device_set_mapping (ManetteDevice  *self,
 {
   g_return_if_fail (MANETTE_IS_DEVICE (self));
 
-  if (self->mapping != NULL)
-    g_object_unref (self->mapping);
-
-  self->mapping = mapping ? g_object_ref (mapping) : NULL;
+  g_set_object (&self->mapping, mapping);
 }
 
 /**
