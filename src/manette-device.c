@@ -822,9 +822,9 @@ manette_device_remove_user_mapping (ManetteDevice *self)
  * manette_device_has_rumble:
  * @self: a #ManetteDevice
  *
- * Checks whether device @self has a rumble motor.
+ * Gets whether @self supports rumble.
  *
- * Returns: whether device @self has a rumble motor.
+ * Returns: whether @self supports rumble
  */
 gboolean
 manette_device_has_rumble (ManetteDevice *self)
@@ -845,14 +845,16 @@ manette_device_has_rumble (ManetteDevice *self)
 /**
  * manette_device_rumble:
  * @self: a #ManetteDevice
- * @strong_magnitude: the magnitude for the heavy rumbling motor, when there's one
- * @weak_magnitude: the magnitude for the small rumbling motor
- * @duration: the rumble effect play time in milliseconds, with a maximum of 32767.
+ * @strong_magnitude: the magnitude for the heavy motor
+ * @weak_magnitude: the magnitude for the light motor
+ * @milliseconds: the rumble effect play time in milliseconds
  *
- * Make @self rumble during @duration milliseconds, with heavy motor rumbling at
- * magnitude @strong_magnitude and the small rumbling motor at magnitude @weak_magnitude.
+ * Make @self rumble during @milliseconds milliseconds, with the heavy and light
+ * motors rumbling at their respectively defined magnitudes.
  *
- * Returns: whether the rumble effect was played.
+ * The duration cannot exceed 32767 milliseconds.
+ *
+ * Returns: whether the rumble effect was played
  */
 gboolean
 manette_device_rumble (ManetteDevice *self,
