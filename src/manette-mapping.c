@@ -411,6 +411,19 @@ parse_mapping_source (gchar                 *source,
   return TRUE;
 }
 
+static gboolean
+is_valid_guid (const gchar *string)
+{
+  if (!string)
+    return FALSE;
+
+  for (guint i = 0; i < 32; i++)
+    if (!g_ascii_isxdigit (string[i]))
+      return FALSE;
+
+  return TRUE;
+}
+
 // This function doesn't take care of cleaning up the object's state before
 // setting it.
 static void
@@ -427,6 +440,21 @@ set_from_mapping_string (ManetteMapping *self,
 
   mappings = g_strsplit (mapping_string, ",", 0);
   mappings_length = g_strv_length (mappings);
+
+  if (mappings_length < 2) {
+    g_critical ("Invalid mapping string: %s", mapping_string);
+    g_strfreev (mappings);
+
+    return;
+  }
+
+  if (!is_valid_guid (mappings[0])) {
+    g_critical ("Invalid mapping string: no GUID: %s", mapping_string);
+    g_strfreev (mappings);
+
+    return;
+  }
+
   for (i = 2; i < mappings_length; i++) {
 
     splitted_mapping = g_strsplit (mappings[i], ":", 0);
