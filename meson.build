@@ -1,6 +1,6 @@
 project('libmanette','c',
   version: '0.2.5',
-  meson_version: '>= 0.50.0',
+  meson_version: '>= 0.53.0',
 )
 
 gnome = import('gnome')
@@ -43,25 +43,24 @@ if get_option('demos')
   subdir('demos')
 endif
 
-summary = [
-  '',
-  '------',
-  'manette @0@ (@1@)'.format(libmanette_version, libmanette_api_version),
-  '',
-  '                   Demos: @0@'.format(get_option('demos')),
-  '             Build tests: @0@'.format(get_option('build-tests')),
-  '           Install tests: @0@'.format(get_option('install-tests')),
-  'Documentation and introspection:',
-  '           Documentation: @0@'.format(get_option('doc')),
-  '           Introspection: @0@'.format(get_option('introspection')),
-  '           Vala bindings: @0@'.format(get_option('vapi')),
-  'Dependencies:',
-  '                   gudev: @0@'.format(get_option('gudev').enabled()),
-  'Directories:',
-  '                  prefix: @0@'.format(prefix),
-  '              libexecdir: @0@'.format(libexecdir),
-  '------',
-  ''
-]
-
-message('\n'.join(summary))
+summary(
+  {
+    'Demos': get_option('demos'),
+    'Build tests': get_option('build-tests'),
+    'Install tests': get_option('install-tests'),
+  }, section: 'Demos and tests')
+summary(
+  {
+    'Documentation': get_option('doc'),
+    'Introspection': get_option('introspection'),
+    'Vala bindings': get_option('vapi'),
+  }, section: 'Documentation and introspection')
+summary(
+  {
+    'gudev': get_option('gudev').enabled(),
+  }, section: 'Optional dependencies')
+summary(
+  {
+    'prefix': prefix,
+    'libexecdir': libexecdir,
+  }, section: 'Directories')
