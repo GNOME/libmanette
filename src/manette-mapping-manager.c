@@ -73,7 +73,7 @@ add_mapping (ManetteMappingManager *self,
                        g_strdup (split[1]));
   g_hash_table_insert (mappings,
                        g_strdup (split[0]),
-                       g_strdup (split[2]));
+                       g_strdup (mapping_string));
   g_strfreev (split);
 }
 
