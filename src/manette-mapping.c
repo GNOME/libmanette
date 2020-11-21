@@ -427,7 +427,7 @@ set_from_mapping_string (ManetteMapping *self,
 
   mappings = g_strsplit (mapping_string, ",", 0);
   mappings_length = g_strv_length (mappings);
-  for (i = 0; i < mappings_length; i++) {
+  for (i = 2; i < mappings_length; i++) {
 
     splitted_mapping = g_strsplit (mappings[i], ":", 0);
 
