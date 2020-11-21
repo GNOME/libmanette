@@ -297,13 +297,8 @@ parse_destination_input (gchar    *start,
 static void
 manette_mapping_binding_try_free (ManetteMappingBinding **binding)
 {
-  if (binding == NULL)
-    return;
-
-  if (*binding == NULL)
-    return;
-
-  manette_mapping_binding_free (*binding);
+  if (G_LIKELY (binding && *binding))
+    manette_mapping_binding_free (*binding);
 }
 
 static void
@@ -502,13 +497,8 @@ set_from_mapping_string (ManetteMapping *self,
 static void
 g_array_try_free (GArray **array)
 {
-  if (array == NULL)
-    return;
-
-  if (*array == NULL)
-    return;
-
-  g_array_free (*array, TRUE);
+  if (G_LIKELY (array && *array))
+    g_array_free (*array, TRUE);
 }
 
 ManetteMapping *
