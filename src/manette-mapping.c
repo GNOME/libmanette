@@ -463,7 +463,7 @@ set_from_mapping_string (ManetteMapping *self,
       continue;
 
     if (!parse_mapping_destination (destination_string, &binding)) {
-      g_critical ("Invalid mapping destination: %s", splitted_mapping[0]);
+      g_critical ("Invalid binding destination: %s:%s in %s", destination_string, source_string, mapping_string);
 
       continue;
     }
@@ -475,7 +475,7 @@ set_from_mapping_string (ManetteMapping *self,
     }
 
     if (!parse_mapping_source (source_string, &binding)) {
-      g_critical ("Invalid mapping source: %s", splitted_mapping[1]);
+      g_critical ("Invalid binding source: %s:%s in %s", destination_string, source_string, mapping_string);
 
       continue;
     }
