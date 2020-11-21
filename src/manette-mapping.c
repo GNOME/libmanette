@@ -430,68 +430,52 @@ static void
 set_from_mapping_string (ManetteMapping *self,
                          const gchar    *mapping_string)
 {
-  gchar **mappings;
-  guint mappings_length;
+  g_auto(GStrv) mappings = g_strsplit (mapping_string, ",", 0);
+  guint mappings_length = g_strv_length (mappings);
   guint i = 0;
-  gchar **splitted_mapping;
   gchar *destination_string;
   gchar *source_string;
   ManetteMappingBinding binding = {};
 
-  mappings = g_strsplit (mapping_string, ",", 0);
-  mappings_length = g_strv_length (mappings);
-
   if (mappings_length < 2) {
     g_critical ("Invalid mapping string: %s", mapping_string);
-    g_strfreev (mappings);
 
     return;
   }
 
   if (!is_valid_guid (mappings[0])) {
     g_critical ("Invalid mapping string: no GUID: %s", mapping_string);
-    g_strfreev (mappings);
 
     return;
   }
 
   for (i = 2; i < mappings_length; i++) {
+    g_auto(GStrv) splitted_mapping = g_strsplit (mappings[i], ":", 0);
 
-    splitted_mapping = g_strsplit (mappings[i], ":", 0);
-
-    if (g_strv_length (splitted_mapping) != 2) {
-      g_strfreev (splitted_mapping);
-
+    if (g_strv_length (splitted_mapping) != 2)
       continue;
-    }
 
     destination_string = splitted_mapping[0];
     source_string = splitted_mapping[1];
 
     /* Skip the platform key. */
-    if (g_strcmp0 ("platform", splitted_mapping[0]) == 0) {
-      g_strfreev (splitted_mapping);
-
+    if (g_strcmp0 ("platform", splitted_mapping[0]) == 0)
       continue;
-    }
 
     if (!parse_mapping_destination (destination_string, &binding)) {
       g_critical ("Invalid mapping destination: %s", splitted_mapping[0]);
-      g_strfreev (splitted_mapping);
 
       continue;
     }
 
     if  (binding.destination.type == EV_MAX) {
       g_debug ("Invalid token: %s", destination_string);
-      g_strfreev (splitted_mapping);
 
       continue;
     }
 
     if (!parse_mapping_source (source_string, &binding)) {
       g_critical ("Invalid mapping source: %s", splitted_mapping[1]);
-      g_strfreev (splitted_mapping);
 
       continue;
     }
@@ -512,11 +496,7 @@ set_from_mapping_string (ManetteMapping *self,
     default:
       g_assert_not_reached ();
     }
-
-    g_strfreev (splitted_mapping);
   }
-
-  g_strfreev (mappings);
 }
 
 static void
