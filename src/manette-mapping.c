@@ -238,7 +238,7 @@ parse_mapping_hat (gchar                *start,
 
   // hat0x, hat0y, hat1x, hat1y…
   *index = hat_index * 2 + (hat_position + 1) % 2;
-  // left or up: negative, right or down: position.
+  // left or up: negative, right or down: positive.
   *range = ((hat_position + 1) % 4) < 2 ? MANETTE_MAPPING_RANGE_NEGATIVE :
                                           MANETTE_MAPPING_RANGE_POSITIVE;
   *invert = *range == MANETTE_MAPPING_RANGE_NEGATIVE;
