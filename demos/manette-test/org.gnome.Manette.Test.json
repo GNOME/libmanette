@@ -17,6 +17,11 @@
     "modules" : [
         {
             "name" : "libevdev",
+            "buildsystem" : "meson",
+            "config-opts" : [
+                "-Ddocumentation=disabled",
+                "-Dtests=disabled"
+            ],
             "sources" : [
                 {
                     "type" : "git",
