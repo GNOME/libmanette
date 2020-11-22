@@ -227,7 +227,7 @@ parse_mapping_hat (gchar                *start,
   if (!try_str_to_guint16 (start, end, &hat_position_2pow))
     return FALSE;
 
-  // hat_position: 0 up, 1 right, 2 down, 3 left.
+  /* hat_position: 0 up, 1 right, 2 down, 3 left. */
   while (hat_position_2pow > 1) {
     hat_position_2pow >>= 1;
     hat_position++;
@@ -236,9 +236,9 @@ parse_mapping_hat (gchar                *start,
   if (hat_position > 3)
     return FALSE;
 
-  // hat0x, hat0y, hat1x, hat1y…
+  /* hat0x, hat0y, hat1x, hat1y… */
   *index = hat_index * 2 + (hat_position + 1) % 2;
-  // left or up: negative, right or down: positive.
+  /* left or up: negative, right or down: positive. */
   *range = ((hat_position + 1) % 4) < 2 ? MANETTE_MAPPING_RANGE_NEGATIVE :
                                           MANETTE_MAPPING_RANGE_POSITIVE;
   *invert = *range == MANETTE_MAPPING_RANGE_NEGATIVE;
@@ -419,8 +419,9 @@ is_valid_guid (const gchar *string)
   return TRUE;
 }
 
-// This function doesn't take care of cleaning up the object's state before
-// setting it.
+/* This function doesn't take care of cleaning up the object's state before
+ * setting it.
+ */
 static void
 set_from_mapping_string (ManetteMapping *self,
                          const gchar    *mapping_string)
