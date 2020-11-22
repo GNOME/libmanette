@@ -35,6 +35,27 @@ G_DEFINE_TYPE (ManetteMapping, manette_mapping, G_TYPE_OBJECT)
 
 G_DEFINE_BOXED_TYPE (ManetteMappingBinding, manette_mapping_binding, manette_mapping_binding_copy, manette_mapping_binding_free)
 
+#ifdef G_DISABLE_CHECKS
+
+#define manette_ensure_is_parseable(expr) G_STMT_START{ (void)0; }G_STMT_END
+
+#else
+
+#define manette_ensure_is_parseable(expr) \
+  G_STMT_START { \
+    if (G_LIKELY (expr != NULL)) { } \
+    else  { \
+      g_log (G_LOG_DOMAIN, \
+             G_LOG_LEVEL_DEBUG, \
+             "%s: expression '%s' not parseable", \
+             G_STRFUNC, \
+             #expr); \
+      return FALSE; \
+    } \
+  } G_STMT_END
+
+#endif
+
 /* Private */
 
 static void
@@ -96,9 +117,9 @@ try_str_to_guint16 (gchar    *start,
                     gchar   **end,
                     guint16  *result)
 {
-  g_return_val_if_fail (start != NULL, FALSE);
-  g_return_val_if_fail (end != NULL, FALSE);
-  g_return_val_if_fail (result != NULL, FALSE);
+  manette_ensure_is_parseable (start);
+  manette_ensure_is_parseable (end);
+  manette_ensure_is_parseable (result);
 
   errno = 0;
   *result = strtol (start, end, 10);
@@ -111,9 +132,9 @@ parse_mapping_input_type (gchar                    *start,
                           gchar                   **end,
                           ManetteMappingInputType  *input_type)
 {
-  g_return_val_if_fail (start != NULL, FALSE);
-  g_return_val_if_fail (end != NULL, FALSE);
-  g_return_val_if_fail (input_type != NULL, FALSE);
+  manette_ensure_is_parseable (start);
+  manette_ensure_is_parseable (end);
+  manette_ensure_is_parseable (input_type);
 
   switch (*start) {
   case 'a':
@@ -149,9 +170,9 @@ parse_mapping_invert (gchar     *start,
                       gchar    **end,
                       gboolean  *invert)
 {
-  g_return_val_if_fail (start != NULL, FALSE);
-  g_return_val_if_fail (end != NULL, FALSE);
-  g_return_val_if_fail (invert != NULL, FALSE);
+  manette_ensure_is_parseable (start);
+  manette_ensure_is_parseable (end);
+  manette_ensure_is_parseable (invert);
 
   switch (*start) {
   case '~':
@@ -171,9 +192,9 @@ parse_mapping_range (gchar                *start,
                      gchar               **end,
                      ManetteMappingRange  *range)
 {
-  g_return_val_if_fail (start != NULL, FALSE);
-  g_return_val_if_fail (end != NULL, FALSE);
-  g_return_val_if_fail (range != NULL, FALSE);
+  manette_ensure_is_parseable (start);
+  manette_ensure_is_parseable (end);
+  manette_ensure_is_parseable (range);
 
   switch (*start) {
   case '+':
@@ -205,11 +226,11 @@ parse_mapping_hat (gchar                *start,
   guint16 hat_position_2pow;
   guint16 hat_position = 0;
 
-  g_return_val_if_fail (start != NULL, FALSE);
-  g_return_val_if_fail (end != NULL, FALSE);
-  g_return_val_if_fail (index != NULL, FALSE);
-  g_return_val_if_fail (range != NULL, FALSE);
-  g_return_val_if_fail (invert != NULL, FALSE);
+  manette_ensure_is_parseable (start);
+  manette_ensure_is_parseable (end);
+  manette_ensure_is_parseable (index);
+  manette_ensure_is_parseable (range);
+  manette_ensure_is_parseable (invert);
 
   if (!try_str_to_guint16 (start, end, &hat_index))
     return FALSE;
