@@ -387,10 +387,10 @@ manette_mapping_manager_finalize (GObject *object)
 {
   ManetteMappingManager *self = MANETTE_MAPPING_MANAGER (object);
 
-  g_hash_table_unref (self->names);
-  g_hash_table_unref (self->default_mappings);
-  g_hash_table_unref (self->user_mappings);
-  g_free (self->user_mappings_uri);
+  g_clear_pointer (&self->names, g_hash_table_unref);
+  g_clear_pointer (&self->default_mappings, g_hash_table_unref);
+  g_clear_pointer (&self->user_mappings, g_hash_table_unref);
+  g_clear_pointer (&self->user_mappings_uri, g_free);
   g_clear_object (&self->user_mappings_monitor);
 
   G_OBJECT_CLASS (manette_mapping_manager_parent_class)->finalize (object);

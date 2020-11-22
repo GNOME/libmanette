@@ -113,9 +113,9 @@ manette_device_event_signal_data_new (ManetteDevice *self,
 static void
 manette_device_event_signal_data_free (ManetteDeviceEventSignalData *signal_data)
 {
-  g_object_unref (signal_data->self);
-  manette_event_free (signal_data->event);
-  g_free (signal_data);
+  g_clear_object (&signal_data->self);
+  g_clear_pointer (&signal_data->event, manette_event_free);
+  g_clear_pointer (&signal_data, g_free);
 }
 
 static gboolean
@@ -220,9 +220,8 @@ manette_device_finalize (GObject *object)
 
   close (self->fd);
   remove_event_source (self);
-  if (self->evdev_device != NULL)
-    libevdev_free (self->evdev_device);
-  g_free (self->guid);
+  g_clear_pointer (&self->evdev_device, libevdev_free);
+  g_clear_pointer (&self->guid, g_free);
   g_clear_object (&self->mapping);
 
   G_OBJECT_CLASS (manette_device_parent_class)->finalize (object);

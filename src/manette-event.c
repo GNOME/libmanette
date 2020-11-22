@@ -80,8 +80,7 @@ manette_event_free (ManetteEvent *self)
 {
   g_return_if_fail (self);
 
-  if (self->any.device != NULL)
-    g_object_unref (self->any.device);
+  g_clear_object (&self->any.device);
 
   g_slice_free (ManetteEvent, self);
 }

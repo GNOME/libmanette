@@ -426,15 +426,14 @@ manette_monitor_finalize (GObject *object)
   ManetteMonitor *self = MANETTE_MONITOR (object);
 
 #ifdef GUDEV_ENABLED
-  if (self->client != NULL)
-    g_object_unref (self->client);
+  g_clear_object (&self->client);
 #else
   g_clear_object (&self->monitor);
-  g_hash_table_unref (self->potential_devices);
+  g_clear_pointer (&self->potential_devices, g_hash_table_unref);
 #endif
 
-  g_object_unref (self->mapping_manager);
-  g_hash_table_unref (self->devices);
+  g_clear_object (&self->mapping_manager);
+  g_clear_pointer (&self->devices, g_hash_table_unref);
 
   G_OBJECT_CLASS (manette_monitor_parent_class)->finalize (object);
 }

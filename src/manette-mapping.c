@@ -42,12 +42,9 @@ manette_mapping_finalize (GObject *object)
 {
   ManetteMapping *self = (ManetteMapping *)object;
 
-  if (self->axis_bindings != NULL)
-    g_array_free (self->axis_bindings, TRUE);
-  if (self->button_bindings != NULL)
-    g_array_free (self->button_bindings, TRUE);
-  if (self->hat_bindings != NULL)
-    g_array_free (self->hat_bindings, TRUE);
+  g_clear_pointer (&self->axis_bindings, g_array_unref);
+  g_clear_pointer (&self->button_bindings, g_array_unref);
+  g_clear_pointer (&self->hat_bindings, g_array_unref);
 
   G_OBJECT_CLASS (manette_mapping_parent_class)->finalize (object);
 }
@@ -297,8 +294,8 @@ parse_destination_input (gchar    *start,
 static void
 manette_mapping_binding_try_free (ManetteMappingBinding **binding)
 {
-  if (G_LIKELY (binding && *binding))
-    manette_mapping_binding_free (*binding);
+  if (G_LIKELY (binding))
+    g_clear_pointer (binding, manette_mapping_binding_free);
 }
 
 static void
@@ -498,8 +495,8 @@ set_from_mapping_string (ManetteMapping *self,
 static void
 g_array_try_free (GArray **array)
 {
-  if (G_LIKELY (array && *array))
-    g_array_free (*array, TRUE);
+  if (G_LIKELY (array))
+    g_clear_pointer (array, g_array_unref);
 }
 
 ManetteMapping *
