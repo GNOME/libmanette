@@ -513,8 +513,8 @@ ManetteDevice *
 manette_device_new (const gchar  *filename,
                     GError      **error)
 {
-  ManetteDevice *self = NULL;
-  GIOChannel *channel;
+  g_autoptr (ManetteDevice) self = NULL;
+  g_autoptr (GIOChannel) channel = NULL;
   gint buttons_number;
   gint axes_number;
   guint i;
@@ -531,7 +531,6 @@ manette_device_new (const gchar  *filename,
                  "Unable to open “%s”: %s",
                  filename,
                  strerror (errno));
-    g_object_unref (self);
 
     return NULL;
   }
@@ -544,7 +543,6 @@ manette_device_new (const gchar  *filename,
                  "Evdev is unable to open “%s”: %s",
                  filename,
                  strerror (errno));
-    g_object_unref (self);
 
     return NULL;
   }
@@ -555,7 +553,6 @@ manette_device_new (const gchar  *filename,
                  G_FILE_ERROR_NXIO,
                  "“%s” is not a game controller.",
                  filename);
-    g_object_unref (self);
 
     return NULL;
   }
@@ -600,9 +597,7 @@ manette_device_new (const gchar  *filename,
     }
   }
 
-  g_io_channel_unref (channel);
-
-  return self;
+  return g_steal_pointer (&self);
 }
 
 /**
@@ -763,17 +758,14 @@ gboolean
 manette_device_has_user_mapping (ManetteDevice *self)
 {
   const gchar *guid;
-  ManetteMappingManager *mapping_manager;
-  gboolean has_user_mapping;
+  g_autoptr (ManetteMappingManager) mapping_manager = NULL;
 
   g_return_val_if_fail (MANETTE_IS_DEVICE (self), FALSE);
 
   guid = manette_device_get_guid (self);
   mapping_manager = manette_mapping_manager_new ();
-  has_user_mapping = manette_mapping_manager_has_user_mapping (mapping_manager, guid);
-  g_object_unref (mapping_manager);
 
-  return has_user_mapping;
+  return manette_mapping_manager_has_user_mapping (mapping_manager, guid);
 }
 
 /**
@@ -789,7 +781,7 @@ manette_device_save_user_mapping (ManetteDevice *self,
 {
   const gchar *guid;
   const gchar *name;
-  ManetteMappingManager *mapping_manager;
+  g_autoptr (ManetteMappingManager) mapping_manager = NULL;
 
   g_return_if_fail (MANETTE_IS_DEVICE (self));
   g_return_if_fail (mapping_string != NULL);
@@ -801,7 +793,6 @@ manette_device_save_user_mapping (ManetteDevice *self,
                                         guid,
                                         name,
                                         mapping_string);
-  g_object_unref (mapping_manager);
 }
 
 /**
@@ -814,14 +805,13 @@ void
 manette_device_remove_user_mapping (ManetteDevice *self)
 {
   const gchar *guid;
-  ManetteMappingManager *mapping_manager;
+  g_autoptr (ManetteMappingManager) mapping_manager = NULL;
 
   g_return_if_fail (MANETTE_IS_DEVICE (self));
 
   guid = manette_device_get_guid (self);
   mapping_manager = manette_mapping_manager_new ();
   manette_mapping_manager_delete_mapping (mapping_manager, guid);
-  g_object_unref (mapping_manager);
 }
 
 /**

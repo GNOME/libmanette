@@ -28,7 +28,6 @@ map_button_event (ManetteMapping     *mapping,
   const ManetteMappingBinding * const *bindings;
   const ManetteMappingBinding * binding;
   GSList *mapped_events = NULL;
-  ManetteEvent *mapped_event;
   gboolean pressed;
 
   bindings = manette_mapping_get_bindings (mapping,
@@ -38,9 +37,9 @@ map_button_event (ManetteMapping     *mapping,
     return NULL;
 
   for (; *bindings != NULL; bindings++) {
-    binding = *bindings;
+    g_autoptr (ManetteEvent) mapped_event = manette_event_copy ((ManetteEvent *) event);
 
-    mapped_event = manette_event_copy ((ManetteEvent *) event);
+    binding = *bindings;
 
     pressed = event->type == MANETTE_EVENT_BUTTON_PRESS;
 
@@ -72,12 +71,10 @@ map_button_event (ManetteMapping     *mapping,
 
       break;
     default:
-      manette_event_free (mapped_event);
-
       continue;
     }
 
-    mapped_events = g_slist_append (mapped_events, mapped_event);
+    mapped_events = g_slist_append (mapped_events, g_steal_pointer (&mapped_event));
   }
 
   return mapped_events;
@@ -90,7 +87,6 @@ map_absolute_event (ManetteMapping       *mapping,
   const ManetteMappingBinding * const *bindings;
   const ManetteMappingBinding * binding;
   GSList *mapped_events = NULL;
-  ManetteEvent *mapped_event;
   gdouble absolute_value;
   gboolean pressed;
 
@@ -101,6 +97,8 @@ map_absolute_event (ManetteMapping       *mapping,
     return NULL;
 
   for (; *bindings != NULL; bindings++) {
+    g_autoptr (ManetteEvent) mapped_event = NULL;
+
     binding = *bindings;
 
     if (binding->source.range == MANETTE_MAPPING_RANGE_NEGATIVE &&
@@ -151,12 +149,10 @@ map_absolute_event (ManetteMapping       *mapping,
 
       break;
     default:
-      manette_event_free (mapped_event);
-
       continue;
     }
 
-    mapped_events = g_slist_append (mapped_events, mapped_event);
+    mapped_events = g_slist_append (mapped_events, g_steal_pointer (&mapped_event));
   }
 
   return mapped_events;
@@ -169,7 +165,6 @@ map_hat_event (ManetteMapping  *mapping,
   const ManetteMappingBinding * const *bindings;
   const ManetteMappingBinding * binding;
   GSList *mapped_events = NULL;
-  ManetteEvent *mapped_event;
   gboolean pressed;
 
   bindings = manette_mapping_get_bindings (mapping,
@@ -179,6 +174,8 @@ map_hat_event (ManetteMapping  *mapping,
     return NULL;
 
   for (; *bindings != NULL; bindings++) {
+    g_autoptr (ManetteEvent) mapped_event = NULL;
+
     binding = *bindings;
 
     if (binding->source.range == MANETTE_MAPPING_RANGE_NEGATIVE &&
@@ -207,12 +204,10 @@ map_hat_event (ManetteMapping  *mapping,
 
       break;
     default:
-      manette_event_free (mapped_event);
-
       continue;
     }
 
-    mapped_events = g_slist_append (mapped_events, mapped_event);
+    mapped_events = g_slist_append (mapped_events, g_steal_pointer (&mapped_event));
   }
 
   return mapped_events;
