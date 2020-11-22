@@ -44,6 +44,16 @@ unit-tests:
     - flatpak build ${FLATPAK_BUILD_DIR} meson --prefix=/app ${SHARED_MESON_ARGS} ${MESON_ARGS} _build
     - flatpak build ${FLATPAK_BUILD_DIR} ninja -C _build test
 
+gudev:
+  image: fedora:32
+  stage: build
+  before_script:
+    - dnf install -y gcc glib2-devel gobject-introspection-devel libevdev-devel libgudev-devel meson vala
+  script:
+    - meson _build
+    - ninja -C _build
+    - ninja -C _build test
+
 doc:
   image: registry.gitlab.gnome.org/gnome/gnome-runtime-images/gnome:master
   stage: build
