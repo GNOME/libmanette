@@ -32,6 +32,7 @@ printf "# Source: https://github.com/gabomdq/SDL_GameControllerDB/blob/master/ga
 # Add the GameControllerDB
 curl https://raw.githubusercontent.com/gabomdq/SDL_GameControllerDB/master/gamecontrollerdb.txt \
   | grep "platform:Linux" \
+  | sed 's/platform:Linux,//' \
   | ensure-valid-id | sort >> $OUTPUT
 
 footer
