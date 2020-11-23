@@ -16,8 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef MANETTE_MAPPING_H
-#define MANETTE_MAPPING_H
+#pragma once
 
 #if !defined(__MANETTE_INSIDE__) && !defined(MANETTE_COMPILATION)
 # error "Only <libmanette.h> can be included directly."
@@ -73,6 +72,3 @@ gboolean manette_mapping_has_destination_input (ManetteMapping *self,
                                                 guint           code);
 
 G_END_DECLS
-
-#endif /* MANETTE_MAPPING_H */
-

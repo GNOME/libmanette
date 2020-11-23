@@ -16,8 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef MANETTE_MONITOR_ITER_PRIVATE_H
-#define MANETTE_MONITOR_ITER_PRIVATE_H
+#pragma once
 
 #if !defined(MANETTE_COMPILATION)
 # error "This file is private, only <libmanette.h> can be included directly."
@@ -31,5 +30,3 @@ ManetteMonitorIter *manette_monitor_iter_new (GHashTable *devices);
 ManetteMonitorIter *manette_monitor_iter_copy (ManetteMonitorIter *self);
 
 G_END_DECLS
-
-#endif /* MANETTE_MONITOR_ITER_PRIVATE_H */

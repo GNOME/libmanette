@@ -16,8 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef MANETTE_DEVICE_PRIVATE_H
-#define MANETTE_DEVICE_PRIVATE_H
+#pragma once
 
 #if !defined(MANETTE_COMPILATION)
 # error "This file is private, only <libmanette.h> can be included directly."
@@ -39,5 +38,3 @@ void manette_device_set_mapping (ManetteDevice  *self,
                                  ManetteMapping *mapping);
 
 G_END_DECLS
-
-#endif /* MANETTE_DEVICE_PRIVATE_H */

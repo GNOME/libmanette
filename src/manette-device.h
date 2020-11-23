@@ -16,8 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef MANETTE_DEVICE_H
-#define MANETTE_DEVICE_H
+#pragma once
 
 #if !defined(__MANETTE_INSIDE__) && !defined(MANETTE_COMPILATION)
 # error "Only <libmanette.h> can be included directly."
@@ -46,5 +45,3 @@ gboolean manette_device_rumble (ManetteDevice *self,
                                 guint16        milliseconds);
 
 G_END_DECLS
-
-#endif /* MANETTE_DEVICE_H */

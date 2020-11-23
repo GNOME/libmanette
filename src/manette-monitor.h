@@ -16,8 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef MANETTE_MONITOR_H
-#define MANETTE_MONITOR_H
+#pragma once
 
 #if !defined(__MANETTE_INSIDE__) && !defined(MANETTE_COMPILATION)
 # error "Only <libmanette.h> can be included directly."
@@ -37,5 +36,3 @@ ManetteMonitor *manette_monitor_new (void);
 ManetteMonitorIter *manette_monitor_iterate (ManetteMonitor *self);
 
 G_END_DECLS
-
-#endif /* MANETTE_MONITOR_H */

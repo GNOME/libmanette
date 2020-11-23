@@ -16,8 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef LIBMANETTE_H
-#define LIBMANETTE_H
+#pragma once
 
 #include <glib.h>
 
@@ -32,5 +31,3 @@ G_BEGIN_DECLS
 #undef __MANETTE_INSIDE__
 
 G_END_DECLS
-
-#endif /* LIBMANETTE_H */

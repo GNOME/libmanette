@@ -16,8 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef MANETTE_EVENT_MAPPING_PRIVATE_H
-#define MANETTE_EVENT_MAPPING_PRIVATE_H
+#pragma once
 
 #if !defined(MANETTE_COMPILATION)
 # error "This file is private, only <libmanette.h> can be included directly."
@@ -32,5 +31,3 @@ GSList *manette_map_event (ManetteMapping *mapping,
                            ManetteEvent   *event);
 
 G_END_DECLS
-
-#endif /* MANETTE_EVENT_MAPPING_PRIVATE_H */

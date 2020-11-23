@@ -16,8 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef MANETTE_EVENT_PRIVATE_H
-#define MANETTE_EVENT_PRIVATE_H
+#pragma once
 
 #if !defined(MANETTE_COMPILATION)
 # error "This file is private, only <libmanette.h> can be included directly."
@@ -85,5 +84,3 @@ union _ManetteEvent {
 };
 
 G_END_DECLS
-
-#endif /* MANETTE_EVENT_PRIVATE_H */

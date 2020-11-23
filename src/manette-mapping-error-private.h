@@ -16,8 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef MANETTE_MAPPING_ERROR_H
-#define MANETTE_MAPPING_ERROR_H
+#pragma once
 
 #if !defined(__MANETTE_INSIDE__) && !defined(MANETTE_COMPILATION)
 # error "Only <libmanette.h> can be included directly."
@@ -37,5 +36,3 @@ typedef enum
 GQuark manette_mapping_error_quark (void);
 
 G_END_DECLS
-
-#endif /* MANETTE_MAPPING_ERROR_H */

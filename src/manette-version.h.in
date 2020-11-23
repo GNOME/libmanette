@@ -25,8 +25,7 @@
  * at compile-time.
  */
 
-#ifndef LIBMANETTE_VERSION_H
-#define LIBMANETTE_VERSION_H
+#pragma once
 
 #if !defined(__MANETTE_INSIDE__) && !defined(MANETTE_COMPILATION)
 # error "Only <libmanette.h> can be included directly."
@@ -94,5 +93,3 @@
          (LIBMANETTE_MAJOR_VERSION == (major) && LIBMANETTE_MINOR_VERSION > (minor)) || \
          (LIBMANETTE_MAJOR_VERSION == (major) && LIBMANETTE_MINOR_VERSION == (minor) && \
           LIBMANETTE_MICRO_VERSION >= (micro)))
-
-#endif /* LIBMANETTE_VERSION_H */

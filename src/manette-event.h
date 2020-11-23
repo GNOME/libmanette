@@ -16,8 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef MANETTE_EVENT_H
-#define MANETTE_EVENT_H
+#pragma once
 
 #if !defined(__MANETTE_INSIDE__) && !defined(MANETTE_COMPILATION)
 # error "Only <libmanette.h> can be included directly."
@@ -78,5 +77,3 @@ gboolean manette_event_get_hat (const ManetteEvent *self,
 G_DEFINE_AUTOPTR_CLEANUP_FUNC (ManetteEvent, manette_event_free)
 
 G_END_DECLS
-
-#endif /* MANETTE_EVENT_H */
