@@ -197,21 +197,31 @@ test_hat_mapping (void)
   event.hat.value = -1;
 
   mapped_events = manette_map_event (mapping, &event);
-  g_assert_cmpint (g_slist_length (mapped_events), ==, 1);
+  g_assert_cmpint (g_slist_length (mapped_events), ==, 2);
 
   mapped_event = mapped_events->data;
   g_assert_cmpint (mapped_event->any.type, ==, MANETTE_EVENT_BUTTON_PRESS);
   cmp_event_any_except_type (mapped_event, &event);
   g_assert_cmpuint (mapped_event->button.button, ==, BTN_DPAD_LEFT);
 
+  mapped_event = mapped_events->next->data;
+  g_assert_cmpint (mapped_event->any.type, ==, MANETTE_EVENT_BUTTON_RELEASE);
+  cmp_event_any_except_type (mapped_event, &event);
+  g_assert_cmpuint (mapped_event->button.button, ==, BTN_DPAD_RIGHT);
+
   g_slist_free_full (mapped_events, (GDestroyNotify) manette_event_free);
 
   event.hat.value = 1;
 
   mapped_events = manette_map_event (mapping, &event);
-  g_assert_cmpint (g_slist_length (mapped_events), ==, 1);
+  g_assert_cmpint (g_slist_length (mapped_events), ==, 2);
 
   mapped_event = mapped_events->data;
+  g_assert_cmpint (mapped_event->any.type, ==, MANETTE_EVENT_BUTTON_RELEASE);
+  cmp_event_any_except_type (mapped_event, &event);
+  g_assert_cmpuint (mapped_event->button.button, ==, BTN_DPAD_LEFT);
+
+  mapped_event = mapped_events->next->data;
   g_assert_cmpint (mapped_event->any.type, ==, MANETTE_EVENT_BUTTON_PRESS);
   cmp_event_any_except_type (mapped_event, &event);
   g_assert_cmpuint (mapped_event->button.button, ==, BTN_DPAD_RIGHT);

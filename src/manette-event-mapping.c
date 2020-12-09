@@ -165,7 +165,6 @@ map_hat_event (ManetteMapping  *mapping,
   const ManetteMappingBinding * const *bindings;
   const ManetteMappingBinding * binding;
   GSList *mapped_events = NULL;
-  gboolean pressed;
 
   bindings = manette_mapping_get_bindings (mapping,
                                            MANETTE_MAPPING_INPUT_TYPE_HAT,
@@ -175,29 +174,43 @@ map_hat_event (ManetteMapping  *mapping,
 
   for (; *bindings != NULL; bindings++) {
     g_autoptr (ManetteEvent) mapped_event = NULL;
+    gboolean pressed;
 
     binding = *bindings;
 
-    if (binding->source.range == MANETTE_MAPPING_RANGE_NEGATIVE &&
-        event->value > 0)
-      continue;
-
-    if (binding->source.range == MANETTE_MAPPING_RANGE_POSITIVE &&
-        event->value < 0)
-      continue;
-
     mapped_event = manette_event_copy ((ManetteEvent *) event);
-
-    pressed = abs (event->value);
 
     switch (binding->destination.type) {
     case EV_ABS:
+      if (binding->source.range == MANETTE_MAPPING_RANGE_NEGATIVE &&
+          event->value > 0)
+        continue;
+      if (binding->source.range == MANETTE_MAPPING_RANGE_POSITIVE &&
+          event->value < 0)
+        continue;
+
       mapped_event->any.type = MANETTE_EVENT_ABSOLUTE;
       mapped_event->absolute.axis = binding->destination.code;
       mapped_event->absolute.value = abs (event->value);
 
       break;
     case EV_KEY:
+      /* Since hat events are most of the time bound to multiple bindings, they
+       * will share the same event value. Hence, if the hat is moved left, then
+       * it'll be also processed by the mapping for the right dpad for example.
+       * But if the dpad is moved quick enough it might skip the neutral point
+       * and the direction that was moved from wouldn't be seen as unpressed.
+       * Hence, the opposite direction to the current event must be processed
+       * in a way that unpresses the direction that's no longer pressed.
+       */
+      if (binding->source.range == MANETTE_MAPPING_RANGE_NEGATIVE && event->value > 0) {
+        pressed = FALSE;
+      } else if (binding->source.range == MANETTE_MAPPING_RANGE_POSITIVE && event->value < 0) {
+        pressed = FALSE;
+      } else {
+        pressed = abs (event->value);
+      }
+
       mapped_event->any.type = pressed ? MANETTE_EVENT_BUTTON_PRESS :
                                          MANETTE_EVENT_BUTTON_RELEASE;
       mapped_event->button.button = binding->destination.code;
