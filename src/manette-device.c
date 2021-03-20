@@ -816,7 +816,7 @@ manette_device_rumble (ManetteDevice *self,
   struct input_event event;
 
   g_return_val_if_fail (MANETTE_IS_DEVICE (self), FALSE);
-  g_return_val_if_fail (milliseconds <= G_MAXINT16, FALSE);
+  g_return_val_if_fail (milliseconds <= G_MAXUINT16, FALSE);
 
   self->rumble_effect.u.rumble.strong_magnitude = strong_magnitude;
   self->rumble_effect.u.rumble.weak_magnitude = weak_magnitude;
