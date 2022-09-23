@@ -63,7 +63,7 @@ if gudev.found()
   libmanette_deps += [ gudev ]
 endif
 
-libmanette_lib = shared_library(
+libmanette_lib = library(
   libmanette_module,
   libmanette_sources,
   c_args: libmanette_c_args,
