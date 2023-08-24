@@ -66,11 +66,6 @@ static guint signals[N_SIGNALS];
 /* Private */
 
 static void
-manette_monitor_init (ManetteMonitor *self)
-{
-}
-
-static void
 load_mapping (ManetteMonitor *self,
               ManetteDevice  *device)
 {
@@ -420,25 +415,26 @@ mappings_changed_cb (ManetteMappingManager *mapping_manager,
 ManetteMonitor *
 manette_monitor_new (void)
 {
-  ManetteMonitor *self = NULL;
+  return g_object_new (MANETTE_TYPE_MONITOR, NULL);
+}
 
-  self = (ManetteMonitor*) g_object_new (MANETTE_TYPE_MONITOR, NULL);
+/* Type */
+
+static void
+manette_monitor_init (ManetteMonitor *self)
+{
   self->devices = g_hash_table_new_full (g_str_hash, g_str_equal,
                                          g_free, g_object_unref);
   self->mapping_manager = manette_mapping_manager_new ();
 
-  g_signal_connect (self->mapping_manager,
-                    "changed",
-                    G_CALLBACK (mappings_changed_cb),
-                    self);
+  g_signal_connect_object (self->mapping_manager,
+                           "changed",
+                           G_CALLBACK (mappings_changed_cb),
+                           self, 0);
 
   init_backend (self);
   coldplug_devices (self);
-
-  return self;
 }
-
-/* Type */
 
 static void
 manette_monitor_finalize (GObject *object)
@@ -462,7 +458,9 @@ static void
 manette_monitor_class_init (ManetteMonitorClass *klass)
 {
   manette_monitor_parent_class = g_type_class_peek_parent (klass);
-  G_OBJECT_CLASS (klass)->finalize = manette_monitor_finalize;
+  GObjectClass *object_class = G_OBJECT_CLASS (klass);
+
+  object_class->finalize = manette_monitor_finalize;
 
   /**
    * ManetteMonitor::device-connected:
