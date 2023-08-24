@@ -16,9 +16,9 @@
 
   <maintainer>
     <foaf:Person>
-      <foaf:name>Adrien Plazas</foaf:name>
-      <foaf:mbox rdf:resource="mailto:kekun.plazas@laposte.net" />
-      <gnome:userid>aplazas</gnome:userid>
+      <foaf:name>Alice Mikhaylenko</foaf:name>
+      <foaf:mbox rdf:resource="mailto:alicem@gnome.org" />
+      <gnome:userid>alicem</gnome:userid>
     </foaf:Person>
   </maintainer>
 </Project>
