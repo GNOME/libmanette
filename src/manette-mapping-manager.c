@@ -69,6 +69,7 @@ add_mapping (ManetteMappingManager *self,
   if (platform != NULL && !g_str_has_prefix (platform, "platform:Linux"))
     return;
 
+  /* GUID | device name | the rest of the mapping string */
   split = g_strsplit (mapping_string, ",", 3);
   g_hash_table_insert (self->names,
                        g_strdup (split[0]),
