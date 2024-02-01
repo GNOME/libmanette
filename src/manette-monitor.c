@@ -27,18 +27,15 @@
 
 #include <glib.h>
 #include <glib-object.h>
+#include <gio/gio.h>
 #ifdef GUDEV_ENABLED
  #include <gudev/gudev.h>
-#else
- #include <gio/gio.h>
 #endif
 #include "manette-device-private.h"
 #include "manette-mapping-manager-private.h"
 #include "manette-monitor-iter-private.h"
 
-#ifndef GUDEV_ENABLED
 #define INPUT_DIRECTORY "/dev/input"
-#endif
 
 struct _ManetteMonitor {
   GObject parent_instance;
@@ -47,10 +44,9 @@ struct _ManetteMonitor {
   ManetteMappingManager *mapping_manager;
 #ifdef GUDEV_ENABLED
   GUdevClient *client;
-#else
+#endif
   GFileMonitor *monitor;
   GHashTable *potential_devices;
-#endif
 };
 
 G_DEFINE_TYPE (ManetteMonitor, manette_monitor, G_TYPE_OBJECT)
@@ -64,6 +60,14 @@ enum {
 static guint signals[N_SIGNALS];
 
 /* Private */
+
+#if GUDEV_ENABLED
+static inline gboolean
+is_flatpak (void)
+{
+  return g_file_test ("/.flatpak-info", G_FILE_TEST_EXISTS);
+}
+#endif
 
 static void
 load_mapping (ManetteMonitor *self,
@@ -133,7 +137,7 @@ remove_device (ManetteMonitor *self,
   g_object_unref (device);
 }
 
-#ifdef GUDEV_ENABLED /* BACKEND GUDEV */
+#ifdef GUDEV_ENABLED
 
 static void
 add_device_for_udev_device (ManetteMonitor *self,
@@ -201,7 +205,7 @@ udev_client_uevent_cb (GUdevClient    *sender,
 }
 
 static void
-coldplug_devices (ManetteMonitor *self)
+coldplug_gudev_devices (ManetteMonitor *self)
 {
   GList *initial_devices_list;
   GList *device_it = NULL;
@@ -227,7 +231,7 @@ coldplug_devices (ManetteMonitor *self)
 }
 
 static void
-init_backend (ManetteMonitor *self)
+init_gudev_backend (ManetteMonitor *self)
 {
   self->client = g_udev_client_new ((const gchar *[]) { "input", NULL });
   g_signal_connect_object (self->client,
@@ -237,7 +241,7 @@ init_backend (ManetteMonitor *self)
                            0);
 }
 
-#else /* BACKEND FALLBACK */
+#endif
 
 /* This eliminates all other files that can be in /dev/input, like js*, mouse*,
  * by-id/, etc.
@@ -341,7 +345,7 @@ file_monitor_changed_cb (GFileMonitor      *monitor,
 }
 
 static void
-coldplug_devices (ManetteMonitor *self)
+coldplug_file_devices (ManetteMonitor *self)
 {
   g_autoptr (GDir) dir = NULL;
   const gchar *name = NULL;
@@ -366,7 +370,7 @@ coldplug_devices (ManetteMonitor *self)
 }
 
 static void
-init_backend (ManetteMonitor *self)
+init_file_backend (ManetteMonitor *self)
 {
   g_autoptr (GFile) file = g_file_new_for_path (INPUT_DIRECTORY);
   g_autoptr (GError) error = NULL;
@@ -388,8 +392,6 @@ init_backend (ManetteMonitor *self)
   self->potential_devices = g_hash_table_new_full (g_str_hash, g_str_equal,
                                                    g_free, NULL);
 }
-
-#endif /* BACKEND */
 
 static void
 mappings_changed_cb (ManetteMappingManager *mapping_manager,
@@ -423,6 +425,8 @@ manette_monitor_new (void)
 static void
 manette_monitor_init (ManetteMonitor *self)
 {
+  gboolean use_file_backend = FALSE;
+
   self->devices = g_hash_table_new_full (g_str_hash, g_str_equal,
                                          g_free, g_object_unref);
   self->mapping_manager = manette_mapping_manager_new ();
@@ -432,8 +436,21 @@ manette_monitor_init (ManetteMonitor *self)
                            G_CALLBACK (mappings_changed_cb),
                            self, 0);
 
-  init_backend (self);
-  coldplug_devices (self);
+#if GUDEV_ENABLED
+  use_file_backend = is_flatpak ();
+#else
+  use_file_backend = TRUE;
+#endif
+
+  if (use_file_backend) {
+    init_file_backend (self);
+    coldplug_file_devices (self);
+  } else {
+#if GUDEV_ENABLED
+    init_gudev_backend (self);
+    coldplug_gudev_devices (self);
+#endif
+  }
 }
 
 static void
@@ -443,10 +460,10 @@ manette_monitor_finalize (GObject *object)
 
 #ifdef GUDEV_ENABLED
   g_clear_object (&self->client);
-#else
+#endif
+
   g_clear_object (&self->monitor);
   g_clear_pointer (&self->potential_devices, g_hash_table_unref);
-#endif
 
   g_clear_object (&self->mapping_manager);
   g_clear_pointer (&self->devices, g_hash_table_unref);
