@@ -33,7 +33,7 @@
             "name" : "libmanette",
             "buildsystem" : "meson",
             "config-opts": [
-                "-Dgudev=disabled"
+                "-Dgudev=enabled"
             ],
             "builddir" : true,
             "sources" : [
