@@ -1,4 +1,17 @@
 =============
+Version 0.2.7
+=============
+
+* Allow building as a static library
+* ManetteMappingManager:
+ - Strip leading and trailing spaces from mappings
+* ManetteMonitor
+ - Always use file backend in Flatpak
+ - Skip non-evdev devices
+ - Fix object construction
+* Various cleanups
+
+=============
 Version 0.2.6
 =============
 

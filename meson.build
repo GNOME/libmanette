@@ -1,5 +1,5 @@
 project('libmanette','c',
-  version: '0.2.6',
+  version: '0.2.7',
   meson_version: '>= 0.53.0',
 )
 
