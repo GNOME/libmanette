@@ -388,8 +388,11 @@ on_evdev_event (ManetteDevice      *self,
     manette_event.any.type = evdev_event->value ?
       MANETTE_EVENT_BUTTON_PRESS :
       MANETTE_EVENT_BUTTON_RELEASE;
-    manette_event.button.hardware_index =
-      self->key_map[evdev_event->code - BTN_MISC];
+    guint index = evdev_event->code < BTN_MISC ?
+      evdev_event->code + BTN_MISC :
+      evdev_event->code - BTN_MISC;
+
+    manette_event.button.hardware_index = self->key_map[index];
     manette_event.button.button = evdev_event->code;
 
     break;
@@ -528,6 +531,11 @@ manette_device_new (const gchar  *filename,
   for (i = BTN_MISC; i < BTN_JOYSTICK; i++)
     if (has_key (self->evdev_device, i)) {
       self->key_map[i - BTN_MISC] = (guint8) buttons_number;
+      buttons_number++;
+    }
+  for (i = 0; i < BTN_MISC; i++)
+    if (has_key (self->evdev_device, i)) {
+      self->key_map[i + BTN_MISC] = (guint8) buttons_number;
       buttons_number++;
     }
 
