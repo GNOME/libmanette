@@ -710,6 +710,31 @@ manette_device_set_mapping (ManetteDevice  *self,
 }
 
 /**
+ * manette_device_get_mapping:
+ * @self: a #ManetteDevice
+ *
+ * Gets the user mapping for @self, or default mapping if there isn't any. Can
+ * return %NULL if there's no mapping.
+ *
+ * Returns: (transfer full) (nullable): the mapping for @self
+ *
+ * Since: 0.3
+ */
+char *
+manette_device_get_mapping (ManetteDevice *self)
+{
+  const gchar *guid;
+  g_autoptr (ManetteMappingManager) mapping_manager = NULL;
+
+  g_return_val_if_fail (MANETTE_IS_DEVICE (self), FALSE);
+
+  guid = manette_device_get_guid (self);
+  mapping_manager = manette_mapping_manager_new ();
+
+  return manette_mapping_manager_get_mapping (mapping_manager, guid);
+}
+
+/**
  * manette_device_has_user_mapping:
  * @self: a #ManetteDevice
  *
