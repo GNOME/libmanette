@@ -571,6 +571,8 @@ manette_device_new (const gchar  *filename,
  * devices.
  *
  * Returns: (transfer none): the identifier used by SDL mappings
+ *
+ * Since: 0.3
  */
 const gchar *
 manette_device_get_guid (ManetteDevice *self)

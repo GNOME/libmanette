@@ -33,7 +33,6 @@ int manette_device_get_product_id (ManetteDevice *self);
 int manette_device_get_vendor_id (ManetteDevice *self);
 int manette_device_get_bustype_id (ManetteDevice *self);
 int manette_device_get_version_id (ManetteDevice *self);
-const gchar *manette_device_get_guid (ManetteDevice *self);
 void manette_device_set_mapping (ManetteDevice  *self,
                                  ManetteMapping *mapping);
 
