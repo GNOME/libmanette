@@ -17,6 +17,7 @@
  */
 
 #include "../src/manette-mapping-manager-private.h"
+#include "../src/manette-mapping-private.h"
 
 static void
 test_valid (void)
@@ -28,6 +29,32 @@ test_valid (void)
   g_assert_true (MANETTE_IS_MAPPING_MANAGER (mapping_manager));
 }
 
+static void
+test_default_mappings (void)
+{
+  g_autoptr (ManetteMappingManager) mapping_manager = NULL;
+  g_autoptr (GList) default_mappings = NULL;
+
+  mapping_manager = manette_mapping_manager_new ();
+  g_assert_nonnull (mapping_manager);
+  g_assert_true (MANETTE_IS_MAPPING_MANAGER (mapping_manager));
+
+  default_mappings = manette_mapping_manager_get_default_mappings (mapping_manager);
+  for (GList *mapping_link = default_mappings;
+       mapping_link != NULL;
+       mapping_link = mapping_link->next)
+  {
+    const char *mapping_string = mapping_link->data;
+    g_autoptr (ManetteMapping) mapping = NULL;
+    GError *error = NULL;
+
+    mapping = manette_mapping_new (mapping_string, &error);
+    g_assert_no_error (error);
+    g_assert_nonnull (mapping);
+    g_assert_true (MANETTE_IS_MAPPING (mapping));
+  }
+}
+
 int
 main (int   argc,
       char *argv[])
@@ -35,6 +62,7 @@ main (int   argc,
   g_test_init (&argc, &argv, NULL);
 
   g_test_add_func ("/ManetteMappingManager/test_valid", test_valid);
+  g_test_add_func ("/ManetteMappingManager/test_default_mappings", test_default_mappings);
 
   return g_test_run();
 }
