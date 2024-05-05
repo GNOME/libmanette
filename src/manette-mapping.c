@@ -441,8 +441,9 @@ is_valid_guid (const gchar *string)
  * setting it.
  */
 static void
-set_from_mapping_string (ManetteMapping *self,
-                         const gchar    *mapping_string)
+set_from_mapping_string (ManetteMapping  *self,
+                         const gchar     *mapping_string,
+                         GError         **error)
 {
   g_auto(GStrv) mappings = g_strsplit (mapping_string, ",", 0);
   guint mappings_length = g_strv_length (mappings);
@@ -452,13 +453,21 @@ set_from_mapping_string (ManetteMapping *self,
   ManetteMappingBinding binding = {};
 
   if (mappings_length < 2) {
-    g_critical ("Invalid mapping string: %s", mapping_string);
+    g_set_error (error,
+                 MANETTE_MAPPING_ERROR,
+                 MANETTE_MAPPING_ERROR_NOT_A_MAPPING,
+                 "Invalid mapping string: %s",
+                 mapping_string);
 
     return;
   }
 
   if (!is_valid_guid (mappings[0])) {
-    g_critical ("Invalid mapping string: no GUID: %s", mapping_string);
+    g_set_error (error,
+                 MANETTE_MAPPING_ERROR,
+                 MANETTE_MAPPING_ERROR_NOT_A_MAPPING,
+                 "Invalid mapping string: no GUID: %s",
+                 mapping_string);
 
     return;
   }
@@ -524,7 +533,8 @@ ManetteMapping *
 manette_mapping_new (const gchar  *mapping_string,
                      GError      **error)
 {
-  ManetteMapping *self = NULL;
+  g_autoptr (ManetteMapping) self = NULL;
+  GError *inner_error = NULL;
 
   if (mapping_string == NULL) {
     g_set_error_literal (error,
@@ -553,9 +563,14 @@ manette_mapping_new (const gchar  *mapping_string,
   self->hat_bindings = g_array_new (FALSE, TRUE, sizeof (GArray *));
   g_array_set_clear_func (self->hat_bindings, (GDestroyNotify) g_array_try_free);
 
-  set_from_mapping_string (self, mapping_string);
+  set_from_mapping_string (self, mapping_string, &inner_error);
+  if (G_UNLIKELY (inner_error != NULL)) {
+    g_propagate_error (error, inner_error);
 
-  return self;
+    return NULL;
+  }
+
+  return g_steal_pointer (&self);
 }
 
 const ManetteMappingBinding * const *
