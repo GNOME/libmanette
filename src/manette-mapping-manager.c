@@ -197,6 +197,7 @@ user_mappings_changed_cb (GFileMonitor          *monitor,
                           GFileMonitorEvent      event_type,
                           ManetteMappingManager *self)
 {
+  g_autoptr (GFile) user_mappings_file = NULL;
   g_autoptr (GError) error = NULL;
 
   g_hash_table_remove_all (self->user_mappings);
@@ -207,7 +208,9 @@ user_mappings_changed_cb (GFileMonitor          *monitor,
     return;
   }
 
-  add_from_file_uri (self, self->user_mappings_uri, self->user_mappings, &error);
+  user_mappings_file = g_file_new_for_uri (self->user_mappings_uri);
+  if (g_file_query_exists (user_mappings_file, NULL))
+    add_from_file_uri (self, self->user_mappings_uri, self->user_mappings, &error);
   if (G_UNLIKELY (error != NULL)) {
     g_debug ("ManetteMappingManager: Can’t add mappings from %s: %s",
              self->user_mappings_uri,
@@ -273,7 +276,8 @@ manette_mapping_manager_new (void)
                     G_CALLBACK (user_mappings_changed_cb),
                     self);
 
-  add_from_file_uri (self, self->user_mappings_uri, self->user_mappings, &error);
+  if (g_file_query_exists (user_mappings_file, NULL))
+    add_from_file_uri (self, self->user_mappings_uri, self->user_mappings, &error);
   if (G_UNLIKELY (error != NULL)) {
     g_debug ("ManetteMappingManager: Can’t add mappings from %s: %s",
              self->user_mappings_uri,
