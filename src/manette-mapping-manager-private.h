@@ -45,5 +45,6 @@ void manette_mapping_manager_save_mapping (ManetteMappingManager *self,
                                            const gchar           *mapping);
 void manette_mapping_manager_delete_mapping (ManetteMappingManager *self,
                                              const gchar           *guid);
+GList *manette_mapping_manager_get_default_mappings (ManetteMappingManager *self);
 
 G_END_DECLS

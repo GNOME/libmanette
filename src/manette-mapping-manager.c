@@ -380,6 +380,14 @@ manette_mapping_manager_delete_mapping (ManetteMappingManager *self,
     g_critical ("ManetteMappingManager: Can’t save user mappings: %s", error->message);
 }
 
+GList *
+manette_mapping_manager_get_default_mappings (ManetteMappingManager *self)
+{
+  g_return_val_if_fail (MANETTE_IS_MAPPING_MANAGER (self), NULL);
+
+  return g_hash_table_get_values (self->default_mappings);
+}
+
 /* Type */
 
 static void
