@@ -486,19 +486,19 @@ set_from_mapping_string (ManetteMapping  *self,
       continue;
 
     if (!parse_mapping_destination (destination_string, &binding)) {
-      g_debug ("Invalid binding destination: %s:%s in %s", destination_string, source_string, mapping_string);
+      g_critical ("Invalid binding destination: %s:%s in %s", destination_string, source_string, mapping_string);
 
       continue;
     }
 
     if  (binding.destination.type == EV_MAX) {
-      g_debug ("Invalid token: %s", destination_string);
+      g_critical ("Invalid token: %s", destination_string);
 
       continue;
     }
 
     if (!parse_mapping_source (source_string, &binding)) {
-      g_debug ("Invalid binding source: %s:%s in %s", destination_string, source_string, mapping_string);
+      g_critical ("Invalid binding source: %s:%s in %s", destination_string, source_string, mapping_string);
 
       continue;
     }
