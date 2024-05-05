@@ -485,6 +485,15 @@ set_from_mapping_string (ManetteMapping  *self,
     if (g_strcmp0 ("platform", splitted_mapping[0]) == 0)
       continue;
 
+    /* Skip unhandled destinations. */
+    if (g_str_has_prefix (destination_string, "misc") ||
+        g_str_has_prefix (destination_string, "paddle") ||
+        g_strcmp0 (destination_string, "touchpad") == 0) {
+      g_debug ("Unhandled binding destination: %s:%s in %s", destination_string, source_string, mapping_string);
+
+      continue;
+    }
+
     if (!parse_mapping_destination (destination_string, &binding)) {
       g_critical ("Invalid binding destination: %s:%s in %s", destination_string, source_string, mapping_string);
 
