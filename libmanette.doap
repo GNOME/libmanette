@@ -16,6 +16,19 @@
 
   <maintainer>
     <foaf:Person>
+      <foaf:name>Adrien Plazas</foaf:name>
+      <foaf:mbox rdf:resource="mailto:aplazas@gnome.org" />
+      <gnome:userid>aplazas</gnome:userid>
+      <foaf:account>
+        <foaf:OnlineAccount>
+          <foaf:accountServiceHomepage rdf:resource="https://gitlab.gnome.org" />
+          <foaf:accountName>aplazas</foaf:accountName>
+        </foaf:OnlineAccount>
+      </foaf:account>
+    </foaf:Person>
+  </maintainer>
+  <maintainer>
+    <foaf:Person>
       <foaf:name>Alice Mikhaylenko</foaf:name>
       <foaf:mbox rdf:resource="mailto:alicem@gnome.org" />
       <gnome:userid>alicem</gnome:userid>
