@@ -2,7 +2,7 @@
 
 DOC_DIR=public/doc
 REFS="
-master
+main
 "
 
 IFS='
