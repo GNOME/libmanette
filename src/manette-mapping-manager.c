@@ -58,6 +58,7 @@ add_mapping (ManetteMappingManager *self,
              GHashTable            *mappings)
 {
   const gchar *platform;
+  const gchar *hint;
   g_auto (GStrv) split = NULL;
 
   g_assert (mapping_string != NULL);
@@ -68,6 +69,12 @@ add_mapping (ManetteMappingManager *self,
   platform = g_strstr_len (mapping_string, -1, "platform");
   if (platform != NULL && !g_str_has_prefix (platform, "platform:Linux"))
     return;
+
+  hint = g_strstr_len (mapping_string, -1, "hint");
+  if (hint != NULL && !g_str_has_prefix (hint, "hint:SDL_GAMECONTROLLER_USE_BUTTON_LABELS:=1")) {
+    g_debug ("Mappings reporting face buttons by label instead of position aren´t supported: ignoring mapping `%s`", mapping_string);
+    return;
+  }
 
   /* GUID | device name | the rest of the mapping string */
   split = g_strsplit (mapping_string, ",", 3);
