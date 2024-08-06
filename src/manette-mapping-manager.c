@@ -67,8 +67,10 @@ add_mapping (ManetteMappingManager *self,
     return;
 
   platform = g_strstr_len (mapping_string, -1, "platform");
-  if (platform != NULL && !g_str_has_prefix (platform, "platform:Linux"))
+  if (platform != NULL && !g_str_has_prefix (platform, "platform:Linux")) {
+    g_debug ("Mappings for other platforms than Linux aren´t supported: ignoring mapping `%s`", mapping_string);
     return;
+  }
 
   hint = g_strstr_len (mapping_string, -1, "hint");
   if (hint != NULL && !g_str_has_prefix (hint, "hint:SDL_GAMECONTROLLER_USE_BUTTON_LABELS:=1")) {
