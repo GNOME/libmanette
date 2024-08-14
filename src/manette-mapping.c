@@ -296,6 +296,18 @@ parse_destination_input (gchar    *start,
     { EV_KEY, BTN_TR2, "righttrigger" },
     { EV_KEY, BTN_Y, "x" },
     { EV_KEY, BTN_X, "y" },
+    { EV_KEY, BTN_TRIGGER_HAPPY7, "paddle1" },
+    { EV_KEY, BTN_TRIGGER_HAPPY8, "paddle2" },
+    { EV_KEY, BTN_TRIGGER_HAPPY9, "paddle3" },
+    { EV_KEY, BTN_TRIGGER_HAPPY10, "paddle4" },
+    { EV_KEY, BTN_TRIGGER_HAPPY11, "touchpad" },
+    { EV_KEY, BTN_TRIGGER_HAPPY1, "misc1" },
+    /* See https://github.com/libsdl-org/SDL/blob/efdcfef4b94c41229b92633e184b17b7f3c4d01c/src/joystick/SDL_gamepad.c#L1084-L1088 */
+    { EV_KEY, BTN_TRIGGER_HAPPY2, "misc2" },
+    { EV_KEY, BTN_TRIGGER_HAPPY3, "misc3" },
+    { EV_KEY, BTN_TRIGGER_HAPPY4, "misc4" },
+    { EV_KEY, BTN_TRIGGER_HAPPY5, "misc5" },
+    { EV_KEY, BTN_TRIGGER_HAPPY6, "misc6" },
   };
   const gint length = sizeof (values) / sizeof (values[0]);
   gint i;
@@ -484,15 +496,6 @@ set_from_mapping_string (ManetteMapping  *self,
     /* Skip the platform key. */
     if (g_strcmp0 ("platform", splitted_mapping[0]) == 0)
       continue;
-
-    /* Skip unhandled destinations. */
-    if (g_str_has_prefix (destination_string, "misc") ||
-        g_str_has_prefix (destination_string, "paddle") ||
-        g_strcmp0 (destination_string, "touchpad") == 0) {
-      g_debug ("Unhandled binding destination: %s:%s in %s", destination_string, source_string, mapping_string);
-
-      continue;
-    }
 
     if (!parse_mapping_destination (destination_string, &binding)) {
       g_critical ("Invalid binding destination: %s:%s in %s", destination_string, source_string, mapping_string);
