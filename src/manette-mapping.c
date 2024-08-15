@@ -302,7 +302,6 @@ parse_destination_input (gchar    *start,
     { EV_KEY, BTN_TRIGGER_HAPPY10, "paddle4" },
     { EV_KEY, BTN_TRIGGER_HAPPY11, "touchpad" },
     { EV_KEY, BTN_TRIGGER_HAPPY1, "misc1" },
-    /* See https://github.com/libsdl-org/SDL/blob/efdcfef4b94c41229b92633e184b17b7f3c4d01c/src/joystick/SDL_gamepad.c#L1084-L1088 */
     { EV_KEY, BTN_TRIGGER_HAPPY2, "misc2" },
     { EV_KEY, BTN_TRIGGER_HAPPY3, "misc3" },
     { EV_KEY, BTN_TRIGGER_HAPPY4, "misc4" },
