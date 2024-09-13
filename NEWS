@@ -1,4 +1,20 @@
 =============
+Version 0.2.8
+=============
+
+* Update and clean up the game controller mapping database
+* ManetteDevice
+ - add manette_device_get_mapping() and manette_device_get_guid()
+ - Handle keycodes before BTN_MISC as well
+* ManetteMapping
+ - Allow to map paddle1-4, misc1-6 and touchpad buttons
+ - Improve error handling
+* ManetteMappingManager
+ - Check if user mapping file exists
+* Tests
+ - Test default mappings
+
+=============
 Version 0.2.7
 =============
 
