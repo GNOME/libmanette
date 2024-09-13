@@ -45,7 +45,7 @@ unit-tests:
     - flatpak build ${FLATPAK_BUILD_DIR} ninja -C _build test
 
 gudev:
-  image: fedora:32
+  image: fedora:latest
   stage: build
   before_script:
     - dnf install -y gcc glib2-devel gobject-introspection-devel libevdev-devel libgudev-devel meson vala
