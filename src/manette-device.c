@@ -626,6 +626,28 @@ manette_device_get_name (ManetteDevice *self)
 }
 
 /**
+ * manette_device_get_identifier:
+ * @self: a #ManetteDevice
+ *
+ * Gets the device's identifier.
+ *
+ * Returns: (transfer full) (nullable): the identifier of @self, do not modify it or free it
+ */
+const gchar *
+manette_device_get_identifier (ManetteDevice *self)
+{
+  gchar *ret;
+
+  g_return_val_if_fail (MANETTE_IS_DEVICE (self), NULL);
+
+  ret = libevdev_get_uniq (self->evdev_device);
+  if (result == '\0')
+    return NULL;
+
+  return ret;
+}
+
+/**
  * manette_device_get_product_id:
  * @self: a #ManetteDevice
  *
