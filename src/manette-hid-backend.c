@@ -160,6 +160,15 @@ manette_hid_backend_get_name (ManetteBackend *backend)
   return self->name;
 }
 
+static const char *
+manette_hid_backend_get_identifier (ManetteBackend *backend)
+{
+  ManetteHidBackend *self = MANETTE_HID_BACKEND (backend);
+  const struct hid_device_info *info = hid_get_device_info (self->hid);
+
+  return g_strdup_printf ("%ls", info->serial_number);
+}
+
 static int
 manette_hid_backend_get_vendor_id (ManetteBackend *backend)
 {
@@ -253,6 +262,7 @@ manette_hid_backend_backend_init (ManetteBackendInterface *iface)
 {
   iface->initialize = manette_hid_backend_initialize;
   iface->get_name = manette_hid_backend_get_name;
+  iface->get_identifier = manette_hid_backend_get_identifier;
   iface->get_vendor_id = manette_hid_backend_get_vendor_id;
   iface->get_product_id = manette_hid_backend_get_product_id;
   iface->get_bustype_id = manette_hid_backend_get_bustype_id;
