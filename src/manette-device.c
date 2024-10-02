@@ -423,6 +423,24 @@ manette_device_get_name (ManetteDevice *self)
 }
 
 /**
+ * manette_device_get_serial:
+ * @self: a device
+ *
+ * Gets the device's serial number.
+ *
+ * Can be `NULL` if the device doesn't provide any.
+ *
+ * Returns: (transfer none) (nullable): the serial number of @self
+ */
+const char *
+manette_device_get_serial (ManetteDevice *self)
+{
+  g_return_val_if_fail (MANETTE_IS_DEVICE (self), NULL);
+
+  return manette_backend_get_serial (self->backend);
+}
+
+/**
  * manette_device_get_product_id:
  * @self: a device
  *

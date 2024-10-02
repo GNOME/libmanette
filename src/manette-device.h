@@ -53,6 +53,9 @@ MANETTE_AVAILABLE_IN_ALL
 const char *manette_device_get_name (ManetteDevice *self);
 
 MANETTE_AVAILABLE_IN_ALL
+const char *manette_device_get_serial (ManetteDevice *self);
+
+MANETTE_AVAILABLE_IN_ALL
 const char *manette_device_get_guid (ManetteDevice *self);
 
 MANETTE_AVAILABLE_IN_ALL

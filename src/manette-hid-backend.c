@@ -39,6 +39,7 @@ struct _ManetteHidBackend
   ManetteDeviceType device_type;
   ManetteHidDriver *driver;
   char *name;
+  char *serial;
   guint event_source_id;
 };
 
@@ -70,6 +71,7 @@ manette_hid_backend_finalize (GObject *object)
   hid_close (self->hid);
   g_free (self->filename);
   g_free (self->name);
+  g_free (self->serial);
 
   G_OBJECT_CLASS (manette_hid_backend_parent_class)->finalize (object);
 }
@@ -158,6 +160,20 @@ manette_hid_backend_get_name (ManetteBackend *backend)
   }
 
   return self->name;
+}
+
+static const char *
+manette_hid_backend_get_serial (ManetteBackend *backend)
+{
+  ManetteHidBackend *self = MANETTE_HID_BACKEND (backend);
+
+  if (!self->serial) {
+    const struct hid_device_info *info = hid_get_device_info (self->hid);
+
+    self->serial = g_strdup_printf ("%ls", info->serial_number);
+  }
+
+  return self->serial;
 }
 
 static int
@@ -269,6 +285,7 @@ manette_hid_backend_backend_init (ManetteBackendInterface *iface)
 {
   iface->initialize = manette_hid_backend_initialize;
   iface->get_name = manette_hid_backend_get_name;
+  iface->get_serial = manette_hid_backend_get_serial;
   iface->get_vendor_id = manette_hid_backend_get_vendor_id;
   iface->get_product_id = manette_hid_backend_get_product_id;
   iface->get_bustype_id = manette_hid_backend_get_bustype_id;

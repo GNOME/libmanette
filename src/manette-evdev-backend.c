@@ -519,6 +519,18 @@ manette_evdev_backend_get_name (ManetteBackend *backend)
   return libevdev_get_name (self->evdev_device);
 }
 
+static const char *
+manette_evdev_backend_get_serial (ManetteBackend *backend)
+{
+  ManetteEvdevBackend *self = MANETTE_EVDEV_BACKEND (backend);
+  const char *ret = libevdev_get_uniq (self->evdev_device);
+
+  if (ret && *ret)
+    return ret;
+
+  return NULL;
+}
+
 static int
 manette_evdev_backend_get_vendor_id (ManetteBackend *backend)
 {
@@ -657,6 +669,7 @@ manette_evdev_backend_backend_init (ManetteBackendInterface *iface)
 {
   iface->initialize = manette_evdev_backend_initialize;
   iface->get_name = manette_evdev_backend_get_name;
+  iface->get_serial = manette_evdev_backend_get_serial;
   iface->get_vendor_id = manette_evdev_backend_get_vendor_id;
   iface->get_product_id = manette_evdev_backend_get_product_id;
   iface->get_bustype_id = manette_evdev_backend_get_bustype_id;
