@@ -395,6 +395,22 @@ manette_device_get_name (ManetteDevice *self)
 }
 
 /**
+ * manette_device_get_identifier:
+ * @self: a device
+ *
+ * Gets the device's identifier.
+ *
+ * Returns: (transfer full) (nullable): the identifier of @self, do not modify it or free it
+ */
+const char *
+manette_device_get_identifier (ManetteDevice *self)
+{
+  g_return_val_if_fail (MANETTE_IS_DEVICE (self), NULL);
+
+  return manette_backend_get_identifier (self->backend);
+}
+
+/**
  * manette_device_get_product_id:
  * @self: a device
  *

@@ -71,6 +71,20 @@ manette_backend_get_name (ManetteBackend *self)
   return iface->get_name (self);
 }
 
+const char *
+manette_backend_get_identifier (ManetteBackend *self)
+{
+  ManetteBackendInterface *iface;
+
+  g_assert (MANETTE_IS_BACKEND (self));
+
+  iface = MANETTE_BACKEND_GET_IFACE (self);
+
+  g_assert (iface->get_identifier);
+
+  return iface->get_identifier (self);
+}
+
 int
 manette_backend_get_vendor_id (ManetteBackend *self)
 {

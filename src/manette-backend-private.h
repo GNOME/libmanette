@@ -39,6 +39,7 @@ struct _ManetteBackendInterface
   gboolean (* initialize) (ManetteBackend *self);
 
   const char * (* get_name) (ManetteBackend *self);
+  const char * (* get_identifier) (ManetteBackend *self);
   int (* get_vendor_id) (ManetteBackend *self);
   int (* get_product_id) (ManetteBackend *self);
   int (* get_bustype_id) (ManetteBackend *self);
@@ -58,6 +59,7 @@ struct _ManetteBackendInterface
 gboolean manette_backend_initialize (ManetteBackend *self);
 
 const char *manette_backend_get_name (ManetteBackend *self);
+const char *manette_backend_get_identifier (ManetteBackend *self);
 int manette_backend_get_vendor_id (ManetteBackend *self);
 int manette_backend_get_product_id (ManetteBackend *self);
 int manette_backend_get_bustype_id (ManetteBackend *self);
