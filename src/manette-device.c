@@ -27,11 +27,11 @@
 
 #include <errno.h>
 #include <fcntl.h>
-#include <libevdev/libevdev.h>
 #include <linux/input-event-codes.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include "manette-backend-private.h"
 #include "manette-event-mapping-private.h"
 #include "manette-event-private.h"
 #include "manette-mapping-manager-private.h"
@@ -40,17 +40,9 @@ struct _ManetteDevice
 {
   GObject parent_instance;
 
-  gint fd;
-  glong event_source_id;
-  struct libevdev *evdev_device;
-  guint8 key_map[KEY_MAX];
-  guint8 abs_map[ABS_MAX];
-  struct input_absinfo abs_info[ABS_MAX];
   gchar *guid;
-
   ManetteMapping *mapping;
-
-  struct ff_effect rumble_effect;
+  ManetteBackend *backend;
 };
 
 G_DEFINE_TYPE (ManetteDevice, manette_device, G_TYPE_OBJECT)
@@ -133,47 +125,6 @@ emit_event_signal_deferred (ManetteDevice *self,
                    (GDestroyNotify) manette_device_event_signal_data_free);
 }
 
-static gboolean
-has_key (struct libevdev *device,
-         guint            code)
-{
-  return libevdev_has_event_code (device, (guint) EV_KEY, code);
-}
-
-static gboolean
-has_abs (struct libevdev *device,
-         guint            code)
-{
-  return libevdev_has_event_code (device, (guint) EV_ABS, code);
-}
-
-static gboolean
-is_game_controller (struct libevdev *device)
-{
-  gboolean has_joystick_axes_or_buttons;
-
-  g_assert (device != NULL);
-
-  /* Same detection code as udev-builtin-input_id.c in systemd
-   * joysticks don’t necessarily have buttons; e. g.
-   * rudders/pedals are joystick-like, but buttonless; they have
-   * other fancy axes. */
-  has_joystick_axes_or_buttons =
-    has_key (device, BTN_TRIGGER) ||
-    has_key (device, BTN_A) ||
-    has_key (device, BTN_1) ||
-    has_abs (device, ABS_RX) ||
-    has_abs (device, ABS_RY) ||
-    has_abs (device, ABS_RZ) ||
-    has_abs (device, ABS_THROTTLE) ||
-    has_abs (device, ABS_RUDDER) ||
-    has_abs (device, ABS_WHEEL) ||
-    has_abs (device, ABS_GAS) ||
-    has_abs (device, ABS_BRAKE);
-
-  return has_joystick_axes_or_buttons;
-}
-
 static void
 forward_event (ManetteDevice *self,
                ManetteEvent  *event)
@@ -198,27 +149,13 @@ map_event (ManetteDevice *self,
 }
 
 static void
-remove_event_source (ManetteDevice *self)
-{
-  g_assert (self != NULL);
-
-  if (self->event_source_id < 0)
-    return;
-
-  g_source_remove ((guint) self->event_source_id);
-  self->event_source_id = -1;
-}
-
-static void
 manette_device_finalize (GObject *object)
 {
   ManetteDevice *self = (ManetteDevice *)object;
 
-  close (self->fd);
-  remove_event_source (self);
-  g_clear_pointer (&self->evdev_device, libevdev_free);
   g_clear_pointer (&self->guid, g_free);
   g_clear_object (&self->mapping);
+  g_clear_object (&self->backend);
 
   G_OBJECT_CLASS (manette_device_parent_class)->finalize (object);
 }
@@ -328,134 +265,32 @@ manette_device_class_init (ManetteDeviceClass *klass)
 static void
 manette_device_init (ManetteDevice *self)
 {
-  self->event_source_id = -1;
-  self->rumble_effect.type = FF_RUMBLE;
-  self->rumble_effect.id = -1;
 }
 
 static gchar *
-compute_guid_string (struct libevdev *device)
+compute_guid_string (ManetteDevice *self)
 {
   return g_strdup_printf ("%08x%08x%08x%08x",
-                          GINT_TO_BE (libevdev_get_id_bustype (device)),
-                          GINT_TO_BE (libevdev_get_id_vendor (device)),
-                          GINT_TO_BE (libevdev_get_id_product (device)),
-                          GINT_TO_BE (libevdev_get_id_version (device)));
-}
-
-static gdouble
-centered_absolute_value (struct input_absinfo *abs_info,
-                         gint32                value)
-{
-  gint64 max_normalized;
-  gint64 value_normalized;
-  gint64 max_centered;
-  gint64 value_centered;
-  gint64 divisor;
-
-  g_assert (abs_info != NULL);
-
-  /* Adapt the value and the maximum to a minimum of 0. */
-  max_normalized = ((gint64) abs_info->maximum) - abs_info->minimum;
-  value_normalized = ((gint64) value) - abs_info->minimum;
-
-  max_centered = max_normalized / 2;
-  value_centered = (value_normalized - max_normalized) + max_centered;
-
-  if (value_centered > -abs_info->flat && value_centered < abs_info->flat)
-    value_centered = 0;
-
-  divisor = value_centered < 0 ? max_centered + 1 : max_centered;;
-
-  return ((gdouble) value_centered) / ((gdouble) divisor);
+                          GINT_TO_BE (manette_device_get_bustype_id (self)),
+                          GINT_TO_BE (manette_device_get_vendor_id (self)),
+                          GINT_TO_BE (manette_device_get_product_id (self)),
+                          GINT_TO_BE (manette_device_get_version_id (self)));
 }
 
 static void
-on_evdev_event (ManetteDevice      *self,
-                struct input_event *evdev_event)
+event_cb (ManetteDevice *self,
+          ManetteEvent  *event)
 {
-  ManetteEvent manette_event;
-
-  manette_event.any.device = self;
-  manette_event.any.time = evdev_event->input_event_sec * 1000 +
-                           evdev_event->input_event_usec / 1000;
-  manette_event.any.hardware_type = evdev_event->type;
-  manette_event.any.hardware_code = evdev_event->code;
-  manette_event.any.hardware_value = evdev_event->value;
-
-  switch (evdev_event->type) {
-  case EV_KEY:
-    manette_event.any.type = evdev_event->value ?
-      MANETTE_EVENT_BUTTON_PRESS :
-      MANETTE_EVENT_BUTTON_RELEASE;
-    guint index = evdev_event->code < BTN_MISC ?
-      evdev_event->code + BTN_MISC :
-      evdev_event->code - BTN_MISC;
-
-    manette_event.button.hardware_index = self->key_map[index];
-    manette_event.button.button = evdev_event->code;
-
-    break;
-  case EV_ABS:
-    switch (evdev_event->code) {
-    case ABS_HAT0X:
-    case ABS_HAT0Y:
-    case ABS_HAT1X:
-    case ABS_HAT1Y:
-    case ABS_HAT2X:
-    case ABS_HAT2Y:
-    case ABS_HAT3X:
-    case ABS_HAT3Y:
-      manette_event.any.type = MANETTE_EVENT_HAT;
-      manette_event.hat.hardware_index =
-        self->key_map[(evdev_event->code - ABS_HAT0X) / 2] * 2 +
-        (evdev_event->code - ABS_HAT0X) % 2;
-      manette_event.hat.axis = evdev_event->code;
-      manette_event.hat.value = evdev_event->value;
-
-      break;
-    default:
-      manette_event.any.type = MANETTE_EVENT_ABSOLUTE;
-      manette_event.absolute.hardware_index = evdev_event->code;
-      manette_event.absolute.axis = evdev_event->code;
-      manette_event.absolute.value =
-        centered_absolute_value (&self->abs_info[self->abs_map[evdev_event->code]],
-                                 evdev_event->value);
-
-      break;
-    }
-
-    break;
-  default:
-    manette_event.any.type = MANETTE_EVENT_NOTHING;
-  }
+  event->any.device = self;
 
   // Send the unmapped event first.
-  emit_event_signal_deferred (self, signals[SIG_EVENT], &manette_event);
+  emit_event_signal_deferred (self, signals[SIG_EVENT], event);
 
   // Then map or forward the event using dedicated signals.
   if (self->mapping == NULL)
-    forward_event (self, &manette_event);
+    forward_event (self, event);
   else
-    map_event (self, &manette_event);
-}
-
-static gboolean
-poll_events (GIOChannel    *source,
-             GIOCondition   condition,
-             ManetteDevice *self)
-{
-  struct input_event evdev_event;
-
-  g_assert (MANETTE_IS_DEVICE (self));
-
-  while (libevdev_has_event_pending (self->evdev_device))
-    if (libevdev_next_event (self->evdev_device,
-                             (guint) LIBEVDEV_READ_FLAG_NORMAL,
-                             &evdev_event) == 0)
-      on_evdev_event (self, &evdev_event);
-
-  return TRUE;
+    map_event (self, event);
 }
 
 /**
@@ -468,97 +303,18 @@ poll_events (GIOChannel    *source,
  * Returns: (transfer full): a new #ManetteDevice
  */
 ManetteDevice *
-manette_device_new (const gchar  *filename,
-                    GError      **error)
+manette_device_new (ManetteBackend  *backend,
+                    GError         **error)
 {
   g_autoptr (ManetteDevice) self = NULL;
-  g_autoptr (GIOChannel) channel = NULL;
-  gint buttons_number;
-  gint axes_number;
-  guint i;
 
-  g_return_val_if_fail (filename != NULL, NULL);
+  g_return_val_if_fail (MANETTE_IS_BACKEND (backend), NULL);
 
   self = g_object_new (MANETTE_TYPE_DEVICE, NULL);
 
-  self->fd = open (filename, O_RDWR | O_NONBLOCK, (mode_t) 0);
-  if (self->fd < 0) {
-    g_set_error (error,
-                 G_FILE_ERROR,
-                 g_file_error_from_errno (errno),
-                 "Unable to open “%s”: %s",
-                 filename,
-                 strerror (errno));
+  self->backend = backend;
 
-    return NULL;
-  }
-
-  self->evdev_device = libevdev_new ();
-  if (libevdev_set_fd (self->evdev_device, self->fd) < 0) {
-    g_set_error (error,
-                 G_FILE_ERROR,
-                 g_file_error_from_errno (errno),
-                 "Evdev is unable to open “%s”: %s",
-                 filename,
-                 strerror (errno));
-
-    return NULL;
-  }
-
-  if (!is_game_controller (self->evdev_device)) {
-    g_set_error (error,
-                 G_FILE_ERROR,
-                 G_FILE_ERROR_FAILED,
-                 "“%s” is not a game controller.",
-                 filename);
-
-    return NULL;
-  }
-
-  self->event_source_id = -1;
-
-  // Poll the events in the main loop.
-  channel = g_io_channel_unix_new (self->fd);
-  self->event_source_id = (glong) g_io_add_watch (channel, G_IO_IN, (GIOFunc) poll_events, self);
-  buttons_number = 0;
-
-  // Initialize the axes buttons and hats.
-  for (i = BTN_JOYSTICK; i < KEY_MAX; i++)
-    if (has_key (self->evdev_device, i)) {
-      self->key_map[i - BTN_MISC] = (guint8) buttons_number;
-      buttons_number++;
-    }
-  for (i = BTN_MISC; i < BTN_JOYSTICK; i++)
-    if (has_key (self->evdev_device, i)) {
-      self->key_map[i - BTN_MISC] = (guint8) buttons_number;
-      buttons_number++;
-    }
-  for (i = 0; i < BTN_MISC; i++)
-    if (has_key (self->evdev_device, i)) {
-      self->key_map[i + BTN_MISC] = (guint8) buttons_number;
-      buttons_number++;
-    }
-
-  // Get info about the axes.
-  axes_number = 0;
-  for (i = 0; i < ABS_MAX; i++) {
-    // Skip hats
-    if (i == ABS_HAT0X) {
-      i = ABS_HAT3Y;
-
-      continue;
-    }
-    if (has_abs (self->evdev_device, i)) {
-      const struct input_absinfo *absinfo;
-
-      absinfo = libevdev_get_abs_info (self->evdev_device, i);
-      if (absinfo != NULL) {
-        self->abs_map[i] = (guint8) axes_number;
-        self->abs_info[axes_number] = *absinfo;
-        axes_number++;
-      }
-    }
-  }
+  g_signal_connect_swapped (self->backend, "event", G_CALLBACK (event_cb), self);
 
   return g_steal_pointer (&self);
 }
@@ -580,7 +336,7 @@ manette_device_get_guid (ManetteDevice *self)
   g_return_val_if_fail (MANETTE_IS_DEVICE (self), NULL);
 
   if (self->guid == NULL)
-    self->guid = compute_guid_string (self->evdev_device);
+    self->guid = compute_guid_string (self);
 
   return self->guid;
 }
@@ -606,7 +362,7 @@ manette_device_has_input (ManetteDevice *self,
 
   return MANETTE_IS_MAPPING (self->mapping) ?
     manette_mapping_has_destination_input (self->mapping, type, code) :
-    libevdev_has_event_code (self->evdev_device, type, code);
+    manette_backend_has_input (self->backend, type, code);
 }
 
 /**
@@ -622,7 +378,7 @@ manette_device_get_name (ManetteDevice *self)
 {
   g_return_val_if_fail (MANETTE_IS_DEVICE (self), NULL);
 
-  return libevdev_get_name (self->evdev_device);
+  return manette_backend_get_name (self->backend);
 }
 
 /**
@@ -640,7 +396,7 @@ manette_device_get_product_id (ManetteDevice *self)
 {
   g_return_val_if_fail (MANETTE_IS_DEVICE (self), 0);
 
-  return libevdev_get_id_product (self->evdev_device);
+  return manette_backend_get_product_id (self->backend);
 }
 
 /**
@@ -658,7 +414,7 @@ manette_device_get_vendor_id (ManetteDevice *self)
 {
   g_return_val_if_fail (MANETTE_IS_DEVICE (self), 0);
 
-  return libevdev_get_id_vendor (self->evdev_device);
+  return manette_backend_get_vendor_id (self->backend);
 }
 
 /**
@@ -675,7 +431,7 @@ manette_device_get_bustype_id (ManetteDevice *self)
 {
   g_return_val_if_fail (MANETTE_IS_DEVICE (self), 0);
 
-  return libevdev_get_id_bustype (self->evdev_device);
+  return manette_backend_get_bustype_id (self->backend);
 }
 
 /**
@@ -691,7 +447,7 @@ manette_device_get_version_id (ManetteDevice *self)
 {
   g_return_val_if_fail (MANETTE_IS_DEVICE (self), 0);
 
-  return libevdev_get_id_version (self->evdev_device);
+  return manette_backend_get_version_id (self->backend);
 }
 
 /**
@@ -716,7 +472,7 @@ manette_device_set_mapping (ManetteDevice  *self,
  * @self: a #ManetteDevice
  *
  * Gets the user mapping for @self, or default mapping if there isn't any. Can
- * return %NULL if there's no mapping.
+ * return %NULL if there's no mapping or @self doesn't support mappings.
  *
  * Returns: (transfer full) (nullable): the mapping for @self
  *
@@ -815,17 +571,9 @@ manette_device_remove_user_mapping (ManetteDevice *self)
 gboolean
 manette_device_has_rumble (ManetteDevice *self)
 {
-  gulong features[4];
-
   g_return_val_if_fail (MANETTE_IS_DEVICE (self), FALSE);
 
-  if (ioctl (self->fd, EVIOCGBIT (EV_FF, sizeof (gulong) * 4), features) == -1)
-    return FALSE;
-
-  if (!((features[FF_RUMBLE / (sizeof (glong) * 8)] >> FF_RUMBLE % (sizeof (glong) * 8)) & 1))
-    return FALSE;
-
-  return TRUE;
+  return manette_backend_has_rumble (self->backend);
 }
 
 /**
@@ -848,31 +596,11 @@ manette_device_rumble (ManetteDevice *self,
                        guint16        weak_magnitude,
                        guint16        milliseconds)
 {
-  struct input_event event;
-
   g_return_val_if_fail (MANETTE_IS_DEVICE (self), FALSE);
   g_return_val_if_fail (milliseconds <= G_MAXINT16, FALSE);
 
-  self->rumble_effect.u.rumble.strong_magnitude = strong_magnitude;
-  self->rumble_effect.u.rumble.weak_magnitude = weak_magnitude;
-  self->rumble_effect.replay.length = milliseconds;
-
-  if (ioctl (self->fd, EVIOCSFF, &self->rumble_effect) == -1) {
-    g_debug ("Failed to upload the rumble effect.");
-
-    return FALSE;
-  }
-
-  event.type = EV_FF;
-  event.code = self->rumble_effect.id;
-  /* 1 to play the event, 0 to stop it. */
-  event.value = 1;
-
-  if (write (self->fd, (const void*) &event, sizeof (event)) == -1) {
-    g_debug ("Failed to start the rumble effect.");
-
-    return FALSE;
-  }
-
-  return TRUE;
+  return manette_backend_rumble (self->backend,
+                                 strong_magnitude,
+                                 weak_magnitude,
+                                 milliseconds);
 }

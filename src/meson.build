@@ -7,7 +7,9 @@ libmanette_resources = gnome.compile_resources(
 
 libmanette_sources = [
   libmanette_resources,
+  'manette-backend.c',
   'manette-device.c',
+  'manette-evdev-backend.c',
   'manette-event.c',
   'manette-event-mapping.c',
   'manette-mapping.c',

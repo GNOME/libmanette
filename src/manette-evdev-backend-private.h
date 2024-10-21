@@ -1,6 +1,6 @@
-/* manette-device-private.h
+/* manette-evdev-backend-private.h
  *
- * Copyright (C) 2017 Adrien Plazas <kekun.plazas@laposte.net>
+ * Copyright (C) 2024 Alice Mikhaylenko <alicem@gnome.org>
  *
  * This file is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as
@@ -22,19 +22,16 @@
 # error "This file is private, only <libmanette.h> can be included directly."
 #endif
 
-#include "manette-device.h"
+#include <glib-object.h>
+
 #include "manette-backend-private.h"
-#include "manette-mapping-private.h"
 
 G_BEGIN_DECLS
 
-ManetteDevice *manette_device_new (ManetteBackend  *backend,
-                                   GError         **error);
-int manette_device_get_product_id (ManetteDevice *self);
-int manette_device_get_vendor_id (ManetteDevice *self);
-int manette_device_get_bustype_id (ManetteDevice *self);
-int manette_device_get_version_id (ManetteDevice *self);
-void manette_device_set_mapping (ManetteDevice  *self,
-                                 ManetteMapping *mapping);
+#define MANETTE_TYPE_EVDEV_BACKEND (manette_evdev_backend_get_type())
+
+G_DECLARE_FINAL_TYPE (ManetteEvdevBackend, manette_evdev_backend, MANETTE, EVDEV_BACKEND, GObject)
+
+ManetteBackend *manette_evdev_backend_new (const char *filename);
 
 G_END_DECLS

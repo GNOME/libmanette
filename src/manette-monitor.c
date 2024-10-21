@@ -31,7 +31,10 @@
 #ifdef GUDEV_ENABLED
  #include <gudev/gudev.h>
 #endif
+
+#include "manette-backend-private.h"
 #include "manette-device-private.h"
+#include "manette-evdev-backend-private.h"
 #include "manette-mapping-manager-private.h"
 #include "manette-monitor-iter-private.h"
 
@@ -96,6 +99,7 @@ add_device (ManetteMonitor *self,
             const gchar    *filename)
 {
   g_autoptr (ManetteDevice) device = NULL;
+  g_autoptr (ManetteBackend) backend = NULL;
   g_autoptr (GError) error = NULL;
 
   g_assert (self != NULL);
@@ -104,7 +108,12 @@ add_device (ManetteMonitor *self,
   if (g_hash_table_contains (self->devices, filename))
     return;
 
-  device = manette_device_new (filename, &error);
+  backend = manette_evdev_backend_new (filename);
+
+  if (!manette_backend_initialize (backend))
+    return;
+
+  device = manette_device_new (g_steal_pointer (&backend), &error);
   if (G_UNLIKELY (error != NULL)) {
     if (!g_error_matches (error, G_FILE_ERROR, G_FILE_ERROR_NXIO))
       g_debug ("Failed to open %s: %s", filename, error->message);
