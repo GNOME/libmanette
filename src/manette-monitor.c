@@ -121,7 +121,8 @@ add_device (ManetteMonitor *self,
     return;
   }
 
-  load_mapping (self, device);
+  if (manette_device_supports_mapping (device))
+    load_mapping (self, device);
 
   g_hash_table_insert (self->devices,
                        g_strdup (filename),

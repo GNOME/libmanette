@@ -451,6 +451,24 @@ manette_device_get_version_id (ManetteDevice *self)
 }
 
 /**
+ * manette_device_supports_mapping:
+ * @self: a #ManetteDevice
+ *
+ * Gets whether @self supports mapping.
+ *
+ * Returns: whether @self supports mapping
+ *
+ * Since: 0.3
+ */
+gboolean
+manette_device_supports_mapping (ManetteDevice *self)
+{
+  g_return_val_if_fail (MANETTE_IS_DEVICE (self), FALSE);
+
+  return TRUE;
+}
+
+/**
  * manette_device_set_mapping:
  * @self: a #ManetteDevice
  * @mapping: a #ManetteMapping
@@ -463,6 +481,7 @@ manette_device_set_mapping (ManetteDevice  *self,
                             ManetteMapping *mapping)
 {
   g_return_if_fail (MANETTE_IS_DEVICE (self));
+  g_return_if_fail (manette_device_supports_mapping (self));
 
   g_set_object (&self->mapping, mapping);
 }
@@ -486,6 +505,9 @@ manette_device_get_mapping (ManetteDevice *self)
 
   g_return_val_if_fail (MANETTE_IS_DEVICE (self), FALSE);
 
+  if (!manette_device_supports_mapping (self))
+    return NULL;
+
   guid = manette_device_get_guid (self);
   mapping_manager = manette_mapping_manager_new ();
 
@@ -507,6 +529,9 @@ manette_device_has_user_mapping (ManetteDevice *self)
   g_autoptr (ManetteMappingManager) mapping_manager = NULL;
 
   g_return_val_if_fail (MANETTE_IS_DEVICE (self), FALSE);
+
+  if (!manette_device_supports_mapping (self))
+    return FALSE;
 
   guid = manette_device_get_guid (self);
   mapping_manager = manette_mapping_manager_new ();
@@ -531,6 +556,7 @@ manette_device_save_user_mapping (ManetteDevice *self,
 
   g_return_if_fail (MANETTE_IS_DEVICE (self));
   g_return_if_fail (mapping_string != NULL);
+  g_return_if_fail (manette_device_supports_mapping (self));
 
   guid = manette_device_get_guid (self);
   name = manette_device_get_name (self);
@@ -554,6 +580,7 @@ manette_device_remove_user_mapping (ManetteDevice *self)
   g_autoptr (ManetteMappingManager) mapping_manager = NULL;
 
   g_return_if_fail (MANETTE_IS_DEVICE (self));
+  g_return_if_fail (manette_device_supports_mapping (self));
 
   guid = manette_device_get_guid (self);
   mapping_manager = manette_mapping_manager_new ();
