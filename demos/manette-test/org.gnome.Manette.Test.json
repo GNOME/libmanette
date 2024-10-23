@@ -30,6 +30,20 @@
             ]
         },
         {
+            "name" : "hidapi",
+            "buildsystem" : "cmake-ninja",
+            "config-opts" : [
+                "-DHIDAPI_WITH_HIDRAW=ON",
+                "-DHIDAPI_WITH_LIBUSB=OFF"
+            ],
+            "sources" : [
+                {
+                    "type" : "git",
+                    "url" : "https://github.com/libusb/hidapi"
+                }
+            ]
+        },
+        {
             "name" : "libmanette",
             "buildsystem" : "meson",
             "config-opts": [

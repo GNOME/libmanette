@@ -48,7 +48,7 @@ gudev:
   image: fedora:latest
   stage: build
   before_script:
-    - dnf install -y gcc glib2-devel gobject-introspection-devel libevdev-devel libgudev-devel meson vala
+    - dnf install -y gcc glib2-devel gobject-introspection-devel hidapi-devel libevdev-devel libgudev-devel meson vala
   script:
     - meson _build
     - ninja -C _build
