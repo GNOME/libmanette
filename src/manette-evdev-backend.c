@@ -25,6 +25,7 @@
 #include <sys/ioctl.h>
 #include <unistd.h>
 
+#include "manette-device-type-private.h"
 #include "manette-event-private.h"
 
 struct _ManetteEvdevBackend
@@ -253,6 +254,10 @@ manette_evdev_backend_initialize (ManetteBackend *backend)
 
   vendor = libevdev_get_id_vendor (self->evdev_device);
   product = libevdev_get_id_product (self->evdev_device);
+
+  /* Other types are handled via hid backend or skipped */
+  if (manette_device_type_guess (vendor, product) != MANETTE_DEVICE_GENERIC)
+    return FALSE;
 
   // Poll the events in the main loop.
   channel = g_io_channel_unix_new (self->fd);
