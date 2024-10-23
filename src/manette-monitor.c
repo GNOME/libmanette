@@ -35,10 +35,13 @@
 #include "manette-backend-private.h"
 #include "manette-device-private.h"
 #include "manette-evdev-backend-private.h"
+#include "manette-hid-backend-private.h"
 #include "manette-mapping-manager-private.h"
 #include "manette-monitor-iter-private.h"
 
-#define INPUT_DIRECTORY "/dev/input"
+
+#define DEV_DIRECTORY "/dev"
+#define INPUT_DIRECTORY DEV_DIRECTORY "/input"
 
 struct _ManetteMonitor {
   GObject parent_instance;
@@ -48,7 +51,8 @@ struct _ManetteMonitor {
 #ifdef GUDEV_ENABLED
   GUdevClient *client;
 #endif
-  GFileMonitor *monitor;
+  GFileMonitor *dev_monitor;
+  GFileMonitor *input_monitor;
   GHashTable *potential_devices;
 };
 
@@ -96,7 +100,8 @@ load_mapping (ManetteMonitor *self,
 
 static void
 add_device (ManetteMonitor *self,
-            const gchar    *filename)
+            const gchar    *filename,
+            gboolean        is_hid)
 {
   g_autoptr (ManetteDevice) device = NULL;
   g_autoptr (ManetteBackend) backend = NULL;
@@ -108,7 +113,10 @@ add_device (ManetteMonitor *self,
   if (g_hash_table_contains (self->devices, filename))
     return;
 
-  backend = manette_evdev_backend_new (filename);
+  if (is_hid)
+    backend = manette_hid_backend_new (filename);
+  else
+    backend = manette_evdev_backend_new (filename);
 
   if (!manette_backend_initialize (backend))
     return;
@@ -153,13 +161,15 @@ static void
 add_device_for_udev_device (ManetteMonitor *self,
                             GUdevDevice    *udev_device)
 {
-  const gchar *filename;
+  const gchar *filename, *subsystem;
 
   g_assert (self != NULL);
   g_assert (udev_device != NULL);
 
   filename = g_udev_device_get_device_file (udev_device);
-  add_device (self, filename);
+  subsystem = g_udev_device_get_subsystem (udev_device);
+
+  add_device (self, filename, !g_strcmp0 (subsystem, "hidraw"));
 }
 
 static void
@@ -188,7 +198,8 @@ udev_device_is_manette (GUdevDevice *udev_device)
 {
   g_assert (udev_device != NULL);
 
-  return udev_device_property_is (udev_device, "ID_INPUT_JOYSTICK", "1") ||
+  return !g_strcmp0 (g_udev_device_get_subsystem (udev_device), "hidraw") ||
+         udev_device_property_is (udev_device, "ID_INPUT_JOYSTICK", "1") ||
          udev_device_property_is (udev_device, ".INPUT_CLASS", "joystick");
 }
 
@@ -215,14 +226,14 @@ udev_client_uevent_cb (GUdevClient    *sender,
 }
 
 static void
-coldplug_gudev_devices (ManetteMonitor *self)
+coldplug_gudev_devices_for_subsystem (ManetteMonitor *self,
+                                      const char     *subsystem)
 {
   GList *initial_devices_list;
   GList *device_it = NULL;
   GUdevDevice *udev_device = NULL;
 
-  initial_devices_list = g_udev_client_query_by_subsystem (self->client,
-                                                           "input");
+  initial_devices_list = g_udev_client_query_by_subsystem (self->client, subsystem);
 
   for (device_it = initial_devices_list;
        device_it != NULL;
@@ -241,9 +252,16 @@ coldplug_gudev_devices (ManetteMonitor *self)
 }
 
 static void
+coldplug_gudev_devices (ManetteMonitor *self)
+{
+  coldplug_gudev_devices_for_subsystem (self, "input");
+  coldplug_gudev_devices_for_subsystem (self, "hidraw");
+}
+
+static void
 init_gudev_backend (ManetteMonitor *self)
 {
-  self->client = g_udev_client_new ((const gchar *[]) { "input", NULL });
+  self->client = g_udev_client_new ((const gchar *[]) { "input", "hidraw", NULL });
   g_signal_connect_object (self->client,
                            "uevent",
                            (GCallback) udev_client_uevent_cb,
@@ -261,9 +279,23 @@ init_gudev_backend (ManetteMonitor *self)
 static gboolean
 is_evdev_device (GFile *file)
 {
-  g_autofree char *event_file_basename = g_file_get_basename (file);
+  const char *event_file_path = g_file_peek_path (file);
 
-  return g_str_has_prefix (event_file_basename, "event");
+  return g_str_has_prefix (event_file_path, INPUT_DIRECTORY "/event");
+}
+
+static gboolean
+is_hid_device (GFile *file)
+{
+  const char *event_file_path = g_file_peek_path (file);
+
+  return g_str_has_prefix (event_file_path, DEV_DIRECTORY "/hidraw");
+}
+
+static inline gboolean
+is_eligible_device (GFile *file)
+{
+  return is_evdev_device (file) || is_hid_device (file);
 }
 
 static gboolean
@@ -292,7 +324,7 @@ file_created (ManetteMonitor *self,
   g_autofree gchar *path = g_file_get_path (file);
 
   if (is_accessible (file)) {
-    add_device (self, path);
+    add_device (self, path, is_hid_device (file));
 
     return;
   }
@@ -312,7 +344,7 @@ file_attribute_changed (ManetteMonitor *self,
   if (!is_accessible (file))
     return;
 
-  add_device (self, path);
+  add_device (self, path, is_hid_device (file));
 
   g_hash_table_remove (self->potential_devices, path);
 }
@@ -333,7 +365,7 @@ file_monitor_changed_cb (GFileMonitor      *monitor,
                          GFileMonitorEvent  event_type,
                          ManetteMonitor    *self)
 {
-  if (!is_evdev_device (file))
+  if (!is_eligible_device (file))
     return;
 
   switch (event_type) {
@@ -355,13 +387,14 @@ file_monitor_changed_cb (GFileMonitor      *monitor,
 }
 
 static void
-coldplug_file_devices (ManetteMonitor *self)
+coldplug_files_from_dir (ManetteMonitor *self,
+                         const char     *path)
 {
   g_autoptr (GDir) dir = NULL;
   const gchar *name = NULL;
   g_autoptr (GError) error = NULL;
 
-  dir = g_dir_open (INPUT_DIRECTORY, (guint) 0, &error);
+  dir = g_dir_open (path, (guint) 0, &error);
   if (G_UNLIKELY (error != NULL)) {
     g_debug ("%s", error->message);
 
@@ -372,28 +405,52 @@ coldplug_file_devices (ManetteMonitor *self)
     g_autofree gchar *filename = NULL;
     g_autoptr (GFile) file = NULL;
 
-    filename = g_build_filename (INPUT_DIRECTORY, name, NULL);
+    filename = g_build_filename (path, name, NULL);
     file = g_file_new_for_path (filename);
-    if (is_evdev_device (file) && is_accessible (file))
-      add_device (self, filename);
+    if (is_eligible_device (file) && is_accessible (file))
+      add_device (self, filename, is_hid_device (file));
   }
+}
+
+static void
+coldplug_file_devices (ManetteMonitor *self)
+{
+  coldplug_files_from_dir (self, DEV_DIRECTORY);
+  coldplug_files_from_dir (self, INPUT_DIRECTORY);
 }
 
 static void
 init_file_backend (ManetteMonitor *self)
 {
-  g_autoptr (GFile) file = g_file_new_for_path (INPUT_DIRECTORY);
+  g_autoptr (GFile) dev_dir = g_file_new_for_path (DEV_DIRECTORY);
+  g_autoptr (GFile) input_dir = g_file_new_for_path (INPUT_DIRECTORY);
   g_autoptr (GError) error = NULL;
 
-  self->monitor = g_file_monitor_directory (file,
-                                            G_FILE_MONITOR_NONE,
-                                            NULL,
-                                            &error);
+  self->dev_monitor = g_file_monitor_directory (dev_dir,
+                                                G_FILE_MONITOR_NONE,
+                                                NULL,
+                                                &error);
+
+  if (G_UNLIKELY (error != NULL))
+    g_debug ("Couldn't monitor %s: %s", DEV_DIRECTORY, error->message);
+  else
+    g_signal_connect_object (self->dev_monitor,
+                             "changed",
+                             (GCallback) file_monitor_changed_cb,
+                             self,
+                             0);
+
+  g_clear_error (&error);
+
+  self->input_monitor = g_file_monitor_directory (input_dir,
+                                                  G_FILE_MONITOR_NONE,
+                                                  NULL,
+                                                  &error);
 
   if (G_UNLIKELY (error != NULL))
     g_debug ("Couldn't monitor %s: %s", INPUT_DIRECTORY, error->message);
   else
-    g_signal_connect_object (self->monitor,
+    g_signal_connect_object (self->input_monitor,
                              "changed",
                              (GCallback) file_monitor_changed_cb,
                              self,
@@ -472,7 +529,8 @@ manette_monitor_finalize (GObject *object)
   g_clear_object (&self->client);
 #endif
 
-  g_clear_object (&self->monitor);
+  g_clear_object (&self->dev_monitor);
+  g_clear_object (&self->input_monitor);
   g_clear_pointer (&self->potential_devices, g_hash_table_unref);
 
   g_clear_object (&self->mapping_manager);

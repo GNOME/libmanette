@@ -7,12 +7,15 @@ libmanette_resources = gnome.compile_resources(
 
 libmanette_sources = [
   libmanette_resources,
+  'drivers/manette-steam-deck-driver.c',
   'manette-backend.c',
   'manette-device.c',
   'manette-device-type.c',
   'manette-evdev-backend.c',
   'manette-event.c',
   'manette-event-mapping.c',
+  'manette-hid-backend.c',
+  'manette-hid-driver.c',
   'manette-mapping.c',
   'manette-mapping-manager.c',
   'manette-mapping-error.c',

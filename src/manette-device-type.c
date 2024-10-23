@@ -21,6 +21,7 @@
 /**
  * ManetteDeviceType:
  * @MANETTE_DEVICE_GENERIC: Generic gamepads
+ * @MANETTE_DEVICE_STEAM_DECK: Steam Deck
  *
  * Describes available types of a #ManetteDevice.
  *
@@ -30,11 +31,24 @@
  */
 
 G_DEFINE_ENUM_TYPE (ManetteDeviceType, manette_device_type,
-  G_DEFINE_ENUM_VALUE (MANETTE_DEVICE_GENERIC, "generic"))
+  G_DEFINE_ENUM_VALUE (MANETTE_DEVICE_GENERIC, "generic"),
+  G_DEFINE_ENUM_VALUE (MANETTE_DEVICE_STEAM_DECK, "steam-deck"))
+
+#define VENDOR_STEAM                  0x28DE
+#define PRODUCT_JUPITER               0x1205
+#define PRODUCT_STEAM_VIRTUAL_GAMEPAD 0x11FF
 
 ManetteDeviceType
 manette_device_type_guess (guint16 vendor,
                            guint16 product)
 {
+  if (vendor == VENDOR_STEAM) {
+    if (product == PRODUCT_JUPITER)
+      return MANETTE_DEVICE_STEAM_DECK;
+
+    if (product == PRODUCT_STEAM_VIRTUAL_GAMEPAD)
+      return MANETTE_DEVICE_UNSUPPORTED;
+  }
+
   return MANETTE_DEVICE_GENERIC;
 }
