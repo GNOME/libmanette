@@ -9,6 +9,7 @@ libmanette_sources = [
   libmanette_resources,
   'manette-backend.c',
   'manette-device.c',
+  'manette-device-type.c',
   'manette-evdev-backend.c',
   'manette-event.c',
   'manette-event-mapping.c',
@@ -24,6 +25,7 @@ libmanette_main_header = 'libmanette.h'
 libmanette_headers = [
   libmanette_main_header,
   'manette-device.h',
+  'manette-device-type.h',
   'manette-event.h',
   'manette-monitor.h',
   'manette-monitor-iter.h',

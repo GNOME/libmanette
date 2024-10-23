@@ -32,6 +32,7 @@
 #include <string.h>
 #include <unistd.h>
 #include "manette-backend-private.h"
+#include "manette-device-type-private.h"
 #include "manette-event-mapping-private.h"
 #include "manette-event-private.h"
 #include "manette-mapping-manager-private.h"
@@ -43,6 +44,8 @@ struct _ManetteDevice
   gchar *guid;
   ManetteMapping *mapping;
   ManetteBackend *backend;
+
+  ManetteDeviceType device_type;
 };
 
 G_DEFINE_TYPE (ManetteDevice, manette_device, G_TYPE_OBJECT)
@@ -307,12 +310,18 @@ manette_device_new (ManetteBackend  *backend,
                     GError         **error)
 {
   g_autoptr (ManetteDevice) self = NULL;
+  int vendor, product;
 
   g_return_val_if_fail (MANETTE_IS_BACKEND (backend), NULL);
 
   self = g_object_new (MANETTE_TYPE_DEVICE, NULL);
 
   self->backend = backend;
+
+  vendor = manette_device_get_vendor_id (self);
+  product = manette_device_get_product_id (self);
+
+  self->device_type = manette_device_type_guess (vendor, product);
 
   g_signal_connect_swapped (self->backend, "event", G_CALLBACK (event_cb), self);
 
@@ -451,6 +460,24 @@ manette_device_get_version_id (ManetteDevice *self)
 }
 
 /**
+ * manette_device_get_device_type:
+ * @self: a #ManetteDevice
+ *
+ * Gets the device type of @self.
+ *
+ * Returns: the device type
+ *
+ * Since: 0.3
+ */
+ManetteDeviceType
+manette_device_get_device_type (ManetteDevice *self)
+{
+  g_return_val_if_fail (MANETTE_IS_DEVICE (self), MANETTE_DEVICE_GENERIC);
+
+  return self->device_type;
+}
+
+/**
  * manette_device_supports_mapping:
  * @self: a #ManetteDevice
  *
@@ -465,7 +492,7 @@ manette_device_supports_mapping (ManetteDevice *self)
 {
   g_return_val_if_fail (MANETTE_IS_DEVICE (self), FALSE);
 
-  return TRUE;
+  return self->device_type == MANETTE_DEVICE_GENERIC;
 }
 
 /**

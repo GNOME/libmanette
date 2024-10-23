@@ -24,6 +24,8 @@
 
 #include <glib-object.h>
 
+#include "manette-device-type.h"
+
 G_BEGIN_DECLS
 
 #define MANETTE_TYPE_DEVICE (manette_device_get_type())
@@ -35,6 +37,7 @@ gboolean manette_device_has_input (ManetteDevice *self,
                                    guint          code);
 const gchar *manette_device_get_name (ManetteDevice *self);
 const gchar *manette_device_get_guid (ManetteDevice *self);
+ManetteDeviceType manette_device_get_device_type (ManetteDevice *self);
 gboolean manette_device_supports_mapping (ManetteDevice *self);
 char *manette_device_get_mapping (ManetteDevice *self);
 gboolean manette_device_has_user_mapping (ManetteDevice *self);

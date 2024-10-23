@@ -24,6 +24,7 @@ G_BEGIN_DECLS
 
 #define __MANETTE_INSIDE__
 # include "manette-device.h"
+# include "manette-device-type.h"
 # include "manette-event.h"
 # include "manette-monitor.h"
 # include "manette-monitor-iter.h"
