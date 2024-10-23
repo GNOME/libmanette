@@ -59,6 +59,7 @@ libmanette_deps = [
   gio,
   glib,
   gobject,
+  hidapi,
   libevdev,
 ]
 
