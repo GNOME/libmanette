@@ -94,6 +94,10 @@ manette_hid_backend_initialize (ManetteBackend *backend)
   guint poll_rate;
 
   self->hid = hid_open_path (self->filename);
+  if (!self->hid) {
+    g_debug ("Failed to open hid device: %ls", hid_error (NULL));
+    return FALSE;
+  }
 
   hid_set_nonblocking (self->hid, 1);
 
