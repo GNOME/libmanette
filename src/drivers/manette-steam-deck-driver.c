@@ -736,10 +736,10 @@ manette_steam_deck_driver_has_input (ManetteHidDriver *driver,
            code == BTN_THUMBL ||
            code == BTN_THUMBR ||
            code == BTN_TRIGGER_HAPPY1 ||
-           code == BTN_TRIGGER_HAPPY7 ||
-           code == BTN_TRIGGER_HAPPY8 ||
-           code == BTN_TRIGGER_HAPPY9 ||
-           code == BTN_TRIGGER_HAPPY10;
+           code == BTN_TRIGGER_HAPPY2 ||
+           code == BTN_TRIGGER_HAPPY3 ||
+           code == BTN_TRIGGER_HAPPY4 ||
+           code == BTN_TRIGGER_HAPPY5;
   }
 
   return FALSE;
