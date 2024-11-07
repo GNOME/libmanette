@@ -468,8 +468,12 @@ mappings_changed_cb (ManetteMappingManager *mapping_manager,
   ManetteDevice *device = NULL;
 
   iterator = manette_monitor_iterate (self);
-  while (manette_monitor_iter_next (iterator, &device))
+  while (manette_monitor_iter_next (iterator, &device)) {
+    if (!manette_device_supports_mapping (device))
+      continue;
+
     load_mapping (self, device);
+  }
 }
 
 /* Public */
