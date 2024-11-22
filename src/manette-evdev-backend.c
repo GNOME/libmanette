@@ -28,6 +28,9 @@
 #include "manette-device-type-private.h"
 #include "manette-event-private.h"
 
+#define VENDOR_SONY       0x054C
+#define PRODUCT_DUALSENSE 0x0CE6
+
 struct _ManetteEvdevBackend
 {
   GObject parent_instance;
@@ -65,9 +68,12 @@ has_abs (struct libevdev *device,
 }
 
 static gboolean
-is_game_controller (struct libevdev *device)
+is_game_controller (struct libevdev *device,
+                    int              vendor,
+                    int              product)
 {
-  gboolean has_joystick_axes_or_buttons;
+  gboolean has_buttons;
+  gboolean has_axes;
 
   g_assert (device != NULL);
 
@@ -75,10 +81,12 @@ is_game_controller (struct libevdev *device)
    * joysticks don’t necessarily have buttons; e. g.
    * rudders/pedals are joystick-like, but buttonless; they have
    * other fancy axes. */
-  has_joystick_axes_or_buttons =
+  has_buttons =
     has_key (device, BTN_TRIGGER) ||
     has_key (device, BTN_A) ||
-    has_key (device, BTN_1) ||
+    has_key (device, BTN_1);
+
+  has_axes =
     has_abs (device, ABS_RX) ||
     has_abs (device, ABS_RY) ||
     has_abs (device, ABS_RZ) ||
@@ -88,7 +96,11 @@ is_game_controller (struct libevdev *device)
     has_abs (device, ABS_GAS) ||
     has_abs (device, ABS_BRAKE);
 
-  return has_joystick_axes_or_buttons;
+  /* Filter out DualSense motion sensor and touchpad */
+  if (vendor == VENDOR_SONY && product == PRODUCT_DUALSENSE)
+    return has_buttons && has_axes;
+
+  return has_buttons || has_axes;
 }
 
 static gdouble
@@ -249,11 +261,11 @@ manette_evdev_backend_initialize (ManetteBackend *backend)
   if (libevdev_set_fd (self->evdev_device, self->fd) < 0)
     return FALSE;
 
-  if (!is_game_controller (self->evdev_device))
-    return FALSE;
-
   vendor = libevdev_get_id_vendor (self->evdev_device);
   product = libevdev_get_id_product (self->evdev_device);
+
+  if (!is_game_controller (self->evdev_device, vendor, product))
+    return FALSE;
 
   /* Other types are handled via hid backend or skipped */
   if (manette_device_type_guess (vendor, product) != MANETTE_DEVICE_GENERIC)
