@@ -16,13 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
- * ManetteDevice:
- *
- * An object representing a physical gamepad.
- *
- * See also: [class@Monitor].
- */
+#include "config.h"
 
 #include "manette-device-private.h"
 
@@ -37,6 +31,14 @@
 #include "manette-event-mapping-private.h"
 #include "manette-event-private.h"
 #include "manette-mapping-manager-private.h"
+
+/**
+ * ManetteDevice:
+ *
+ * An object representing a physical gamepad.
+ *
+ * See also: [class@Monitor].
+ */
 
 struct _ManetteDevice
 {

@@ -16,15 +16,23 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
- * ManetteEvent:
- *
- * An event emitted by a [class@Device].
- */
+#include "config.h"
 
 #include "manette-event-private.h"
 
 #include <string.h>
+
+/**
+ * ManetteEventType:
+ * @MANETTE_EVENT_NOTHING: a special code to indicate a null event
+ * @MANETTE_EVENT_BUTTON_PRESS: a button has been pressed
+ * @MANETTE_EVENT_BUTTON_RELEASE: a button has been released
+ * @MANETTE_EVENT_ABSOLUTE: an absolute axis has been moved
+ * @MANETTE_EVENT_HAT: a hat axis has been moved
+ * @MANETTE_LAST_EVENT: the number of event types
+ *
+ * Specifies the type of the event.
+ */
 
 G_DEFINE_ENUM_TYPE (ManetteEventType, manette_event_type,
   G_DEFINE_ENUM_VALUE (MANETTE_EVENT_NOTHING, "event-nothing"),
@@ -32,6 +40,12 @@ G_DEFINE_ENUM_TYPE (ManetteEventType, manette_event_type,
   G_DEFINE_ENUM_VALUE (MANETTE_EVENT_BUTTON_RELEASE, "event-button-release"),
   G_DEFINE_ENUM_VALUE (MANETTE_EVENT_ABSOLUTE, "event-absolute"),
   G_DEFINE_ENUM_VALUE (MANETTE_EVENT_HAT, "event-hat"))
+
+/**
+ * ManetteEvent:
+ *
+ * An event emitted by a [class@Device].
+ */
 
 G_DEFINE_BOXED_TYPE (ManetteEvent, manette_event, manette_event_copy, manette_event_free)
 

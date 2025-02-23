@@ -16,13 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
- * ManetteMonitor:
- *
- * An object monitoring the availability of devices.
- *
- * See also: [class@Device].
- */
+#include "config.h"
 
 #include "manette-monitor.h"
 
@@ -40,9 +34,16 @@
 #include "manette-mapping-manager-private.h"
 #include "manette-monitor-iter-private.h"
 
-
 #define DEV_DIRECTORY "/dev"
 #define INPUT_DIRECTORY DEV_DIRECTORY "/input"
+
+/**
+ * ManetteMonitor:
+ *
+ * An object monitoring the availability of devices.
+ *
+ * See also: [class@Device].
+ */
 
 struct _ManetteMonitor {
   GObject parent_instance;

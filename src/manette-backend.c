@@ -16,6 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "config.h"
+
 #include "manette-backend-private.h"
 
 G_DEFINE_INTERFACE (ManetteBackend, manette_backend, G_TYPE_OBJECT)

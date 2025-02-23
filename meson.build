@@ -30,7 +30,7 @@ hidapi = dependency ('hidapi-hidraw')
 config_h = configuration_data()
 
 configure_file(
-  output: 'libmanette-config.h',
+  output: 'config.h',
   configuration: config_h,
 )
 

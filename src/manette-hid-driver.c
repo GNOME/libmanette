@@ -16,6 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "config.h"
+
 #include "manette-hid-driver-private.h"
 
 G_DEFINE_INTERFACE (ManetteHidDriver, manette_hid_driver, G_TYPE_OBJECT)

@@ -16,6 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "config.h"
+
 #include "manette-mapping-error-private.h"
 
 G_DEFINE_QUARK (manette-mapping-error, manette_mapping_error)

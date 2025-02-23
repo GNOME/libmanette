@@ -16,13 +16,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "config.h"
+
+#include "manette-monitor-iter-private.h"
+
 /**
  * ManetteMonitorIter:
  *
  * An object iterating over the available devices in [class@Monitor].
  */
-
-#include "manette-monitor-iter-private.h"
 
 struct _ManetteMonitorIter
 {
