@@ -57,7 +57,7 @@ struct _ManetteMonitor {
   GHashTable *potential_devices;
 };
 
-G_DEFINE_TYPE (ManetteMonitor, manette_monitor, G_TYPE_OBJECT)
+G_DEFINE_FINAL_TYPE (ManetteMonitor, manette_monitor, G_TYPE_OBJECT)
 
 enum {
   SIG_DEVICE_CONNECTED,
