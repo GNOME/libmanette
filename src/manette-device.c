@@ -57,6 +57,12 @@ enum {
   SIG_BUTTON_RELEASE_EVENT,
   SIG_ABSOLUTE_AXIS_EVENT,
   SIG_HAT_AXIS_EVENT,
+
+  SIG_UNMAPPED_BUTTON_PRESSED,
+  SIG_UNMAPPED_BUTTON_RELEASED,
+  SIG_UNMAPPED_ABSOLUTE_AXIS_CHANGED,
+  SIG_UNMAPPED_HAT_AXIS_CHANGED,
+
   N_SIGNALS,
 };
 
@@ -337,7 +343,7 @@ manette_device_new (ManetteBackend  *backend,
  *
  * Returns: (transfer none): the identifier used by SDL mappings
  *
- * Since: 0.3
+ * Since: 0.2.11
  */
 const gchar *
 manette_device_get_guid (ManetteDevice *self)
@@ -467,7 +473,7 @@ manette_device_get_version_id (ManetteDevice *self)
  *
  * Returns: the device type
  *
- * Since: 0.3
+ * Since: 0.2.11
  */
 ManetteDeviceType
 manette_device_get_device_type (ManetteDevice *self)
@@ -485,7 +491,7 @@ manette_device_get_device_type (ManetteDevice *self)
  *
  * Returns: whether @self supports mapping
  *
- * Since: 0.3
+ * Since: 0.2.11
  */
 gboolean
 manette_device_supports_mapping (ManetteDevice *self)
@@ -522,7 +528,7 @@ manette_device_set_mapping (ManetteDevice  *self,
  *
  * Returns: (transfer full) (nullable): the mapping for @self
  *
- * Since: 0.3
+ * Since: 0.2.11
  */
 char *
 manette_device_get_mapping (ManetteDevice *self)
