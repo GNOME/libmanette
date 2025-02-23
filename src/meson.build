@@ -1,4 +1,4 @@
-libmanette_header_subdir = 'libmanette'
+libmanette_header_subdir = libmanette_module
 libmanette_header_dir = get_option('includedir') / libmanette_header_subdir
 
 libmanette_resources = gnome.compile_resources(
@@ -29,7 +29,12 @@ libmanette_public_enums = gnome.mkenums_simple('manette-enums',
 version_split = meson.project_version().split('.')
 MAJOR_VERSION = version_split[0]
 MINOR_VERSION = version_split[1]
-MICRO_VERSION = version_split[2]
+
+if version_split[2].startswith('alpha') or version_split[2].startswith('beta') or version_split[2].startswith('rc')
+  MICRO_VERSION = '0'
+else
+  MICRO_VERSION = version_split[2]
+endif
 
 version_conf = configuration_data()
 version_conf.set('VERSION', meson.project_version())
@@ -196,17 +201,17 @@ libmanette_dep = declare_dependency(
   dependencies: libmanette_deps,
 )
 
-install_headers(libmanette_headers, subdir: 'libmanette')
+install_headers(libmanette_headers, subdir: libmanette_module)
 
 pkg = import('pkgconfig')
 
 pkg.generate(
   description: 'A simple GObject game controller library',
     libraries: libmanette_lib,
-         name: 'libmanette',
+         name: libmanette_module,
      filebase: libmanette_module,
       version: meson.project_version(),
-      subdirs: 'libmanette',
+      subdirs: libmanette_module,
      requires: 'glib-2.0',
   install_dir: get_option('libdir') / 'pkgconfig'
 )

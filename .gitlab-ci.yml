@@ -88,7 +88,7 @@ doc:
   script:
     - flatpak build ${FLATPAK_BUILD_DIR} meson setup --prefix=/app ${SHARED_MESON_ARGS} ${MESON_ARGS} _build
     - flatpak build ${FLATPAK_BUILD_DIR} meson compile -C _build
-    - mv _build/doc/libmanette/ _doc/
+    - mv _build/doc/manette-1/ _doc/
   artifacts:
     expose_as: 'Browse documentation'
     paths:
