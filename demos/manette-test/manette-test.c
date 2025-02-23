@@ -105,10 +105,10 @@ absolute_axis_event_cb (ManetteDevice *emitter,
                         gpointer       user_data)
 {
   ManetteDevice *device;
-  const gchar *device_name;
-  const gchar *absolute_axis_name;
+  const char *device_name;
+  const char *absolute_axis_name;
   guint16 absolute_axis;
-  gdouble value;
+  double value;
 
   if (!manette_event_get_absolute (event, &absolute_axis, &value))
     return;
@@ -129,8 +129,8 @@ button_press_event_cb (ManetteDevice *emitter,
                        gpointer       user_data)
 {
   ManetteDevice *device;
-  const gchar *device_name;
-  const gchar *button_name;
+  const char *device_name;
+  const char *button_name;
   guint16 button;
 
   if (!manette_event_get_button (event, &button))
@@ -152,8 +152,8 @@ button_release_event_cb (ManetteDevice *emitter,
                          gpointer       user_data)
 {
   ManetteDevice *device;
-  const gchar *device_name;
-  const gchar *button_name;
+  const char *device_name;
+  const char *button_name;
   guint16 button;
 
   if (!manette_event_get_button (event, &button))
@@ -175,8 +175,8 @@ hat_axis_event_cb (ManetteDevice *emitter,
                    gpointer       user_data)
 {
   ManetteDevice *device;
-  const gchar *device_name;
-  const gchar *hat_axis_name;
+  const char *device_name;
+  const char *hat_axis_name;
   guint16 hat_axis;
   gint8 value;
 

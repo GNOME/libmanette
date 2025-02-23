@@ -261,8 +261,8 @@ typedef enum {
 } SteamDeckButton;
 
 typedef struct {
-  guchar type;
-  guchar length;
+  unsigned char type;
+  unsigned char length;
 } FeatureReportHeader;
 
 typedef struct {
@@ -281,7 +281,7 @@ typedef struct {
 } ControllerSetting;
 
 typedef struct {
-  guchar button_mask[8];
+  unsigned char button_mask[8];
   unsigned char device;
   unsigned char value;
 } DigitalMapping;
@@ -398,9 +398,9 @@ send_simple_feature_report (ManetteSteamDeckDriver *self,
 }
 
 static inline void
-set_button_mask (SteamDeckButton buttons_l,
-                 SteamDeckButton buttons_h,
-                 guchar *dest)
+set_button_mask (SteamDeckButton  buttons_l,
+                 SteamDeckButton  buttons_h,
+                 unsigned char   *dest)
 {
   memcpy (dest, &buttons_l, sizeof (guint32));
   memcpy (dest + 4, &buttons_h, sizeof (guint32));
@@ -431,7 +431,7 @@ send_set_digital_mappings (ManetteSteamDeckDriver *self,
     SteamDeckButton buttons_l = va_arg (args, SteamDeckButton);
     SteamDeckButton buttons_h;
     DeviceType device;
-    guchar value;
+    unsigned char value;
 
     if ((int) buttons_l < 0)
       break;

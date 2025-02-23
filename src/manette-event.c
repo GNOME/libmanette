@@ -257,7 +257,7 @@ manette_event_get_button (const ManetteEvent *self,
 gboolean
 manette_event_get_absolute (const ManetteEvent *self,
                             guint16            *axis,
-                            gdouble            *value)
+                            double             *value)
 {
   g_return_val_if_fail (self, FALSE);
   g_return_val_if_fail (axis, FALSE);

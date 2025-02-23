@@ -44,7 +44,7 @@ struct _ManetteDevice
 {
   GObject parent_instance;
 
-  gchar *guid;
+  char *guid;
   ManetteMapping *mapping;
   ManetteBackend *backend;
 
@@ -279,7 +279,7 @@ manette_device_init (ManetteDevice *self)
 {
 }
 
-static gchar *
+static char *
 compute_guid_string (ManetteDevice *self)
 {
   return g_strdup_printf ("%08x%08x%08x%08x",
@@ -348,7 +348,7 @@ manette_device_new (ManetteBackend  *backend,
  *
  * Since: 0.2.10
  */
-const gchar *
+const char *
 manette_device_get_guid (ManetteDevice *self)
 {
   g_return_val_if_fail (MANETTE_IS_DEVICE (self), NULL);
@@ -392,7 +392,7 @@ manette_device_has_input (ManetteDevice *self,
  *
  * Returns: (transfer none): the name of @self
  */
-const gchar *
+const char *
 manette_device_get_name (ManetteDevice *self)
 {
   g_return_val_if_fail (MANETTE_IS_DEVICE (self), NULL);
@@ -543,7 +543,7 @@ manette_device_set_mapping (ManetteDevice  *self,
 char *
 manette_device_get_mapping (ManetteDevice *self)
 {
-  const gchar *guid;
+  const char *guid;
   g_autoptr (ManetteMappingManager) mapping_manager = NULL;
 
   g_return_val_if_fail (MANETTE_IS_DEVICE (self), FALSE);
@@ -568,7 +568,7 @@ manette_device_get_mapping (ManetteDevice *self)
 gboolean
 manette_device_has_user_mapping (ManetteDevice *self)
 {
-  const gchar *guid;
+  const char *guid;
   g_autoptr (ManetteMappingManager) mapping_manager = NULL;
 
   g_return_val_if_fail (MANETTE_IS_DEVICE (self), FALSE);
@@ -591,10 +591,10 @@ manette_device_has_user_mapping (ManetteDevice *self)
  */
 void
 manette_device_save_user_mapping (ManetteDevice *self,
-                                  const gchar   *mapping_string)
+                                  const char    *mapping_string)
 {
-  const gchar *guid;
-  const gchar *name;
+  const char *guid;
+  const char *name;
   g_autoptr (ManetteMappingManager) mapping_manager = NULL;
 
   g_return_if_fail (MANETTE_IS_DEVICE (self));
@@ -619,7 +619,7 @@ manette_device_save_user_mapping (ManetteDevice *self,
 void
 manette_device_remove_user_mapping (ManetteDevice *self)
 {
-  const gchar *guid;
+  const char *guid;
   g_autoptr (ManetteMappingManager) mapping_manager = NULL;
 
   g_return_if_fail (MANETTE_IS_DEVICE (self));

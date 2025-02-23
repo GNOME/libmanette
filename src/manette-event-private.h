@@ -61,7 +61,7 @@ struct _ManetteEventAbsolute {
   gint32 hardware_value;
   guint8 hardware_index;
   guint16 axis;
-  gdouble value;
+  double value;
 };
 
 struct _ManetteEventHat {
