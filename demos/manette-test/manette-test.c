@@ -169,30 +169,6 @@ button_release_event_cb (ManetteDevice *emitter,
     g_printf ("%s: Unknown button %u released\n", device_name, button);
 }
 
-static void
-hat_axis_event_cb (ManetteDevice *emitter,
-                   ManetteEvent  *event,
-                   gpointer       user_data)
-{
-  ManetteDevice *device;
-  const char *device_name;
-  const char *hat_axis_name;
-  guint16 hat_axis;
-  gint8 value;
-
-  if (!manette_event_get_hat (event, &hat_axis, &value))
-    return;
-
-  device = manette_event_get_device (event);
-  device_name = manette_device_get_name (device);
-  hat_axis_name = get_hat_name (hat_axis);
-
-  if (hat_axis_name != NULL)
-    g_printf ("%s: Hat axis %s moved to %d\n", device_name, hat_axis_name, value);
-  else
-    g_printf ("%s: Unknown hat axis %u moved to %d\n", device_name, hat_axis, value);
-}
-
 #define PHASES 4
 
 typedef struct {
@@ -254,11 +230,6 @@ listen_to_device (ManetteDevice *device)
   g_signal_connect_object (G_OBJECT (device),
                            "button-release-event",
                            (GCallback) button_release_event_cb,
-                           NULL,
-                           0);
-  g_signal_connect_object (G_OBJECT (device),
-                           "hat-axis-event",
-                           (GCallback) hat_axis_event_cb,
                            NULL,
                            0);
   if (manette_device_has_rumble (device)) {
