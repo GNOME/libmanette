@@ -27,7 +27,7 @@
  *
  * More values may be added to this enumeration over time.
  *
- * Since: 0.2.11
+ * Since: 0.2.10
  */
 
 G_DEFINE_ENUM_TYPE (ManetteDeviceType, manette_device_type,
