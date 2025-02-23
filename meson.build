@@ -29,6 +29,8 @@ hidapi = dependency ('hidapi-hidraw')
 
 config_h = configuration_data()
 
+config_h.set('_MANETTE_EXTERN', '__attribute__((visibility("default"))) extern')
+
 configure_file(
   output: 'config.h',
   configuration: config_h,

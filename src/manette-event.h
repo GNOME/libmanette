@@ -22,7 +22,10 @@
 # error "Only <libmanette.h> can be included directly."
 #endif
 
+#include "manette-version.h"
+
 #include <glib-object.h>
+
 #include "manette-device.h"
 
 G_BEGIN_DECLS
@@ -42,23 +45,49 @@ typedef enum {
   MANETTE_LAST_EVENT,
 } ManetteEventType;
 
+MANETTE_AVAILABLE_IN_ALL
 GType manette_event_get_type (void) G_GNUC_CONST;
+
+MANETTE_AVAILABLE_IN_ALL
 GType manette_event_type_get_type (void) G_GNUC_CONST;
 
+MANETTE_AVAILABLE_IN_ALL
 ManetteEvent *manette_event_copy (const ManetteEvent *self);
+
+MANETTE_AVAILABLE_IN_ALL
 void manette_event_free (ManetteEvent *self);
+
+MANETTE_AVAILABLE_IN_ALL
 ManetteEventType manette_event_get_event_type (const ManetteEvent *self);
+
+MANETTE_AVAILABLE_IN_ALL
 guint32 manette_event_get_time (const ManetteEvent *self);
+
+MANETTE_AVAILABLE_IN_ALL
 ManetteDevice *manette_event_get_device (const ManetteEvent *self);
+
+MANETTE_AVAILABLE_IN_ALL
 guint16 manette_event_get_hardware_type (const ManetteEvent *self);
+
+MANETTE_AVAILABLE_IN_ALL
 guint16 manette_event_get_hardware_code (const ManetteEvent *self);
+
+MANETTE_AVAILABLE_IN_ALL
 guint16 manette_event_get_hardware_value (const ManetteEvent *self);
+
+MANETTE_AVAILABLE_IN_ALL
 guint16 manette_event_get_hardware_index (const ManetteEvent *self);
+
+MANETTE_AVAILABLE_IN_ALL
 gboolean manette_event_get_button (const ManetteEvent *self,
                                    guint16            *button);
+
+MANETTE_AVAILABLE_IN_ALL
 gboolean manette_event_get_absolute (const ManetteEvent *self,
                                      guint16            *axis,
                                      double             *value);
+
+MANETTE_AVAILABLE_IN_ALL
 gboolean manette_event_get_hat (const ManetteEvent *self,
                                 guint16            *axis,
                                 gint8              *value);
