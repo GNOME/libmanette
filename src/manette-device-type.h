@@ -26,12 +26,9 @@
 
 #include <glib-object.h>
 
+#include "manette-enums.h"
+
 G_BEGIN_DECLS
-
-#define MANETTE_TYPE_DEVICE_TYPE (manette_device_type_get_type())
-
-MANETTE_AVAILABLE_IN_ALL
-GType manette_device_type_get_type (void);
 
 typedef enum {
   MANETTE_DEVICE_GENERIC,

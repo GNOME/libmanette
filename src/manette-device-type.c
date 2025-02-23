@@ -32,10 +32,6 @@
  * Since: 0.2.10
  */
 
-G_DEFINE_ENUM_TYPE (ManetteDeviceType, manette_device_type,
-  G_DEFINE_ENUM_VALUE (MANETTE_DEVICE_GENERIC, "generic"),
-  G_DEFINE_ENUM_VALUE (MANETTE_DEVICE_STEAM_DECK, "steam-deck"))
-
 #define VENDOR_STEAM                  0x28DE
 #define PRODUCT_JUPITER               0x1205
 #define PRODUCT_STEAM_VIRTUAL_GAMEPAD 0x11FF

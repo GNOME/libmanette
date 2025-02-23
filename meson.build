@@ -9,8 +9,8 @@ prefix = get_option('prefix')
 libexecdir = prefix / get_option('libexecdir')
 datadir = prefix / get_option('datadir')
 
-confinc = include_directories('.')
-srcinc = include_directories('src')
+root_inc = include_directories('.')
+src_inc = include_directories('src')
 
 libmanette_version = meson.project_version()
 libmanette_api_version = '0.2'

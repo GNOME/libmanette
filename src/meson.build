@@ -8,6 +8,24 @@ libmanette_resources = gnome.compile_resources(
   source_dir: '.',
 )
 
+libmanette_public_enum_headers = [
+  'manette-device-type.h',
+  'manette-event.h',
+]
+
+libmanette_public_enums = gnome.mkenums_simple('manette-enums',
+  sources: libmanette_public_enum_headers,
+  body_prefix: '#include "config.h"',
+  header_prefix: '#if !defined(__MANETTE_INSIDE__) && !defined(MANETTE_COMPILATION)\n' +
+                 '# error "Only <libmanette.h> can be included directly."\n' +
+                 '#endif\n' +
+                 '\n' +
+                 '#include "manette-version.h"\n',
+  decorator: 'MANETTE_AVAILABLE_IN_ALL',
+  install_header: true,
+  install_dir: libmanette_header_dir,
+)
+
 version_split = meson.project_version().split('.')
 MAJOR_VERSION = version_split[0]
 MINOR_VERSION = version_split[1]
@@ -27,6 +45,7 @@ manette_version_h = configure_file(
 )
 
 libmanette_public_sources = [
+  libmanette_public_enums,
   'manette-device.c',
   'manette-device-type.c',
   'manette-event.c',
@@ -35,6 +54,7 @@ libmanette_public_sources = [
 ]
 
 libmanette_private_sources = [
+  libmanette_resources,
   'drivers/manette-steam-deck-driver.c',
   'manette-backend.c',
   'manette-evdev-backend.c',
@@ -47,7 +67,6 @@ libmanette_private_sources = [
 ]
 
 libmanette_sources = [
-  libmanette_resources,
   libmanette_public_sources,
   libmanette_private_sources,
 ]
@@ -64,9 +83,8 @@ libmanette_headers = [
 ]
 
 libmanette_generated_headers = [
+  libmanette_public_enums[1],
 ]
-
-libmanette_headers += libmanette_generated_headers
 
 libmanette_c_args = [
   '-DMANETTE_COMPILATION',
@@ -91,7 +109,7 @@ libmanette_lib = library(
   libmanette_sources,
   c_args: libmanette_c_args,
   dependencies: libmanette_deps,
-  include_directories: confinc,
+  include_directories: [ root_inc, src_inc ],
   install: true,
   soversion: 0,
   gnu_symbol_visibility: 'hidden',
@@ -103,7 +121,7 @@ if get_option('build-tests')
     libmanette_sources,
     c_args: libmanette_c_args,
     dependencies: libmanette_deps,
-    include_directories: confinc,
+    include_directories: [ root_inc, src_inc ],
   )
 
   libmanette_internal_dep = declare_dependency(
