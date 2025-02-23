@@ -32,7 +32,6 @@
 #include "manette-evdev-backend-private.h"
 #include "manette-hid-backend-private.h"
 #include "manette-mapping-manager-private.h"
-#include "manette-monitor-iter-private.h"
 
 #define DEV_DIRECTORY "/dev"
 #define INPUT_DIRECTORY DEV_DIRECTORY "/input"
@@ -466,11 +465,11 @@ static void
 mappings_changed_cb (ManetteMappingManager *mapping_manager,
                      ManetteMonitor        *self)
 {
-  g_autoptr (ManetteMonitorIter) iterator = NULL;
-  ManetteDevice *device = NULL;
+  GHashTableIter iter;
+  ManetteDevice *device;
 
-  iterator = manette_monitor_iterate (self);
-  while (manette_monitor_iter_next (iterator, &device)) {
+  g_hash_table_iter_init (&iter, self->devices);
+  while (g_hash_table_iter_next (&iter, NULL, (gpointer *) &device)) {
     if (!manette_device_supports_mapping (device))
       continue;
 
@@ -587,17 +586,24 @@ manette_monitor_class_init (ManetteMonitorClass *klass)
 }
 
 /**
- * manette_monitor_iterate:
+ * manette_monitor_list_devices:
  * @self: a monitor
+ * @n_devices: (out): return location for the length of the array
  *
- * Creates a new `ManetterMonitorIter` iterating on @self.
+ * Lists the currently connected devices.
  *
- * Returns: (transfer full): a new iterator for @self
+ * Returns: (transfer container) (array length=n_devices): the list of devices
  */
-ManetteMonitorIter *
-manette_monitor_iterate (ManetteMonitor *self)
+ManetteDevice **
+manette_monitor_list_devices (ManetteMonitor *self,
+                              gsize          *n_devices)
 {
-  g_return_val_if_fail (MANETTE_IS_MONITOR (self), NULL);
+  GPtrArray *devices;
 
-  return manette_monitor_iter_new (self->devices);
+  g_return_val_if_fail (MANETTE_IS_MONITOR (self), NULL);
+  g_return_val_if_fail (n_devices != NULL, NULL);
+
+  devices = g_hash_table_get_values_as_ptr_array (self->devices);
+
+  return (ManetteDevice **) g_ptr_array_steal (devices, n_devices);
 }

@@ -282,8 +282,8 @@ main (int    argc,
 {
   g_autoptr (GMainLoop) main_loop = NULL;
   g_autoptr (ManetteMonitor) monitor = NULL;
-  g_autoptr (ManetteMonitorIter) iter = NULL;
-  ManetteDevice *device;
+  g_autofree ManetteDevice **devices = NULL;
+  gsize n_devices, i;
 
   monitor = manette_monitor_new ();
   g_signal_connect_object (G_OBJECT (monitor),
@@ -292,9 +292,9 @@ main (int    argc,
                            NULL,
                            0);
 
-  iter = manette_monitor_iterate (monitor);
-  while (manette_monitor_iter_next (iter, &device))
-    listen_to_device (device);
+  devices = manette_monitor_list_devices (monitor, &n_devices);
+  for (i = 0; i < n_devices; i++)
+    listen_to_device (devices[i]);
 
   main_loop = g_main_loop_new (NULL, FALSE);
   g_main_loop_run (main_loop);
