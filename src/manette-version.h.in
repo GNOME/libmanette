@@ -22,65 +22,160 @@
 # error "Only <libmanette.h> can be included directly."
 #endif
 
-/**
- * LIBMANETTE_MAJOR_VERSION:
- *
- * libmanette major version component (e.g. 1 if the version is 1.2.3)
- */
-#define LIBMANETTE_MAJOR_VERSION (@MAJOR_VERSION@)
+#include <glib.h>
+
+G_BEGIN_DECLS
 
 /**
- * LIBMANETTE_MINOR_VERSION:
+ * MANETTE_MAJOR_VERSION:
  *
- * libmanette minor version component (e.g. 2 if the version is 1.2.3)
+ * libmanette major version component (e.g. 1 if the version is 1.2.3).
+ *
+ * Since: 0.2.10
  */
-#define LIBMANETTE_MINOR_VERSION (@MINOR_VERSION@)
+#define MANETTE_MAJOR_VERSION (@MAJOR_VERSION@)
 
 /**
- * LIBMANETTE_MICRO_VERSION:
+ * MANETTE_MINOR_VERSION:
  *
- * libmanette micro version component (e.g. 3 if the version is 1.2.3)
+ * libmanette minor version component (e.g. 2 if the version is 1.2.3).
+ *
+ * Since: 0.2.10
  */
-#define LIBMANETTE_MICRO_VERSION (@MICRO_VERSION@)
+#define MANETTE_MINOR_VERSION (@MINOR_VERSION@)
 
 /**
- * LIBMANETTE_VERSION
+ * MANETTE_MICRO_VERSION:
+ *
+ * libmanette micro version component (e.g. 3 if the version is 1.2.3).
+ *
+ * Since: 0.2.10
+ */
+#define MANETTE_MICRO_VERSION (@MICRO_VERSION@)
+
+/**
+ * MANETTE_VERSION:
  *
  * libmanette version.
+ *
+ * Since: 0.2.10
  */
-#define LIBMANETTE_VERSION (@VERSION@)
+#define MANETTE_VERSION (@VERSION@)
 
 /**
- * LIBMANETTE_VERSION_S:
+ * MANETTE_VERSION_S:
  *
  * libmanette version, encoded as a string, useful for printing and
  * concatenation.
+ *
+ * Since: 0.2.10
  */
-#define LIBMANETTE_VERSION_S "@VERSION@"
+#define MANETTE_VERSION_S "@VERSION@"
 
-#define LIBMANETTE_ENCODE_VERSION(major,minor,micro) \
+#define MANETTE_ENCODE_VERSION(major,minor,micro) \
         ((major) << 24 | (minor) << 16 | (micro) << 8)
 
 /**
- * LIBMANETTE_VERSION_HEX:
+ * MANETTE_VERSION_HEX:
  *
  * libmanette version, encoded as an hexadecimal number, useful for
  * integer comparisons.
+ *
+ * Since: 0.2.10
  */
-#define LIBMANETTE_VERSION_HEX \
-        (LIBMANETTE_ENCODE_VERSION (LIBMANETTE_MAJOR_VERSION, LIBMANETTE_MINOR_VERSION, LIBMANETTE_MICRO_VERSION))
+#define MANETTE_VERSION_HEX \
+        (MANETTE_ENCODE_VERSION (MANETTE_MAJOR_VERSION, MANETTE_MINOR_VERSION, MANETTE_MICRO_VERSION))
 
 /**
- * LIBMANETTE_CHECK_VERSION:
+ * MANETTE_CHECK_VERSION:
  * @major: required major version
  * @minor: required minor version
  * @micro: required micro version
  *
  * Compile-time version checking. Evaluates to `TRUE` if the version
  * of libmanette is greater than the required one.
+ *
+ * Since: 0.2.10
+ */
+#define MANETTE_CHECK_VERSION(major,minor,micro)   \
+        (MANETTE_MAJOR_VERSION > (major) || \
+         (MANETTE_MAJOR_VERSION == (major) && MANETTE_MINOR_VERSION > (minor)) || \
+         (MANETTE_MAJOR_VERSION == (major) && MANETTE_MINOR_VERSION == (minor) && \
+          MANETTE_MICRO_VERSION >= (micro)))
+
+
+/**
+ * LIBMANETTE_MAJOR_VERSION: (skip)
+ *
+ * libmanette major version component (e.g. 1 if the version is 1.2.3)
+ *
+ * Deprecated: Use `MANETTE_MAJOR_VERSION` instead
+ */
+#define LIBMANETTE_MAJOR_VERSION (@MAJOR_VERSION@)
+
+/**
+ * LIBMANETTE_MINOR_VERSION: (skip)
+ *
+ * libmanette minor version component (e.g. 2 if the version is 1.2.3)
+ *
+ * Deprecated: Use `MANETTE_MINOR_VERSION` instead
+ */
+#define LIBMANETTE_MINOR_VERSION (@MINOR_VERSION@)
+
+/**
+ * LIBMANETTE_MICRO_VERSION: (skip)
+ *
+ * libmanette micro version component (e.g. 3 if the version is 1.2.3)
+ *
+ * Deprecated: Use `MANETTE_MICRO_VERSION` instead
+ */
+#define LIBMANETTE_MICRO_VERSION (@MICRO_VERSION@)
+
+/**
+ * LIBMANETTE_VERSION: (skip)
+ *
+ * libmanette version.
+ *
+ * Deprecated: Use `MANETTE_VERSION` instead
+ */
+#define LIBMANETTE_VERSION (@VERSION@)
+
+/**
+ * LIBMANETTE_VERSION_S: (skip)
+ *
+ * libmanette version, encoded as a string, useful for printing and
+ * concatenation.
+ *
+ * Deprecated: Use `MANETTE_VERSION_S` instead
+ */
+#define LIBMANETTE_VERSION_S "@VERSION@"
+
+/**
+ * LIBMANETTE_VERSION_HEX: (skip)
+ *
+ * libmanette version, encoded as an hexadecimal number, useful for
+ * integer comparisons.
+ *
+ * Deprecated: Use `MANETTE_VERSION_HEX` instead
+ */
+#define LIBMANETTE_VERSION_HEX \
+        (MANETTE_ENCODE_VERSION (MANETTE_MAJOR_VERSION, MANETTE_MINOR_VERSION, MANETTE_MICRO_VERSION))
+
+/**
+ * LIBMANETTE_CHECK_VERSION: (skip)
+ * @major: required major version
+ * @minor: required minor version
+ * @micro: required micro version
+ *
+ * Compile-time version checking. Evaluates to `TRUE` if the version
+ * of libmanette is greater than the required one.
+ *
+ * Deprecated: Use `MANETTE_CHECK_VERSION` instead
  */
 #define LIBMANETTE_CHECK_VERSION(major,minor,micro)   \
-        (LIBMANETTE_MAJOR_VERSION > (major) || \
-         (LIBMANETTE_MAJOR_VERSION == (major) && LIBMANETTE_MINOR_VERSION > (minor)) || \
-         (LIBMANETTE_MAJOR_VERSION == (major) && LIBMANETTE_MINOR_VERSION == (minor) && \
-          LIBMANETTE_MICRO_VERSION >= (micro)))
+        (MANETTE_MAJOR_VERSION > (major) || \
+         (MANETTE_MAJOR_VERSION == (major) && MANETTE_MINOR_VERSION > (minor)) || \
+         (MANETTE_MAJOR_VERSION == (major) && MANETTE_MINOR_VERSION == (minor) && \
+          MANETTE_MICRO_VERSION >= (micro)))
+
+G_END_DECLS

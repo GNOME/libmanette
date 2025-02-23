@@ -45,13 +45,13 @@ version_conf.set('MAJOR_VERSION', MAJOR_VERSION)
 version_conf.set('MINOR_VERSION', MINOR_VERSION)
 version_conf.set('MICRO_VERSION', MICRO_VERSION)
 
-configure_file(
+manette_version_h = configure_file(
   input: 'manette-version.h.in',
   output: 'manette-version.h',
-  configuration: version_conf,
-  install: true,
-  install_dir: get_option('includedir') / 'libmanette'
+  configuration: version_conf
 )
+
+libmanette_headers += manette_version_h
 
 libmanette_c_args = [
   '-DMANETTE_COMPILATION',
