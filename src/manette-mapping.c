@@ -33,7 +33,7 @@ struct _ManetteMapping {
   GArray *hat_bindings;
 };
 
-G_DEFINE_TYPE (ManetteMapping, manette_mapping, G_TYPE_OBJECT)
+G_DEFINE_FINAL_TYPE (ManetteMapping, manette_mapping, G_TYPE_OBJECT)
 
 G_DEFINE_BOXED_TYPE (ManetteMappingBinding, manette_mapping_binding, manette_mapping_binding_copy, manette_mapping_binding_free)
 

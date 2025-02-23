@@ -39,7 +39,7 @@ struct _ManetteMappingManager {
   GFileMonitor *user_mappings_monitor;
 };
 
-G_DEFINE_TYPE (ManetteMappingManager, manette_mapping_manager, G_TYPE_OBJECT);
+G_DEFINE_FINAL_TYPE (ManetteMappingManager, manette_mapping_manager, G_TYPE_OBJECT);
 
 enum {
   SIG_CHANGED,
