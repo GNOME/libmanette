@@ -23,7 +23,7 @@ docs_dir = datadir / 'doc'
 
 custom_target('libmanette-doc',
   input: [ libmanette_toml, libmanette_gir[0] ],
-  output: 'libmanette',
+  output: libmanette_module,
   command: [
     gidocgen,
     'generate',
