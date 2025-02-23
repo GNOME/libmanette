@@ -26,6 +26,13 @@
 
 #include <string.h>
 
+G_DEFINE_ENUM_TYPE (ManetteEventType, manette_event_type,
+  G_DEFINE_ENUM_VALUE (MANETTE_EVENT_NOTHING, "event-nothing"),
+  G_DEFINE_ENUM_VALUE (MANETTE_EVENT_BUTTON_PRESS, "event-button-press"),
+  G_DEFINE_ENUM_VALUE (MANETTE_EVENT_BUTTON_RELEASE, "event-button-release"),
+  G_DEFINE_ENUM_VALUE (MANETTE_EVENT_ABSOLUTE, "event-absolute"),
+  G_DEFINE_ENUM_VALUE (MANETTE_EVENT_HAT, "event-hat"))
+
 G_DEFINE_BOXED_TYPE (ManetteEvent, manette_event, manette_event_copy, manette_event_free)
 
 /**
@@ -281,28 +288,4 @@ manette_event_get_hat (const ManetteEvent *self,
   default:
     return FALSE;
   }
-}
-
-GType
-manette_event_type_get_type (void)
-{
-  static volatile gsize manette_event_type_type = 0;
-
-  if (g_once_init_enter (&manette_event_type_type)) {
-    static const GEnumValue values[] = {
-      { MANETTE_EVENT_NOTHING, "MANETTE_EVENT_NOTHING", "event-nothing" },
-      { MANETTE_EVENT_BUTTON_PRESS, "MANETTE_EVENT_BUTTON_PRESS", "event-button-press" },
-      { MANETTE_EVENT_BUTTON_RELEASE, "MANETTE_EVENT_BUTTON_RELEASE", "event-button-release" },
-      { MANETTE_EVENT_ABSOLUTE, "MANETTE_EVENT_ABSOLUTE", "event-absolute" },
-      { MANETTE_EVENT_HAT, "MANETTE_EVENT_HAT", "event-hat" },
-      { 0, NULL, NULL },
-    };
-    GType type;
-
-    type = g_enum_register_static ("ManetteEventType", values);
-
-    g_once_init_leave (&manette_event_type_type, type);
-  }
-
-  return manette_event_type_type;
 }

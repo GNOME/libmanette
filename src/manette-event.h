@@ -29,7 +29,7 @@ G_BEGIN_DECLS
 
 #define MANETTE_TYPE_EVENT (manette_event_get_type())
 
-#define MANETTE_TYPE_EVENT_TYPE (manette_event_type_get_type ())
+#define MANETTE_TYPE_EVENT_TYPE (manette_event_type_get_type())
 
 typedef union  _ManetteEvent ManetteEvent;
 
