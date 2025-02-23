@@ -49,6 +49,8 @@ struct _ManetteDevice
   ManetteBackend *backend;
 
   ManetteDeviceType device_type;
+
+  guint32 current_event_time;
 };
 
 G_DEFINE_FINAL_TYPE (ManetteDevice, manette_device, G_TYPE_OBJECT)
@@ -270,6 +272,8 @@ event_cb (ManetteDevice *self,
 {
   event->any.device = self;
 
+  self->current_event_time = event->any.time;
+
   // Send the unmapped event first.
   emit_event_signal_deferred (self, signals[SIG_EVENT], event);
 
@@ -461,6 +465,25 @@ manette_device_get_device_type (ManetteDevice *self)
   g_return_val_if_fail (MANETTE_IS_DEVICE (self), MANETTE_DEVICE_GENERIC);
 
   return self->device_type;
+}
+
+/**
+ * manette_device_get_current_event_time:
+ * @self: a device
+ *
+ * Gets the timestamp of when the current event was emitted on @self.
+ *
+ * Use this timestamp to ensure external factors such as synchronous disk writes
+ * don't influence your timing computations.
+ *
+ * Returns: the timestamp of when the current event was emitted
+ */
+guint32
+manette_device_get_current_event_time (ManetteDevice *self)
+{
+  g_return_val_if_fail (MANETTE_IS_DEVICE (self), 0);
+
+  return self->current_event_time;
 }
 
 /**
