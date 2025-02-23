@@ -103,8 +103,31 @@ G_BEGIN_DECLS
          (MANETTE_MAJOR_VERSION == (major) && MANETTE_MINOR_VERSION == (minor) && \
           MANETTE_MICRO_VERSION >= (micro)))
 
+#ifndef _MANETTE_EXTERN
+#define _MANETTE_EXTERN extern
+#endif
+
+#if defined(MANETTE_DISABLE_DEPRECATION_WARNINGS) || defined(MANETTE_COMPILATION)
+#  define _MANETTE_DEPRECATED             _MANETTE_EXTERN
+#  define _MANETTE_DEPRECATED_FOR(f)      _MANETTE_EXTERN
+#  define _MANETTE_DEPRECATED_TYPE
+#  define _MANETTE_DEPRECATED_TYPE_FOR(f)
+#else
+#  define _MANETTE_DEPRECATED             G_DEPRECATED        _MANETTE_EXTERN
+#  define _MANETTE_DEPRECATED_FOR(f)      G_DEPRECATED_FOR(f) _MANETTE_EXTERN
+#  define _MANETTE_DEPRECATED_TYPE        G_DEPRECATED
+#  define _MANETTE_DEPRECATED_TYPE_FOR(f) G_DEPRECATED_FOR(f)
+#endif
+
+#define MANETTE_UNAVAILABLE(major, minor) G_UNAVAILABLE(major, minor) _MANETTE_EXTERN
+
+#define MANETTE_AVAILABLE_IN_ALL _MANETTE_EXTERN
+
+MANETTE_AVAILABLE_IN_ALL
 guint manette_get_major_version (void);
+MANETTE_AVAILABLE_IN_ALL
 guint manette_get_minor_version (void);
+MANETTE_AVAILABLE_IN_ALL
 guint manette_get_micro_version (void);
 
 G_END_DECLS
