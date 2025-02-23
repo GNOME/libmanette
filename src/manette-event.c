@@ -34,13 +34,6 @@
  * Specifies the type of the event.
  */
 
-G_DEFINE_ENUM_TYPE (ManetteEventType, manette_event_type,
-  G_DEFINE_ENUM_VALUE (MANETTE_EVENT_NOTHING, "event-nothing"),
-  G_DEFINE_ENUM_VALUE (MANETTE_EVENT_BUTTON_PRESS, "event-button-press"),
-  G_DEFINE_ENUM_VALUE (MANETTE_EVENT_BUTTON_RELEASE, "event-button-release"),
-  G_DEFINE_ENUM_VALUE (MANETTE_EVENT_ABSOLUTE, "event-absolute"),
-  G_DEFINE_ENUM_VALUE (MANETTE_EVENT_HAT, "event-hat"))
-
 /**
  * ManetteEvent:
  *
