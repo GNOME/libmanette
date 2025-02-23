@@ -22,6 +22,8 @@
 # error "Only <libmanette.h> can be included directly."
 #endif
 
+#include "manette-version.h"
+
 #include <glib-object.h>
 
 #include "manette-device-type.h"
@@ -30,21 +32,43 @@ G_BEGIN_DECLS
 
 #define MANETTE_TYPE_DEVICE (manette_device_get_type())
 
+MANETTE_AVAILABLE_IN_ALL
 G_DECLARE_FINAL_TYPE (ManetteDevice, manette_device, MANETTE, DEVICE, GObject)
 
+MANETTE_AVAILABLE_IN_ALL
 gboolean manette_device_has_input (ManetteDevice *self,
                                    guint          type,
                                    guint          code);
+
+MANETTE_AVAILABLE_IN_ALL
 const char *manette_device_get_name (ManetteDevice *self);
+
+MANETTE_AVAILABLE_IN_ALL
 const char *manette_device_get_guid (ManetteDevice *self);
+
+MANETTE_AVAILABLE_IN_ALL
 ManetteDeviceType manette_device_get_device_type (ManetteDevice *self);
+
+MANETTE_AVAILABLE_IN_ALL
 gboolean manette_device_supports_mapping (ManetteDevice *self);
+
+MANETTE_AVAILABLE_IN_ALL
 char *manette_device_get_mapping (ManetteDevice *self);
+
+MANETTE_AVAILABLE_IN_ALL
 gboolean manette_device_has_user_mapping (ManetteDevice *self);
+
+MANETTE_AVAILABLE_IN_ALL
 void manette_device_save_user_mapping (ManetteDevice *self,
                                        const char   *mapping_string);
+
+MANETTE_AVAILABLE_IN_ALL
 void manette_device_remove_user_mapping (ManetteDevice *self);
+
+MANETTE_AVAILABLE_IN_ALL
 gboolean manette_device_has_rumble (ManetteDevice *self);
+
+MANETTE_AVAILABLE_IN_ALL
 gboolean manette_device_rumble (ManetteDevice *self,
                                 guint16        strong_magnitude,
                                 guint16        weak_magnitude,

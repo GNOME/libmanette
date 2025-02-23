@@ -48,5 +48,5 @@ name = "ENCODE_VERSION"
 hidden = true
 
 [[object]]
-name = "get_resource"
+name = "UNAVAILABLE"
 hidden = true
