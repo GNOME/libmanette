@@ -3,7 +3,7 @@ include: https://gitlab.gnome.org/GNOME/citemplates/raw/master/flatpak/flatpak_c
 stages:
   - pre
   - build
-  - publish
+  - deploy
 
 variables:
   FLATPAK_BUILD_DIR: app
@@ -75,3 +75,13 @@ doc:
     paths:
       - _doc/index.html
       - _doc
+
+refresh-doc:
+  image: fedora
+  stage: deploy
+  needs: ['doc']
+  only:
+    refs:
+    - 'main'
+  script:
+    - "curl -X POST -F token=${PAGES_TRIGGER_TOKEN} -F ref=pages https://gitlab.gnome.org/api/v4/projects/148/trigger/pipeline"
