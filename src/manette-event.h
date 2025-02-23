@@ -27,6 +27,7 @@
 #include <glib-object.h>
 
 #include "manette-device.h"
+#include "manette-enums.h"
 
 G_BEGIN_DECLS
 
@@ -42,14 +43,12 @@ typedef enum {
   MANETTE_EVENT_BUTTON_RELEASE = 1,
   MANETTE_EVENT_ABSOLUTE = 2,
   MANETTE_EVENT_HAT = 3,
+  /*< private >*/
   MANETTE_LAST_EVENT,
 } ManetteEventType;
 
 MANETTE_AVAILABLE_IN_ALL
 GType manette_event_get_type (void) G_GNUC_CONST;
-
-MANETTE_AVAILABLE_IN_ALL
-GType manette_event_type_get_type (void) G_GNUC_CONST;
 
 MANETTE_AVAILABLE_IN_ALL
 ManetteEvent *manette_event_copy (const ManetteEvent *self);
