@@ -59,7 +59,6 @@ enum {
   SIG_BUTTON_PRESS_EVENT,
   SIG_BUTTON_RELEASE_EVENT,
   SIG_ABSOLUTE_AXIS_EVENT,
-  SIG_HAT_AXIS_EVENT,
   N_SIGNALS,
 };
 
@@ -83,8 +82,6 @@ event_type_to_signal (ManetteEventType event_type)
     return SIG_BUTTON_RELEASE_EVENT;
   case MANETTE_EVENT_ABSOLUTE:
     return SIG_ABSOLUTE_AXIS_EVENT;
-  case MANETTE_EVENT_HAT:
-    return SIG_HAT_AXIS_EVENT;
   default:
     return N_SIGNALS;
   }
@@ -230,22 +227,6 @@ manette_device_class_init (ManetteDeviceClass *klass)
    */
   signals[SIG_ABSOLUTE_AXIS_EVENT] =
     g_signal_new ("absolute-axis-event",
-                  MANETTE_TYPE_DEVICE,
-                  G_SIGNAL_RUN_LAST,
-                  0, NULL, NULL,
-                  g_cclosure_marshal_VOID__BOXED,
-                  G_TYPE_NONE, 1,
-                  MANETTE_TYPE_EVENT | G_SIGNAL_TYPE_STATIC_SCOPE);
-
-  /**
-   * ManetteDevice::hat-axis-event:
-   * @self: a device
-   * @event: the event emitted by the manette device
-   *
-   * Emitted when a hat axis' value changes.
-   */
-  signals[SIG_HAT_AXIS_EVENT] =
-    g_signal_new ("hat-axis-event",
                   MANETTE_TYPE_DEVICE,
                   G_SIGNAL_RUN_LAST,
                   0, NULL, NULL,
