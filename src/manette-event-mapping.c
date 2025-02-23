@@ -89,7 +89,7 @@ map_absolute_event (ManetteMapping       *mapping,
   const ManetteMappingBinding * const *bindings;
   const ManetteMappingBinding * binding;
   GSList *mapped_events = NULL;
-  gdouble absolute_value;
+  double absolute_value;
   gboolean pressed;
 
   bindings = manette_mapping_get_bindings (mapping,

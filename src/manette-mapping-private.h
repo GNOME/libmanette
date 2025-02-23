@@ -59,8 +59,8 @@ struct _ManetteMappingBinding {
   } destination;
 };
 
-ManetteMapping *manette_mapping_new (const gchar  *mapping_string,
-                                     GError      **error);
+ManetteMapping *manette_mapping_new (const char  *mapping_string,
+                                     GError     **error);
 const ManetteMappingBinding * const *manette_mapping_get_bindings (ManetteMapping          *self,
                                                                    ManetteMappingInputType  type,
                                                                    guint16                  index);

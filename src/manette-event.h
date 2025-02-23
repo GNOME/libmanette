@@ -58,7 +58,7 @@ gboolean manette_event_get_button (const ManetteEvent *self,
                                    guint16            *button);
 gboolean manette_event_get_absolute (const ManetteEvent *self,
                                      guint16            *axis,
-                                     gdouble            *value);
+                                     double             *value);
 gboolean manette_event_get_hat (const ManetteEvent *self,
                                 guint16            *axis,
                                 gint8              *value);

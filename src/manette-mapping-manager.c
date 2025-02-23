@@ -35,7 +35,7 @@ struct _ManetteMappingManager {
   GHashTable *default_mappings;
   GHashTable *user_mappings;
 
-  gchar *user_mappings_uri;
+  char *user_mappings_uri;
   GFileMonitor *user_mappings_monitor;
 };
 
@@ -56,11 +56,11 @@ static guint signals[N_SIGNALS];
 
 static void
 add_mapping (ManetteMappingManager *self,
-             const gchar           *mapping_string,
+             const char            *mapping_string,
              GHashTable            *mappings)
 {
-  const gchar *platform;
-  const gchar *hint;
+  const char *platform;
+  const char *hint;
   g_auto (GStrv) split = NULL;
 
   g_assert (mapping_string != NULL);
@@ -103,9 +103,9 @@ add_from_input_stream (ManetteMappingManager  *self,
 
   data_stream = g_data_input_stream_new (input_stream);
   while (TRUE) {
-    g_autofree gchar *mapping_string = g_data_input_stream_read_line (data_stream,
-                                                                      NULL, NULL,
-                                                                      &inner_error);
+    g_autofree char *mapping_string = g_data_input_stream_read_line (data_stream,
+                                                                     NULL, NULL,
+                                                                     &inner_error);
     if (G_UNLIKELY (inner_error != NULL)) {
       g_assert (mapping_string == NULL);
       g_propagate_error (error, inner_error);
@@ -124,7 +124,7 @@ add_from_input_stream (ManetteMappingManager  *self,
 
 static void
 add_from_file_uri (ManetteMappingManager  *self,
-                   const gchar            *file_uri,
+                   const char             *file_uri,
                    GHashTable             *mappings,
                    GError                **error)
 {
@@ -155,10 +155,10 @@ save_user_mappings (ManetteMappingManager  *self,
                     GError                **error)
 {
   GHashTableIter iter;
-  gchar *guid;
-  gchar *sdl_string;
-  const gchar *name;
-  g_autofree gchar *mapping_string = NULL;
+  char *guid;
+  char *sdl_string;
+  const char *name;
+  g_autofree char *mapping_string = NULL;
 
   g_autoptr (GFile) file = NULL;
   g_autoptr (GFile) directory = NULL;
@@ -237,7 +237,7 @@ ManetteMappingManager *
 manette_mapping_manager_new (void)
 {
   ManetteMappingManager *self = NULL;
-  g_autofree gchar *path = NULL;
+  g_autofree char *path = NULL;
   g_autoptr (GFile) user_mappings_file = NULL;
   GError *error = NULL;
 
@@ -301,7 +301,7 @@ manette_mapping_manager_new (void)
 
 gboolean
 manette_mapping_manager_has_user_mapping (ManetteMappingManager *self,
-                                          const gchar           *guid)
+                                          const cha r           *guid)
 {
   g_return_val_if_fail (MANETTE_IS_MAPPING_MANAGER (self), FALSE);
   g_return_val_if_fail (guid != NULL, FALSE);
@@ -309,11 +309,11 @@ manette_mapping_manager_has_user_mapping (ManetteMappingManager *self,
   return g_hash_table_contains (self->user_mappings, guid);
 }
 
-gchar *
+char *
 manette_mapping_manager_get_default_mapping (ManetteMappingManager *self,
-                                             const gchar           *guid)
+                                             const char            *guid)
 {
-  const gchar *mapping;
+  const char *mapping;
 
   g_return_val_if_fail (MANETTE_IS_MAPPING_MANAGER (self), NULL);
   g_return_val_if_fail (guid != NULL, NULL);
@@ -323,11 +323,11 @@ manette_mapping_manager_get_default_mapping (ManetteMappingManager *self,
   return g_strdup (mapping);
 }
 
-gchar *
+char *
 manette_mapping_manager_get_user_mapping (ManetteMappingManager *self,
-                                          const gchar           *guid)
+                                          const char            *guid)
 {
-  const gchar *mapping;
+  const char *mapping;
 
   g_return_val_if_fail (MANETTE_IS_MAPPING_MANAGER (self), NULL);
   g_return_val_if_fail (guid != NULL, NULL);
@@ -337,11 +337,11 @@ manette_mapping_manager_get_user_mapping (ManetteMappingManager *self,
   return g_strdup (mapping);
 }
 
-gchar *
+char *
 manette_mapping_manager_get_mapping (ManetteMappingManager *self,
-                                     const gchar           *guid)
+                                     const char            *guid)
 {
-  gchar *mapping;
+  char *mapping;
 
   g_return_val_if_fail (MANETTE_IS_MAPPING_MANAGER (self), NULL);
   g_return_val_if_fail (guid != NULL, NULL);
@@ -355,9 +355,9 @@ manette_mapping_manager_get_mapping (ManetteMappingManager *self,
 
 void
 manette_mapping_manager_save_mapping (ManetteMappingManager *self,
-                                      const gchar           *guid,
-                                      const gchar           *name,
-                                      const gchar           *mapping)
+                                      const char            *guid,
+                                      const char            *name,
+                                      const char            *mapping)
 {
   g_autoptr (GError) error = NULL;
 
@@ -376,7 +376,7 @@ manette_mapping_manager_save_mapping (ManetteMappingManager *self,
 
 void
 manette_mapping_manager_delete_mapping (ManetteMappingManager *self,
-                                        const gchar           *guid)
+                                        const char            *guid)
 {
   g_autoptr (GError) error = NULL;
 

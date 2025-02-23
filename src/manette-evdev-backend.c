@@ -105,7 +105,7 @@ is_game_controller (struct libevdev *device,
   return has_buttons || has_axes;
 }
 
-static gdouble
+static double
 centered_absolute_value (struct input_absinfo *abs_info,
                          gint32                value)
 {
@@ -129,7 +129,7 @@ centered_absolute_value (struct input_absinfo *abs_info,
 
   divisor = value_centered < 0 ? max_centered + 1 : max_centered;;
 
-  return ((gdouble) value_centered) / ((gdouble) divisor);
+  return (double) value_centered / (double) divisor;
 }
 
 static void

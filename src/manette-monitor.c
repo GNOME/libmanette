@@ -82,8 +82,8 @@ static void
 load_mapping (ManetteMonitor *self,
               ManetteDevice  *device)
 {
-  const gchar *guid;
-  g_autofree gchar *mapping_string = NULL;
+  const char *guid;
+  g_autofree char *mapping_string = NULL;
   g_autoptr (ManetteMapping) mapping = NULL;
   g_autoptr (GError) error = NULL;
 
@@ -102,7 +102,7 @@ load_mapping (ManetteMonitor *self,
 
 static void
 add_device (ManetteMonitor *self,
-            const gchar    *filename,
+            const char     *filename,
             gboolean        is_hid)
 {
   g_autoptr (ManetteDevice) device = NULL;
@@ -142,7 +142,7 @@ add_device (ManetteMonitor *self,
 
 static void
 remove_device (ManetteMonitor *self,
-               const gchar    *filename)
+               const char     *filename)
 {
   ManetteDevice *device;
 
@@ -163,7 +163,7 @@ static void
 add_device_for_udev_device (ManetteMonitor *self,
                             GUdevDevice    *udev_device)
 {
-  const gchar *filename, *subsystem;
+  const char *filename, *subsystem;
 
   g_assert (self != NULL);
   g_assert (udev_device != NULL);
@@ -178,7 +178,7 @@ static void
 remove_device_for_udev_device (ManetteMonitor *self,
                                GUdevDevice    *udev_device)
 {
-  const gchar *filename;
+  const char *filename;
 
   filename = g_udev_device_get_device_file (udev_device);
   remove_device (self, filename);
@@ -186,8 +186,8 @@ remove_device_for_udev_device (ManetteMonitor *self,
 
 static gboolean
 udev_device_property_is (GUdevDevice *udev_device,
-                         const gchar *property,
-                         const gchar *value)
+                         const char  *property,
+                         const char  *value)
 {
   g_assert (property != NULL);
   g_assert (value != NULL);
@@ -207,7 +207,7 @@ udev_device_is_manette (GUdevDevice *udev_device)
 
 static void
 udev_client_uevent_cb (GUdevClient    *sender,
-                       const gchar    *action,
+                       const char     *action,
                        GUdevDevice    *udev_device,
                        ManetteMonitor *self)
 {
@@ -263,7 +263,7 @@ coldplug_gudev_devices (ManetteMonitor *self)
 static void
 init_gudev_backend (ManetteMonitor *self)
 {
-  self->client = g_udev_client_new ((const gchar *[]) { "input", "hidraw", NULL });
+  self->client = g_udev_client_new ((const char *[]) { "input", "hidraw", NULL });
   g_signal_connect_object (self->client,
                            "uevent",
                            (GCallback) udev_client_uevent_cb,
@@ -323,7 +323,7 @@ static void
 file_created (ManetteMonitor *self,
               GFile          *file)
 {
-  g_autofree gchar *path = g_file_get_path (file);
+  g_autofree char *path = g_file_get_path (file);
 
   if (is_accessible (file)) {
     add_device (self, path, is_hid_device (file));
@@ -338,7 +338,7 @@ static void
 file_attribute_changed (ManetteMonitor *self,
                         GFile          *file)
 {
-  g_autofree gchar *path = g_file_get_path (file);
+  g_autofree char *path = g_file_get_path (file);
 
   if (!g_hash_table_contains (self->potential_devices, path))
     return;
@@ -355,7 +355,7 @@ static void
 file_deleted (ManetteMonitor *self,
               GFile          *file)
 {
-  g_autofree gchar *path = g_file_get_path (file);
+  g_autofree char *path = g_file_get_path (file);
 
   remove_device (self, path);
 }
@@ -393,7 +393,7 @@ coldplug_files_from_dir (ManetteMonitor *self,
                          const char     *path)
 {
   g_autoptr (GDir) dir = NULL;
-  const gchar *name = NULL;
+  const char *name = NULL;
   g_autoptr (GError) error = NULL;
 
   dir = g_dir_open (path, (guint) 0, &error);
@@ -404,7 +404,7 @@ coldplug_files_from_dir (ManetteMonitor *self,
   }
 
   while ((name = g_dir_read_name (dir)) != NULL) {
-    g_autofree gchar *filename = NULL;
+    g_autofree char *filename = NULL;
     g_autoptr (GFile) file = NULL;
 
     filename = g_build_filename (path, name, NULL);

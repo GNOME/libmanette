@@ -261,12 +261,12 @@ value.
 
 Good:
 ```c
-name = (gchar *) data;
+name = (char *) data;
 ```
 
 Bad:
 ```c
-name = (gchar *)data;
+name = (char *)data;
 ```
 
 ### Switch Statements
@@ -691,3 +691,4 @@ Fixes #1
 Fix https://gitlab.gnome.org/GNOME/libmanette/-/issues/1
 Fixes https://gitlab.gnome.org/GNOME/libmanette/-/issues/1.
 ```
+

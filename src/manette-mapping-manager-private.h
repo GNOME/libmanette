@@ -32,19 +32,19 @@ G_DECLARE_FINAL_TYPE (ManetteMappingManager, manette_mapping_manager, MANETTE, M
 
 ManetteMappingManager *manette_mapping_manager_new (void);
 gboolean manette_mapping_manager_has_user_mapping (ManetteMappingManager *self,
-                                                   const gchar           *guid);
-gchar *manette_mapping_manager_get_default_mapping (ManetteMappingManager *self,
-                                                    const gchar           *guid);
-gchar *manette_mapping_manager_get_user_mapping (ManetteMappingManager *self,
-                                                 const gchar           *guid);
-gchar *manette_mapping_manager_get_mapping (ManetteMappingManager *self,
-                                            const gchar           *guid);
+                                                   const char            *guid);
+char *manette_mapping_manager_get_default_mapping (ManetteMappingManager *self,
+                                                   const char            *guid);
+char *manette_mapping_manager_get_user_mapping (ManetteMappingManager *self,
+                                                const char            *guid);
+char *manette_mapping_manager_get_mapping (ManetteMappingManager *self,
+                                           const char            *guid);
 void manette_mapping_manager_save_mapping (ManetteMappingManager *self,
-                                           const gchar           *guid,
-                                           const gchar           *name,
-                                           const gchar           *mapping);
+                                           const char            *guid,
+                                           const char            *name,
+                                           const char            *mapping);
 void manette_mapping_manager_delete_mapping (ManetteMappingManager *self,
-                                             const gchar           *guid);
+                                             const char            *guid);
 GList *manette_mapping_manager_get_default_mappings (ManetteMappingManager *self);
 
 G_END_DECLS
