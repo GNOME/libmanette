@@ -28,8 +28,6 @@
  * Describes available types of a [class@Device].
  *
  * More values may be added to this enumeration over time.
- *
- * Since: 0.2.10
  */
 
 #define VENDOR_STEAM                  0x28DE
