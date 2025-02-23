@@ -7,6 +7,7 @@ gnome = import('gnome')
 
 prefix = get_option('prefix')
 libexecdir = prefix / get_option('libexecdir')
+datadir = prefix / get_option('datadir')
 
 confinc = include_directories('.')
 srcinc = include_directories('src')

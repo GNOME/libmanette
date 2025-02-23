@@ -17,10 +17,9 @@
  */
 
 /**
- * SECTION:manette-monitor-iter
- * @short_description: An object iterating over the available devices
- * @title: ManetteMonitorIter
- * @See_also: #ManetteDevice, #ManetteMonitor
+ * ManetteMonitorIter:
+ *
+ * An object iterating over the available devices in [class@Monitor].
  */
 
 #include "manette-monitor-iter-private.h"
@@ -36,11 +35,11 @@ G_DEFINE_BOXED_TYPE (ManetteMonitorIter, manette_monitor_iter, manette_monitor_i
 
 /**
  * manette_monitor_iter_new:
- * @devices: (element-type utf8 ManetteDevice): a #GHashTable
+ * @devices: (element-type utf8 ManetteDevice): a hashtable
  *
- * Creates a new #ManetteMonitorIter.
+ * Creates a new [struct@MonitorIter].
  *
- * Returns: (transfer full): a new #ManetteMonitorIter
+ * Returns: (transfer full): a new iterator
  */
 ManetteMonitorIter *
 manette_monitor_iter_new (GHashTable *devices)
@@ -56,11 +55,11 @@ manette_monitor_iter_new (GHashTable *devices)
 
 /**
  * manette_monitor_iter_copy: (skip)
- * @self: a #ManetteMonitorIter
+ * @self: an iterator
  *
- * Creates a copy of a #ManetteMonitorIter.
+ * Creates a copy of @self.
  *
- * Returns: (transfer full): a new #ManetteMonitorIter
+ * Returns: (transfer full): a new iterator
  */
 ManetteMonitorIter *
 manette_monitor_iter_copy (ManetteMonitorIter *self)
@@ -81,9 +80,9 @@ manette_monitor_iter_copy (ManetteMonitorIter *self)
 
 /**
  * manette_monitor_iter_free: (skip)
- * @self: a #ManetteMonitorIter
+ * @self: an iterator
  *
- * Frees a #ManetteMonitorIter.
+ * Frees @self.
  */
 void
 manette_monitor_iter_free (ManetteMonitorIter *self)
@@ -100,10 +99,10 @@ manette_monitor_iter_free (ManetteMonitorIter *self)
 
 /**
  * manette_monitor_iter_next:
- * @self: a #ManetteMonitorIter
+ * @self: an iterator
  * @device: (out) (nullable) (transfer none): return location for the device
  *
- * Gets the next device from the device monitor iterator.
+ * Gets the next device from @self.
  *
  * Returns: whether the next device was retrieved, if not, the end was reached
  */

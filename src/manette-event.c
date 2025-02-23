@@ -17,10 +17,9 @@
  */
 
 /**
- * SECTION:manette-event
- * @short_description: An event emitted by a device
- * @title: ManetteEvent
- * @See_also: #ManetteDevice
+ * ManetteEvent:
+ *
+ * An event emitted by a [class@Device].
  */
 
 #include "manette-event-private.h"
@@ -32,9 +31,9 @@ G_DEFINE_BOXED_TYPE (ManetteEvent, manette_event, manette_event_copy, manette_ev
 /**
  * manette_event_new:
  *
- * Creates a new #ManetteEvent.
+ * Creates a new [union@Event].
  *
- * Returns: (transfer full): a new #ManetteEvent
+ * Returns: (transfer full): a new event
  */
 ManetteEvent *
 manette_event_new (void)
@@ -44,11 +43,11 @@ manette_event_new (void)
 
 /**
  * manette_event_copy: (skip)
- * @self: a #ManetteEvent
+ * @self: an event
  *
- * Creates a copy of a #ManetteEvent.
+ * Creates a copy of @self.
  *
- * Returns: (transfer full): a new #ManetteEvent
+ * Returns: (transfer full): a new event
  */
 ManetteEvent *
 manette_event_copy (const ManetteEvent *self)
@@ -67,7 +66,7 @@ manette_event_copy (const ManetteEvent *self)
 
 /**
  * manette_event_free: (skip)
- * @self: a #ManetteEvent
+ * @self: an event
  *
  * Frees @self.
  */
@@ -83,7 +82,7 @@ manette_event_free (ManetteEvent *self)
 
 /**
  * manette_event_get_event_type:
- * @self: a #ManetteEvent
+ * @self: an event
  *
  * Gets the event type of @self.
  *
@@ -99,11 +98,13 @@ manette_event_get_event_type (const ManetteEvent *self)
 
 /**
  * manette_event_get_time:
- * @self: a #ManetteEvent
+ * @self: an event
  *
  * Gets the timestamp of when @self was received by the input driver that takes
- * care of its device. Use this timestamp to ensure external factors such as
- * synchronous disk writes don't influence your timing computations.
+ * care of its device.
+ *
+ * Use this timestamp to ensure external factors such as synchronous disk writes
+ * don't influence your timing computations.
  *
  * Returns: the timestamp of when @self was received by the input driver
  */
@@ -117,11 +118,11 @@ manette_event_get_time (const ManetteEvent *self)
 
 /**
  * manette_event_get_device:
- * @self: a #ManetteEvent
+ * @self: an event
  *
- * Gets the #ManetteDevice associated with the @self.
+ * Gets the [class@Device] associated with the @self.
  *
- * Returns: (transfer none): the #ManetteDevice associated with the @self
+ * Returns: (transfer none): the device associated with the @self
  */
 ManetteDevice *
 manette_event_get_device (const ManetteEvent *self)
@@ -133,7 +134,7 @@ manette_event_get_device (const ManetteEvent *self)
 
 /**
  * manette_event_get_hardware_type:
- * @self: a #ManetteEvent
+ * @self: an event
  *
  * Gets the hardware type of @self.
  *
@@ -149,7 +150,7 @@ manette_event_get_hardware_type (const ManetteEvent *self)
 
 /**
  * manette_event_get_hardware_code:
- * @self: a #ManetteEvent
+ * @self: an event
  *
  * Gets the hardware code of @self.
  *
@@ -165,7 +166,7 @@ manette_event_get_hardware_code (const ManetteEvent *self)
 
 /**
  * manette_event_get_hardware_value:
- * @self: a #ManetteEvent
+ * @self: an event
  *
  * Gets the hardware value of @self.
  *
@@ -181,7 +182,7 @@ manette_event_get_hardware_value (const ManetteEvent *self)
 
 /**
  * manette_event_get_hardware_index:
- * @self: a #ManetteEvent
+ * @self: an event
  *
  * Gets the hardware index of @self.
  *
@@ -197,7 +198,7 @@ manette_event_get_hardware_index (const ManetteEvent *self)
 
 /**
  * manette_event_get_button:
- * @self: a #ManetteEvent
+ * @self: an event
  * @button: (out): return location for the button
  *
  * Gets the button of @self, if any.
@@ -224,9 +225,9 @@ manette_event_get_button (const ManetteEvent *self,
 
 /**
  * manette_event_get_absolute:
- * @self: a #ManetteEvent
+ * @self: an event
  * @axis: (out): return location for the axis
- * @value: (out): return location for the axis
+ * @value: (out): return location for the axis value
  *
  * Gets the axis of @self, if any.
  *
@@ -254,9 +255,9 @@ manette_event_get_absolute (const ManetteEvent *self,
 
 /**
  * manette_event_get_hat:
- * @self: a #ManetteEvent
+ * @self: an event
  * @axis: (out): return location for the hat
- * @value: (out): return location for the hat
+ * @value: (out): return location for the hat value
  *
  * Gets the hat of @self, if any.
  *

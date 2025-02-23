@@ -17,10 +17,11 @@
  */
 
 /**
- * SECTION:manette-device
- * @short_description: An object representing a physical gamepad
- * @title: ManetteDevice
- * @See_also: #ManetteMonitor
+ * ManetteDevice:
+ *
+ * An object representing a physical gamepad.
+ *
+ * See also: [class@Monitor].
  */
 
 #include "manette-device-private.h"
@@ -178,8 +179,8 @@ manette_device_class_init (ManetteDeviceClass *klass)
 
   /**
    * ManetteDevice::event:
-   * @self: a #ManetteDevice
-   * @event: the event emitted by the manette device
+   * @self: a device
+   * @event: the event emitted by the device
    *
    * Emitted for any kind of event before mapping it.
    */
@@ -194,8 +195,8 @@ manette_device_class_init (ManetteDeviceClass *klass)
 
   /**
    * ManetteDevice::button-press-event:
-   * @self: a #ManetteDevice
-   * @event: the event emitted by the manette device
+   * @self: a device
+   * @event: the event emitted by the device
    *
    * Emitted when a button is pressed.
    */
@@ -210,8 +211,8 @@ manette_device_class_init (ManetteDeviceClass *klass)
 
   /**
    * ManetteDevice::button-release-event:
-   * @self: a #ManetteDevice
-   * @event: the event emitted by the manette device
+   * @self: a device
+   * @event: the event emitted by the device
    *
    * Emitted when a button is released.
    */
@@ -226,7 +227,7 @@ manette_device_class_init (ManetteDeviceClass *klass)
 
   /**
    * ManetteDevice::absolute-axis-event:
-   * @self: a #ManetteDevice
+   * @self: a device
    * @event: the event emitted by the manette device
    *
    * Emitted when an absolute axis' value changes.
@@ -242,7 +243,7 @@ manette_device_class_init (ManetteDeviceClass *klass)
 
   /**
    * ManetteDevice::hat-axis-event:
-   * @self: a #ManetteDevice
+   * @self: a device
    * @event: the event emitted by the manette device
    *
    * Emitted when a hat axis' value changes.
@@ -258,7 +259,7 @@ manette_device_class_init (ManetteDeviceClass *klass)
 
   /**
    * ManetteDevice::disconnected:
-   * @self: a #ManetteDevice
+   * @self: a device
    *
    * Emitted when the device is disconnected.
    */
@@ -303,13 +304,13 @@ event_cb (ManetteDevice *self,
 }
 
 /**
- * manette_device_new: (skip)
+ * manette_device_new:
  * @filename: the filename of the device
- * @error: return location for a #GError, or %NULL
+ * @error: return location for an error
  *
- * Creates a new #ManetteDevice.
+ * Creates a new `ManetteDevice`.
  *
- * Returns: (transfer full): a new #ManetteDevice
+ * Returns: (transfer full): the new device
  */
 ManetteDevice *
 manette_device_new (ManetteBackend  *backend,
@@ -336,7 +337,7 @@ manette_device_new (ManetteBackend  *backend,
 
 /**
  * manette_device_get_guid:
- * @self: a #ManetteDevice
+ * @self: a device
  *
  * Gets the identifier used by SDL mappings to discriminate game controller
  * devices.
@@ -358,13 +359,14 @@ manette_device_get_guid (ManetteDevice *self)
 
 /**
  * manette_device_has_input:
- * @self: a #ManetteDevice
+ * @self: a device
  * @type: the input type
  * @code: the input code
  *
- * Gets whether the device has the given input. If the input is present it means
- * that the device can send events for it regardless of whether the device is
- * mapped or not.
+ * Gets whether the device has the given input.
+ *
+ * If the input is present, it means that the device can send events for it
+ * regardless of whether the device is mapped or not.
  *
  * Returns: whether the device has the given input
  */
@@ -382,11 +384,11 @@ manette_device_has_input (ManetteDevice *self,
 
 /**
  * manette_device_get_name:
- * @self: a #ManetteDevice
+ * @self: a device
  *
  * Gets the device's name.
  *
- * Returns: (transfer none): the name of @self, do not modify it or free it
+ * Returns: (transfer none): the name of @self
  */
 const gchar *
 manette_device_get_name (ManetteDevice *self)
@@ -398,11 +400,13 @@ manette_device_get_name (ManetteDevice *self)
 
 /**
  * manette_device_get_product_id:
- * @self: a #ManetteDevice
+ * @self: a device
  *
- * Gets the device's product ID. You can find some product IDs defined in the
- * kernel's code, in drivers/hid/hid-ids.h. Just note that there isn't all
- * devices there, but sufficiently enough most of the time.
+ * Gets the device's product ID.
+ *
+ * You can find some product IDs defined in the kernel's code, in
+ * `drivers/hid/hid-ids.h`. Just note that there isn't all devices there, but
+ * sufficiently enough most of the time.
  *
  * Returns: the product ID of @self
  */
@@ -416,11 +420,13 @@ manette_device_get_product_id (ManetteDevice *self)
 
 /**
  * manette_device_get_vendor_id:
- * @self: a #ManetteDevice
+ * @self: a device
  *
- * Gets the device's vendor ID. You can find some vendor IDs defined in the
- * kernel's code, in drivers/hid/hid-ids.h. Just note that there isn't all
- * devices there, but sufficiently enough most of the time.
+ * Gets the device's vendor ID.
+ *
+ * You can find some vendor IDs defined in the kernel's code, in
+ * `drivers/hid/hid-ids.h`. Just note that there isn't all devices there, but
+ * sufficiently enough most of the time.
  *
  * Returns: the vendor ID of @self
  */
@@ -434,10 +440,11 @@ manette_device_get_vendor_id (ManetteDevice *self)
 
 /**
  * manette_device_get_bustype_id:
- * @self: a #ManetteDevice
+ * @self: a device
  *
  * Gets the device's bustype ID.
- * This corresponds to BUS_* as defined in linux/input.h
+ *
+ * This corresponds to BUS_* as defined in `linux/input.h`
  *
  * Returns: the bustype ID of @self
  */
@@ -451,7 +458,7 @@ manette_device_get_bustype_id (ManetteDevice *self)
 
 /**
  * manette_device_get_version_id:
- * @self: a #ManetteDevice
+ * @self: a device
  *
  * Gets the device's version ID.
  *
@@ -467,7 +474,7 @@ manette_device_get_version_id (ManetteDevice *self)
 
 /**
  * manette_device_get_device_type:
- * @self: a #ManetteDevice
+ * @self: a device
  *
  * Gets the device type of @self.
  *
@@ -503,8 +510,8 @@ manette_device_supports_mapping (ManetteDevice *self)
 
 /**
  * manette_device_set_mapping:
- * @self: a #ManetteDevice
- * @mapping: a #ManetteMapping
+ * @self: a device
+ * @mapping: a mapping
  *
  * Associate @mapping to @self to map its hardware events into standard gamepad
  * ones.
@@ -521,10 +528,11 @@ manette_device_set_mapping (ManetteDevice  *self,
 
 /**
  * manette_device_get_mapping:
- * @self: a #ManetteDevice
+ * @self: a device
  *
- * Gets the user mapping for @self, or default mapping if there isn't any. Can
- * return %NULL if there's no mapping or @self doesn't support mappings.
+ * Gets the user mapping for @self, or default mapping if there isn't any.
+ *
+ * Can return `NULL` if there's no mapping or @self doesn't support mappings.
  *
  * Returns: (transfer full) (nullable): the mapping for @self
  *
@@ -549,7 +557,7 @@ manette_device_get_mapping (ManetteDevice *self)
 
 /**
  * manette_device_has_user_mapping:
- * @self: a #ManetteDevice
+ * @self: a device
  *
  * Gets whether @self has a user mapping.
  *
@@ -574,7 +582,7 @@ manette_device_has_user_mapping (ManetteDevice *self)
 
 /**
  * manette_device_save_user_mapping:
- * @self: a #ManetteDevice
+ * @self: a device
  * @mapping_string: the mapping string
  *
  * Saves @mapping_string as the user mapping for @self.
@@ -602,7 +610,7 @@ manette_device_save_user_mapping (ManetteDevice *self,
 
 /**
  * manette_device_remove_user_mapping:
- * @self: a #ManetteDevice
+ * @self: a device
  *
  * Removes the user mapping for @self.
  */
@@ -622,7 +630,7 @@ manette_device_remove_user_mapping (ManetteDevice *self)
 
 /**
  * manette_device_has_rumble:
- * @self: a #ManetteDevice
+ * @self: a device
  *
  * Gets whether @self supports rumble.
  *
@@ -638,13 +646,15 @@ manette_device_has_rumble (ManetteDevice *self)
 
 /**
  * manette_device_rumble:
- * @self: a #ManetteDevice
+ * @self: a device
  * @strong_magnitude: the magnitude for the heavy motor
  * @weak_magnitude: the magnitude for the light motor
  * @milliseconds: the rumble effect play time in milliseconds
  *
- * Make @self rumble during @milliseconds milliseconds, with the heavy and light
- * motors rumbling at their respectively defined magnitudes.
+ * Make @self rumble during @milliseconds milliseconds.
+ *
+ * The heavy and light motors will rumble at their respectively defined
+ * magnitudes.
  *
  * The duration cannot exceed 32767 milliseconds.
  *

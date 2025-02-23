@@ -17,10 +17,11 @@
  */
 
 /**
- * SECTION:manette-monitor
- * @short_description: An object monitoring the availability of devices
- * @title: ManetteMonitor
- * @See_also: #ManetteDevice
+ * ManetteMonitor:
+ *
+ * An object monitoring the availability of devices.
+ *
+ * See also: [class@Device].
  */
 
 #include "manette-monitor.h"
@@ -481,9 +482,9 @@ mappings_changed_cb (ManetteMappingManager *mapping_manager,
 /**
  * manette_monitor_new:
  *
- * Creates a new #ManetteMonitor object.
+ * Creates a new `ManetteMonitor`.
  *
- * Returns: (transfer full): a new #ManetteMonitor
+ * Returns: (transfer full): a new `ManetteMonitor`
  */
 ManetteMonitor *
 manette_monitor_new (void)
@@ -553,10 +554,10 @@ manette_monitor_class_init (ManetteMonitorClass *klass)
 
   /**
    * ManetteMonitor::device-connected:
-   * @self: a #ManetteMonitor
-   * @device: a #ManetteDevice
+   * @self: a monitor
+   * @device: a device
    *
-   * Emitted when a device is connected.
+   * Emitted when @device is connected.
    */
   signals[SIG_DEVICE_CONNECTED] =
     g_signal_new ("device-connected",
@@ -569,10 +570,10 @@ manette_monitor_class_init (ManetteMonitorClass *klass)
 
   /**
    * ManetteMonitor::device-disconnected:
-   * @self: a #ManetteMonitor
-   * @device: a #ManetteDevice
+   * @self: a monitor
+   * @device: a device
    *
-   * Emitted when a device is disconnected.
+   * Emitted when @device is disconnected.
    */
   signals[SIG_DEVICE_DISCONNECTED] =
     g_signal_new ("device-disconnected",
@@ -586,11 +587,11 @@ manette_monitor_class_init (ManetteMonitorClass *klass)
 
 /**
  * manette_monitor_iterate:
- * @self: a #ManetteMonitor
+ * @self: a monitor
  *
- * Creates a new #ManetteMonitorIter iterating on @self.
+ * Creates a new `ManetterMonitorIter` iterating on @self.
  *
- * Returns: (transfer full): a new #ManetteMonitorIter iterating on @self
+ * Returns: (transfer full): a new iterator for @self
  */
 ManetteMonitorIter *
 manette_monitor_iterate (ManetteMonitor *self)

@@ -66,11 +66,12 @@ doc:
       -Dbuild-tests=false
       -Ddoc=true
       -Dgudev=disabled
-      -Dintrospection=false
   script:
-    - flatpak build ${FLATPAK_BUILD_DIR} meson --prefix=/app ${SHARED_MESON_ARGS} ${MESON_ARGS} _build
-    - flatpak build ${FLATPAK_BUILD_DIR} ninja -C _build manette-doc
-    - mv _build/doc/html/ _doc/
+    - flatpak build ${FLATPAK_BUILD_DIR} meson setup --prefix=/app ${SHARED_MESON_ARGS} ${MESON_ARGS} _build
+    - flatpak build ${FLATPAK_BUILD_DIR} meson compile -C _build
+    - mv _build/doc/libmanette/ _doc/
   artifacts:
+    expose_as: 'Browse documentation'
     paths:
+      - _doc/index.html
       - _doc

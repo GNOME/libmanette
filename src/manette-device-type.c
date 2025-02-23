@@ -23,7 +23,7 @@
  * @MANETTE_DEVICE_GENERIC: Generic gamepads
  * @MANETTE_DEVICE_STEAM_DECK: Steam Deck
  *
- * Describes available types of a #ManetteDevice.
+ * Describes available types of a [class@Device].
  *
  * More values may be added to this enumeration over time.
  *

@@ -16,15 +16,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
- * SECTION:manette-version
- * @short_description: Version checking
- * @title: Version
- *
- * libmanette provides macros to check the version of the library
- * at compile-time.
- */
-
 #pragma once
 
 #if !defined(__MANETTE_INSIDE__) && !defined(MANETTE_COMPILATION)
@@ -34,21 +25,21 @@
 /**
  * LIBMANETTE_MAJOR_VERSION:
  *
- * libmanette major version component (e.g. 1 if %LIBMANETTE_VERSION is 1.2.3)
+ * libmanette major version component (e.g. 1 if the version is 1.2.3)
  */
 #define LIBMANETTE_MAJOR_VERSION (@MAJOR_VERSION@)
 
 /**
  * LIBMANETTE_MINOR_VERSION:
  *
- * libmanette minor version component (e.g. 2 if %LIBMANETTE_VERSION is 1.2.3)
+ * libmanette minor version component (e.g. 2 if the version is 1.2.3)
  */
 #define LIBMANETTE_MINOR_VERSION (@MINOR_VERSION@)
 
 /**
  * LIBMANETTE_MICRO_VERSION:
  *
- * libmanette micro version component (e.g. 3 if %LIBMANETTE_VERSION is 1.2.3)
+ * libmanette micro version component (e.g. 3 if the version is 1.2.3)
  */
 #define LIBMANETTE_MICRO_VERSION (@MICRO_VERSION@)
 
@@ -85,7 +76,7 @@
  * @minor: required minor version
  * @micro: required micro version
  *
- * Compile-time version checking. Evaluates to %TRUE if the version
+ * Compile-time version checking. Evaluates to `TRUE` if the version
  * of libmanette is greater than the required one.
  */
 #define LIBMANETTE_CHECK_VERSION(major,minor,micro)   \

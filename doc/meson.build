@@ -1,45 +1,53 @@
-subdir('xml')
-
-glib_docpath = glib.get_pkgconfig_variable('prefix') / 'share' / 'gtk-doc' / 'html'
-docpath = get_option('datadir') / 'gtk-doc' / 'html'
-
-private_headers = [
-  'manette-device-private.h',
-  'manette-event-mapping-private.h',
-  'manette-event-private.h',
-  'manette-mapping-error-private.h',
-  'manette-mapping-manager-private.h',
-  'manette-mapping-private.h',
-  'manette-monitor-iter-private.h',
+expand_content_md_files = [
 ]
 
-content_files = [
-]
+toml_data = configuration_data()
+toml_data.set('VERSION', libmanette_version)
 
-gnome.gtkdoc(
-  'manette',
-  main_xml: 'manette-doc.xml',
-  src_dir: [
-    meson.source_root() / 'src',
-    meson.build_root()  / 'src',
+libmanette_toml = configure_file(
+  input: 'libmanette.toml.in',
+  output: 'libmanette.toml',
+  configuration: toml_data
+)
+
+dependency(
+  'gi-docgen', version: '>= 2021.1',
+  fallback: ['gi-docgen', 'dummy_dep'],
+  native: true,
+  required: get_option('doc')
+)
+
+gidocgen = find_program('gi-docgen')
+
+docs_dir = datadir / 'doc'
+
+custom_target('libmanette-doc',
+  input: [ libmanette_toml, libmanette_gir[0] ],
+  output: 'libmanette',
+  command: [
+    gidocgen,
+    'generate',
+    '--quiet',
+    '--config=@INPUT0@',
+    '--output-dir=@OUTPUT@',
+    '--no-namespace-dir',
+    '--content-dir=@0@'.format(meson.current_source_dir()),
+    '@INPUT1@',
   ],
-  ignore_headers: private_headers,
-  dependencies: libmanette_dep,
-  gobject_typesfile: 'manette.types',
-  scan_args: [
-    '--rebuild-types',
-  ],
-  mkdb_args: [
-    '--default-includes=src/libmanette.h',
-  ],
-  fixxref_args: [
-    '--html-dir=@0@'.format(docpath),
-    '--extra-dir=@0@'.format(glib_docpath / 'glib'),
-    '--extra-dir=@0@'.format(glib_docpath / 'gobject'),
-    '--extra-dir=@0@'.format(glib_docpath / 'gio'),
-    '--extra-dir=@0@'.format(glib_docpath / 'gi'),
-  ],
-  install_dir: 'manette',
-  content_files: content_files,
+  depend_files: [ expand_content_md_files ],
+  build_by_default: true,
   install: true,
+  install_dir: docs_dir,
+)
+
+test('Validate docs',
+  gidocgen,
+  args: [
+    'check',
+    '--config', libmanette_toml,
+    '--add-include-path=@0@'.format(meson.current_build_dir() / '../src'),
+    libmanette_gir[0],
+  ],
+  depends: libmanette_gir[0],
+  suite: ['doc'],
 )
