@@ -339,8 +339,6 @@ manette_device_new (ManetteBackend  *backend,
  * devices.
  *
  * Returns: (transfer none): the identifier used by SDL mappings
- *
- * Since: 0.2.10
  */
 const char *
 manette_device_get_guid (ManetteDevice *self)
@@ -475,8 +473,6 @@ manette_device_get_version_id (ManetteDevice *self)
  * Gets the device type of @self.
  *
  * Returns: the device type
- *
- * Since: 0.2.10
  */
 ManetteDeviceType
 manette_device_get_device_type (ManetteDevice *self)
@@ -493,8 +489,6 @@ manette_device_get_device_type (ManetteDevice *self)
  * Gets whether @self supports mapping.
  *
  * Returns: whether @self supports mapping
- *
- * Since: 0.2.10
  */
 gboolean
 manette_device_supports_mapping (ManetteDevice *self)
@@ -531,8 +525,6 @@ manette_device_set_mapping (ManetteDevice  *self,
  * Can return `NULL` if there's no mapping or @self doesn't support mappings.
  *
  * Returns: (transfer full) (nullable): the mapping for @self
- *
- * Since: 0.2.10
  */
 char *
 manette_device_get_mapping (ManetteDevice *self)

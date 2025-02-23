@@ -1,5 +1,5 @@
 project('libmanette','c',
-  version: '0.2.12',
+  version: '1.0.alpha',
   meson_version: '>= 0.53.0',
 )
 
@@ -13,7 +13,7 @@ root_inc = include_directories('.')
 src_inc = include_directories('src')
 
 libmanette_version = meson.project_version()
-libmanette_api_version = '0.2'
+libmanette_api_version = '1'
 libmanette_module = 'manette-' + libmanette_api_version
 
 glib_version = '>= 2.50'
