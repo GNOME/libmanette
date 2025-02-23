@@ -51,7 +51,7 @@ struct _ManetteDevice
   ManetteDeviceType device_type;
 };
 
-G_DEFINE_TYPE (ManetteDevice, manette_device, G_TYPE_OBJECT)
+G_DEFINE_FINAL_TYPE (ManetteDevice, manette_device, G_TYPE_OBJECT)
 
 enum {
   SIG_EVENT,
