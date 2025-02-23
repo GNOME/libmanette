@@ -24,7 +24,6 @@
 
 #include <glib-object.h>
 #include "manette-device.h"
-#include "manette-monitor-iter.h"
 
 G_BEGIN_DECLS
 
@@ -33,6 +32,7 @@ G_BEGIN_DECLS
 G_DECLARE_FINAL_TYPE (ManetteMonitor, manette_monitor, MANETTE, MONITOR, GObject)
 
 ManetteMonitor *manette_monitor_new (void);
-ManetteMonitorIter *manette_monitor_iterate (ManetteMonitor *self);
+ManetteDevice **manette_monitor_list_devices (ManetteMonitor *self,
+                                              gsize          *n_devices);
 
 G_END_DECLS
