@@ -1,37 +1,12 @@
+libmanette_header_subdir = 'libmanette'
+libmanette_header_dir = get_option('includedir') / libmanette_header_subdir
+
 libmanette_resources = gnome.compile_resources(
   'manette_resources',
   'libmanette.gresource.xml',
   c_name: 'manette',
   source_dir: '.',
 )
-
-libmanette_sources = [
-  libmanette_resources,
-  'drivers/manette-steam-deck-driver.c',
-  'manette-backend.c',
-  'manette-device.c',
-  'manette-device-type.c',
-  'manette-evdev-backend.c',
-  'manette-event.c',
-  'manette-event-mapping.c',
-  'manette-hid-backend.c',
-  'manette-hid-driver.c',
-  'manette-mapping.c',
-  'manette-mapping-manager.c',
-  'manette-mapping-error.c',
-  'manette-monitor.c',
-  'manette-version.c',
-]
-
-libmanette_main_header = 'libmanette.h'
-
-libmanette_headers = [
-  libmanette_main_header,
-  'manette-device.h',
-  'manette-device-type.h',
-  'manette-event.h',
-  'manette-monitor.h',
-]
 
 version_split = meson.project_version().split('.')
 MAJOR_VERSION = version_split[0]
@@ -47,10 +22,51 @@ version_conf.set('MICRO_VERSION', MICRO_VERSION)
 manette_version_h = configure_file(
   input: 'manette-version.h.in',
   output: 'manette-version.h',
-  configuration: version_conf
+  configuration: version_conf,
+  install_dir: libmanette_header_dir,
 )
 
-libmanette_headers += manette_version_h
+libmanette_public_sources = [
+  'manette-device.c',
+  'manette-device-type.c',
+  'manette-event.c',
+  'manette-monitor.c',
+  'manette-version.c',
+]
+
+libmanette_private_sources = [
+  'drivers/manette-steam-deck-driver.c',
+  'manette-backend.c',
+  'manette-evdev-backend.c',
+  'manette-event-mapping.c',
+  'manette-hid-backend.c',
+  'manette-hid-driver.c',
+  'manette-mapping.c',
+  'manette-mapping-manager.c',
+  'manette-mapping-error.c',
+]
+
+libmanette_sources = [
+  libmanette_resources,
+  libmanette_public_sources,
+  libmanette_private_sources,
+]
+
+libmanette_main_header = 'libmanette.h'
+
+libmanette_headers = [
+  libmanette_main_header,
+  manette_version_h,
+  'manette-device.h',
+  'manette-device-type.h',
+  'manette-event.h',
+  'manette-monitor.h',
+]
+
+libmanette_generated_headers = [
+]
+
+libmanette_headers += libmanette_generated_headers
 
 libmanette_c_args = [
   '-DMANETTE_COMPILATION',
@@ -78,7 +94,25 @@ libmanette_lib = library(
   include_directories: confinc,
   install: true,
   soversion: 0,
+  gnu_symbol_visibility: 'hidden',
 )
+
+if get_option('build-tests')
+  libmanette_internal = static_library(
+    libmanette_module + '-internal',
+    libmanette_sources,
+    c_args: libmanette_c_args,
+    dependencies: libmanette_deps,
+    include_directories: confinc,
+  )
+
+  libmanette_internal_dep = declare_dependency(
+    sources: libmanette_generated_headers,
+    dependencies: libmanette_deps,
+    link_whole: libmanette_internal,
+    include_directories: include_directories('.'),
+  )
+endif
 
 libmanette_gir_args = [
    '--quiet',
@@ -107,7 +141,7 @@ if get_option('introspection')
     libmanette_lib,
     extra_args: libmanette_gir_args,
     export_packages: libmanette_module,
-    sources: libmanette_headers + libmanette_sources,
+    sources: libmanette_headers + libmanette_public_sources,
     nsversion: libmanette_api_version,
     namespace: 'Manette',
     identifier_prefix: 'Manette',
@@ -139,8 +173,8 @@ endif
 
 libmanette_dep = declare_dependency(
   link_with: libmanette_lib,
-  sources: built_girs,
-  include_directories: confinc,
+  sources: libmanette_generated_headers,
+  include_directories: include_directories('.'),
   dependencies: libmanette_deps,
 )
 

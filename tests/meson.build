@@ -13,7 +13,7 @@ foreach t : tests
 
   test_exe = executable(test_display_name, test_srcs,
     c_args: libmanette_c_args,
-    dependencies: libmanette_dep,
+    dependencies: libmanette_internal_dep,
     install: get_option('install-tests'),
     install_dir: installed_test_bindir,
   )

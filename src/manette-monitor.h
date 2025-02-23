@@ -22,16 +22,23 @@
 # error "Only <libmanette.h> can be included directly."
 #endif
 
+#include "manette-version.h"
+
 #include <glib-object.h>
+
 #include "manette-device.h"
 
 G_BEGIN_DECLS
 
 #define MANETTE_TYPE_MONITOR (manette_monitor_get_type())
 
+MANETTE_AVAILABLE_IN_ALL
 G_DECLARE_FINAL_TYPE (ManetteMonitor, manette_monitor, MANETTE, MONITOR, GObject)
 
+MANETTE_AVAILABLE_IN_ALL
 ManetteMonitor *manette_monitor_new (void);
+
+MANETTE_AVAILABLE_IN_ALL
 ManetteDevice **manette_monitor_list_devices (ManetteMonitor *self,
                                               gsize          *n_devices);
 
