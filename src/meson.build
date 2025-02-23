@@ -21,6 +21,7 @@ libmanette_sources = [
   'manette-mapping-error.c',
   'manette-monitor.c',
   'manette-monitor-iter.c',
+  'manette-version.c',
 ]
 
 libmanette_main_header = 'libmanette.h'

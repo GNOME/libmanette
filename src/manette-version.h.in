@@ -178,4 +178,8 @@ G_BEGIN_DECLS
          (MANETTE_MAJOR_VERSION == (major) && MANETTE_MINOR_VERSION == (minor) && \
           MANETTE_MICRO_VERSION >= (micro)))
 
+guint manette_get_major_version (void);
+guint manette_get_minor_version (void);
+guint manette_get_micro_version (void);
+
 G_END_DECLS
