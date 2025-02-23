@@ -50,6 +50,9 @@ MANETTE_AVAILABLE_IN_ALL
 ManetteDeviceType manette_device_get_device_type (ManetteDevice *self);
 
 MANETTE_AVAILABLE_IN_ALL
+guint32 manette_device_get_current_event_time (ManetteDevice *self);
+
+MANETTE_AVAILABLE_IN_ALL
 gboolean manette_device_supports_mapping (ManetteDevice *self);
 
 MANETTE_AVAILABLE_IN_ALL
