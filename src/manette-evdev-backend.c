@@ -136,6 +136,37 @@ centered_absolute_value (struct input_absinfo *abs_info,
 }
 
 static void
+emit_unmapped_event_as_mapped (ManetteEvdevBackend *self,
+                               ManetteEvent        *event)
+{
+  guint64 time = event->any.time;
+
+  switch (event->any.type) {
+  case MANETTE_EVENT_BUTTON_PRESS:
+  case MANETTE_EVENT_BUTTON_RELEASE:
+    {
+      guint button = event->button.button;
+      gboolean pressed = (event->any.type == MANETTE_EVENT_BUTTON_PRESS);
+
+      manette_backend_emit_button_event (MANETTE_BACKEND (self),
+                                         time, button, pressed);
+    }
+    break;
+  case MANETTE_EVENT_ABSOLUTE:
+    {
+      guint axis = event->absolute.axis;
+      double value = event->absolute.value;
+
+      manette_backend_emit_axis_event (MANETTE_BACKEND (self),
+                                       time, axis, value);
+    }
+    break;
+  default:
+    break;
+  }
+}
+
+static void
 map_event (ManetteEvdevBackend *self,
            ManetteEvent        *event)
 {
@@ -144,29 +175,25 @@ map_event (ManetteEvdevBackend *self,
 
   for (l = mapped_events; l != NULL; l = l->next) {
     ManetteMappedEvent *mapped_event = l->data;
-    ManetteEvent manette_event;
-
-    manette_event.any.time = event->any.time;
 
     switch (mapped_event->type) {
     case MANETTE_MAPPING_DESTINATION_TYPE_AXIS:
-      manette_event.any.type = MANETTE_EVENT_ABSOLUTE;
-      manette_event.absolute.axis = mapped_event->axis.axis;
-      manette_event.absolute.value = mapped_event->axis.value;
+      manette_backend_emit_axis_event (MANETTE_BACKEND (self),
+                                       event->any.time,
+                                       mapped_event->axis.axis,
+                                       mapped_event->axis.value);
       break;
 
     case MANETTE_MAPPING_DESTINATION_TYPE_BUTTON:
-      manette_event.any.type = mapped_event->button.pressed ?
-        MANETTE_EVENT_BUTTON_PRESS :
-        MANETTE_EVENT_BUTTON_RELEASE;
-      manette_event.button.button = mapped_event->button.button;
+      manette_backend_emit_button_event (MANETTE_BACKEND (self),
+                                         event->any.time,
+                                         mapped_event->button.button,
+                                         mapped_event->button.pressed);
       break;
 
     default:
       g_assert_not_reached ();
     }
-
-    manette_backend_emit_event (MANETTE_BACKEND (self), &manette_event);
   }
 
   g_slist_free_full (mapped_events, (GDestroyNotify) g_free);
@@ -231,7 +258,7 @@ on_evdev_event (ManetteEvdevBackend *self,
   manette_backend_emit_unmapped_event (MANETTE_BACKEND (self), &manette_event);
 
   if (self->mapping == NULL)
-    manette_backend_emit_event (MANETTE_BACKEND (self), &manette_event);
+    emit_unmapped_event_as_mapped (self, &manette_event);
   else
     map_event (self, &manette_event);
 }

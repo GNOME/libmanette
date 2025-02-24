@@ -76,7 +76,13 @@ gboolean manette_hid_driver_rumble (ManetteHidDriver *self,
                                     guint16           weak_magnitude,
                                     guint16           milliseconds);
 
-void manette_hid_driver_emit_event (ManetteHidDriver *self,
-                                    ManetteEvent     *event);
+void manette_hid_driver_emit_button_event (ManetteHidDriver *self,
+                                           guint64           time,
+                                           guint             button,
+                                           gboolean          pressed);
+void manette_hid_driver_emit_axis_event   (ManetteHidDriver *self,
+                                           guint64           time,
+                                           guint             axis,
+                                           double            value);
 
 G_END_DECLS

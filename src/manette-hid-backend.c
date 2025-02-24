@@ -125,7 +125,10 @@ manette_hid_backend_initialize (ManetteBackend *backend)
     g_assert_not_reached ();
   }
 
-  g_signal_connect_swapped (self->driver, "event", G_CALLBACK (manette_backend_emit_event), self);
+  g_signal_connect_swapped (self->driver, "button-event",
+                            G_CALLBACK (manette_backend_emit_button_event), self);
+  g_signal_connect_swapped (self->driver, "axis-event",
+                            G_CALLBACK (manette_backend_emit_axis_event), self);
 
   if (!manette_hid_driver_initialize (self->driver))
     return FALSE;
