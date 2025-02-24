@@ -23,7 +23,8 @@
 G_DEFINE_INTERFACE (ManetteHidDriver, manette_hid_driver, G_TYPE_OBJECT)
 
 enum {
-  SIGNAL_EVENT,
+  SIGNAL_BUTTON_EVENT,
+  SIGNAL_AXIS_EVENT,
   SIGNAL_LAST_SIGNAL,
 };
 
@@ -57,15 +58,25 @@ manette_hid_driver_default_init (ManetteHidDriverInterface *iface)
   iface->has_rumble = manette_hid_driver_real_has_rumble;
   iface->rumble = manette_hid_driver_real_rumble;
 
-  signals[SIGNAL_EVENT] =
-    g_signal_new ("event",
+  signals[SIGNAL_BUTTON_EVENT] =
+    g_signal_new ("button-event",
                   G_TYPE_FROM_INTERFACE (iface),
                   G_SIGNAL_RUN_FIRST,
                   0,
                   NULL, NULL, NULL,
                   G_TYPE_NONE,
-                  1,
-                  G_TYPE_POINTER);
+                  3,
+                  G_TYPE_UINT64, G_TYPE_UINT, G_TYPE_BOOLEAN);
+
+  signals[SIGNAL_AXIS_EVENT] =
+    g_signal_new ("axis-event",
+                  G_TYPE_FROM_INTERFACE (iface),
+                  G_SIGNAL_RUN_FIRST,
+                  0,
+                  NULL, NULL, NULL,
+                  G_TYPE_NONE,
+                  3,
+                  G_TYPE_UINT64, G_TYPE_UINT, G_TYPE_DOUBLE);
 }
 
 gboolean
@@ -174,11 +185,25 @@ manette_hid_driver_rumble (ManetteHidDriver *self,
 }
 
 void
-manette_hid_driver_emit_event (ManetteHidDriver *self,
-                               ManetteEvent     *event)
+manette_hid_driver_emit_button_event (ManetteHidDriver *self,
+                                      guint64           time,
+                                      guint             button,
+                                      gboolean          pressed)
 {
   g_assert (MANETTE_IS_HID_DRIVER (self));
-  g_assert (event != NULL);
 
-  g_signal_emit (self, signals[SIGNAL_EVENT], 0, event);
+  pressed = !!pressed;
+
+  g_signal_emit (self, signals[SIGNAL_BUTTON_EVENT], 0, time, button, pressed);
+}
+
+void
+manette_hid_driver_emit_axis_event (ManetteHidDriver *self,
+                                    guint64           time,
+                                    guint             axis,
+                                    double            value)
+{
+  g_assert (MANETTE_IS_HID_DRIVER (self));
+
+  g_signal_emit (self, signals[SIGNAL_AXIS_EVENT], 0, time, axis, value);
 }

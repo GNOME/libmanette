@@ -80,8 +80,14 @@ gboolean manette_backend_rumble     (ManetteBackend *self,
                                      guint16         weak_magnitude,
                                      guint16         milliseconds);
 
-void manette_backend_emit_event (ManetteBackend *self,
-                                 ManetteEvent   *event);
+void manette_backend_emit_button_event (ManetteBackend *self,
+                                        guint64         time,
+                                        guint           button,
+                                        gboolean        pressed);
+void manette_backend_emit_axis_event   (ManetteBackend *self,
+                                        guint64         time,
+                                        guint           axis,
+                                        double          value);
 
 void manette_backend_emit_unmapped_event (ManetteBackend *self,
                                           ManetteEvent   *event);
