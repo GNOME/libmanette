@@ -275,7 +275,38 @@ on_evdev_event (ManetteEvdevBackend *self,
     return;
   }
 
-  manette_backend_emit_unmapped_event (MANETTE_BACKEND (self), &manette_event);
+  switch (manette_event.any.type) {
+  case MANETTE_EVENT_BUTTON_PRESS:
+    manette_backend_emit_unmapped_button_event (MANETTE_BACKEND (self),
+                                                manette_event.any.time,
+                                                manette_event.any.hardware_index,
+                                                TRUE);
+    break;
+
+  case MANETTE_EVENT_BUTTON_RELEASE:
+    manette_backend_emit_unmapped_button_event (MANETTE_BACKEND (self),
+                                                manette_event.any.time,
+                                                manette_event.any.hardware_index,
+                                                FALSE);
+    break;
+
+  case MANETTE_EVENT_ABSOLUTE:
+    manette_backend_emit_unmapped_absolute_event (MANETTE_BACKEND (self),
+                                                  manette_event.any.time,
+                                                  manette_event.any.hardware_index,
+                                                  manette_event.absolute.value);
+    break;
+
+  case MANETTE_EVENT_HAT:
+    manette_backend_emit_unmapped_hat_event (MANETTE_BACKEND (self),
+                                             manette_event.any.time,
+                                             manette_event.any.hardware_index,
+                                             manette_event.hat.value);
+    break;
+
+  default:
+    g_assert_not_reached ();
+  }
 
   if (self->mapping == NULL)
     emit_unmapped_event_as_mapped (self, &manette_event);

@@ -24,8 +24,6 @@
 
 #include <glib-object.h>
 
-#include "manette-event-private.h"
-
 G_BEGIN_DECLS
 
 #define MANETTE_TYPE_HID_DRIVER (manette_hid_driver_get_type ())

@@ -24,7 +24,6 @@
 
 #include <glib-object.h>
 
-#include "manette-event-private.h"
 #include "manette-mapping-private.h"
 
 G_BEGIN_DECLS
@@ -89,7 +88,17 @@ void manette_backend_emit_axis_event   (ManetteBackend *self,
                                         guint           axis,
                                         double          value);
 
-void manette_backend_emit_unmapped_event (ManetteBackend *self,
-                                          ManetteEvent   *event);
+void manette_backend_emit_unmapped_button_event   (ManetteBackend *self,
+                                                   guint64         time,
+                                                   guint           index,
+                                                   gboolean        pressed);
+void manette_backend_emit_unmapped_absolute_event (ManetteBackend *self,
+                                                   guint64         time,
+                                                   guint           index,
+                                                   double          value);
+void manette_backend_emit_unmapped_hat_event      (ManetteBackend *self,
+                                                   guint64         time,
+                                                   guint           index,
+                                                   gint8           value);
 
 G_END_DECLS
