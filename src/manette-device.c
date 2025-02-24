@@ -233,33 +233,33 @@ compute_guid_string (ManetteDevice *self)
 }
 
 static void
-event_cb (ManetteDevice *self,
-          ManetteEvent  *event)
+button_event_cb (ManetteDevice *self,
+                 guint64        time,
+                 guint          button,
+                 gboolean       pressed)
 {
-  self->current_event_time = event->any.time;
+  self->current_event_time = time;
 
-  switch (event->any.type) {
-  case MANETTE_EVENT_BUTTON_PRESS:
-    g_signal_emit (self, signals[SIG_BUTTON_PRESSED], 0,
-                   (guint) event->button.button);
-    break;
-  case MANETTE_EVENT_BUTTON_RELEASE:
-    g_signal_emit (self, signals[SIG_BUTTON_RELEASED], 0,
-                   (guint) event->button.button);
-    break;
-  case MANETTE_EVENT_ABSOLUTE:
-    g_signal_emit (self, signals[SIG_ABSOLUTE_AXIS_CHANGED], 0,
-                   (guint) event->absolute.axis,
-                   event->absolute.value);
-    break;
-  default:
-    break;
-  }
+  if (pressed)
+    g_signal_emit (self, signals[SIG_BUTTON_PRESSED], 0, button);
+  else
+    g_signal_emit (self, signals[SIG_BUTTON_RELEASED], 0, button);
+}
+
+static void
+axis_event_cb (ManetteDevice *self,
+               guint64        time,
+               guint          axis,
+               double         value)
+{
+  self->current_event_time = time;
+
+  g_signal_emit (self, signals[SIG_ABSOLUTE_AXIS_CHANGED], 0, axis, value);
 }
 
 static void
 unmapped_event_cb (ManetteDevice *self,
-          ManetteEvent  *event)
+                   ManetteEvent  *event)
 {
   self->current_event_time = event->any.time;
 
@@ -314,7 +314,8 @@ manette_device_new (ManetteBackend  *backend,
 
   self->device_type = manette_device_type_guess (vendor, product);
 
-  g_signal_connect_swapped (self->backend, "event", G_CALLBACK (event_cb), self);
+  g_signal_connect_swapped (self->backend, "button-event", G_CALLBACK (button_event_cb), self);
+  g_signal_connect_swapped (self->backend, "axis-event", G_CALLBACK (axis_event_cb), self);
   g_signal_connect_swapped (self->backend, "unmapped-event", G_CALLBACK (unmapped_event_cb), self);
 
   return g_steal_pointer (&self);
