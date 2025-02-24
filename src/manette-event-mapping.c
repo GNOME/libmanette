@@ -20,13 +20,10 @@
 
 #include "manette-event-mapping-private.h"
 
-#include <linux/input-event-codes.h>
-#include "manette-event-private.h"
-
-static GSList *
-map_button_event (ManetteMapping *mapping,
-                  guint           index,
-                  gboolean        pressed)
+GSList *
+manette_map_button_event (ManetteMapping *mapping,
+                          guint           index,
+                          gboolean        pressed)
 {
   const ManetteMappingBinding * const *bindings;
   const ManetteMappingBinding * binding;
@@ -78,10 +75,10 @@ map_button_event (ManetteMapping *mapping,
   return mapped_events;
 }
 
-static GSList *
-map_absolute_event (ManetteMapping *mapping,
-                    guint           index,
-                    double          value)
+GSList *
+manette_map_absolute_event (ManetteMapping *mapping,
+                            guint           index,
+                            double          value)
 {
   const ManetteMappingBinding * const *bindings;
   const ManetteMappingBinding * binding;
@@ -152,10 +149,10 @@ map_absolute_event (ManetteMapping *mapping,
   return mapped_events;
 }
 
-static GSList *
-map_hat_event (ManetteMapping *mapping,
-               guint           index,
-               gint8           value)
+GSList *
+manette_map_hat_event (ManetteMapping *mapping,
+                       guint           index,
+                       gint8           value)
 {
   const ManetteMappingBinding * const *bindings;
   const ManetteMappingBinding * binding;
@@ -214,22 +211,4 @@ map_hat_event (ManetteMapping *mapping,
   }
 
   return mapped_events;
-}
-
-GSList *
-manette_map_event (ManetteMapping *mapping,
-                   ManetteEvent   *event)
-{
-  switch (event->any.type) {
-  case MANETTE_EVENT_BUTTON_PRESS:
-    return map_button_event (mapping, event->any.hardware_index, TRUE);
-  case MANETTE_EVENT_BUTTON_RELEASE:
-    return map_button_event (mapping, event->any.hardware_index, FALSE);
-  case MANETTE_EVENT_ABSOLUTE:
-    return map_absolute_event (mapping, event->any.hardware_index, event->absolute.value);
-  case MANETTE_EVENT_HAT:
-    return map_hat_event (mapping, event->any.hardware_index, event->hat.value);
-  default:
-    return NULL;
-  }
 }

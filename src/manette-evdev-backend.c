@@ -170,8 +170,28 @@ static void
 map_event (ManetteEvdevBackend *self,
            ManetteEvent        *event)
 {
-  GSList *mapped_events = manette_map_event (self->mapping, event);
-  GSList *l = NULL;
+  GSList *mapped_events, *l = NULL;
+
+  switch (event->any.type) {
+  case MANETTE_EVENT_BUTTON_PRESS:
+    mapped_events = manette_map_button_event (self->mapping, event->any.hardware_index, TRUE);
+    break;
+
+  case MANETTE_EVENT_BUTTON_RELEASE:
+    mapped_events = manette_map_button_event (self->mapping, event->any.hardware_index, FALSE);
+    break;
+
+  case MANETTE_EVENT_ABSOLUTE:
+    mapped_events = manette_map_absolute_event (self->mapping, event->any.hardware_index, event->absolute.value);
+    break;
+
+  case MANETTE_EVENT_HAT:
+    mapped_events = manette_map_hat_event (self->mapping, event->any.hardware_index, event->hat.value);
+    break;
+
+  default:
+    mapped_events = NULL;
+  }
 
   for (l = mapped_events; l != NULL; l = l->next) {
     ManetteMappedEvent *mapped_event = l->data;
