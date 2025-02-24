@@ -24,6 +24,7 @@ G_DEFINE_INTERFACE (ManetteBackend, manette_backend, G_TYPE_OBJECT)
 
 enum {
   SIGNAL_EVENT,
+  SIGNAL_UNMAPPED_EVENT,
   SIGNAL_LAST_SIGNAL,
 };
 
@@ -34,6 +35,16 @@ manette_backend_default_init (ManetteBackendInterface *iface)
 {
   signals[SIGNAL_EVENT] =
     g_signal_new ("event",
+                  G_TYPE_FROM_INTERFACE (iface),
+                  G_SIGNAL_RUN_FIRST,
+                  0,
+                  NULL, NULL, NULL,
+                  G_TYPE_NONE,
+                  1,
+                  G_TYPE_POINTER);
+
+  signals[SIGNAL_UNMAPPED_EVENT] =
+    g_signal_new ("unmapped-event",
                   G_TYPE_FROM_INTERFACE (iface),
                   G_SIGNAL_RUN_FIRST,
                   0,
@@ -127,6 +138,22 @@ manette_backend_get_version_id (ManetteBackend *self)
   return iface->get_version_id (self);
 }
 
+void
+manette_backend_set_mapping (ManetteBackend *self,
+                             ManetteMapping *mapping)
+{
+  ManetteBackendInterface *iface;
+
+  g_assert (MANETTE_IS_BACKEND (self));
+  g_assert (mapping == NULL || MANETTE_IS_MAPPING (mapping));
+
+  iface = MANETTE_BACKEND_GET_IFACE (self);
+
+  g_assert (iface->set_mapping);
+
+  iface->set_mapping (self, mapping);
+}
+
 gboolean
 manette_backend_has_input (ManetteBackend *self,
                            guint           type,
@@ -183,4 +210,14 @@ manette_backend_emit_event (ManetteBackend *self,
   g_assert (event != NULL);
 
   g_signal_emit (self, signals[SIGNAL_EVENT], 0, event);
+}
+
+void
+manette_backend_emit_unmapped_event (ManetteBackend *self,
+                                     ManetteEvent   *event)
+{
+  g_assert (MANETTE_IS_BACKEND (self));
+  g_assert (event != NULL);
+
+  g_signal_emit (self, signals[SIGNAL_UNMAPPED_EVENT], 0, event);
 }

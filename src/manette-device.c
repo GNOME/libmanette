@@ -28,7 +28,6 @@
 #include <unistd.h>
 #include "manette-backend-private.h"
 #include "manette-device-type-private.h"
-#include "manette-event-mapping-private.h"
 #include "manette-event-private.h"
 #include "manette-mapping-manager-private.h"
 
@@ -45,7 +44,6 @@ struct _ManetteDevice
   GObject parent_instance;
 
   char *guid;
-  ManetteMapping *mapping;
   ManetteBackend *backend;
 
   ManetteDeviceType device_type;
@@ -72,70 +70,11 @@ static guint signals[N_SIGNALS];
 /* Private */
 
 static void
-forward_event (ManetteDevice *self,
-               ManetteEvent  *event)
-{
-  switch (event->any.type) {
-  case MANETTE_EVENT_BUTTON_PRESS:
-    g_signal_emit (self, signals[SIG_BUTTON_PRESSED], 0,
-                   (guint) event->button.button);
-    break;
-  case MANETTE_EVENT_BUTTON_RELEASE:
-    g_signal_emit (self, signals[SIG_BUTTON_RELEASED], 0,
-                   (guint) event->button.button);
-    break;
-  case MANETTE_EVENT_ABSOLUTE:
-    g_signal_emit (self, signals[SIG_ABSOLUTE_AXIS_CHANGED], 0,
-                   (guint) event->absolute.axis,
-                   event->absolute.value);
-    break;
-  default:
-    break;
-  }
-}
-
-static void
-map_event (ManetteDevice *self,
-           ManetteEvent  *event)
-{
-  GSList *mapped_events = manette_map_event (self->mapping, event);
-  GSList *l = NULL;
-
-  for (l = mapped_events; l != NULL; l = l->next) {
-    ManetteMappedEvent *mapped_event = l->data;
-
-    switch (mapped_event->type) {
-    case MANETTE_MAPPING_DESTINATION_TYPE_AXIS:
-      g_signal_emit (self, signals[SIG_ABSOLUTE_AXIS_CHANGED], 0,
-                     (guint) mapped_event->axis.axis,
-                     mapped_event->axis.value);
-      break;
-
-    case MANETTE_MAPPING_DESTINATION_TYPE_BUTTON:
-      if (mapped_event->button.pressed) {
-        g_signal_emit (self, signals[SIG_BUTTON_PRESSED], 0,
-                       (guint) mapped_event->button.button);
-      } else {
-        g_signal_emit (self, signals[SIG_BUTTON_RELEASED], 0,
-                       (guint) mapped_event->button.button);
-      }
-      break;
-
-    default:
-      g_assert_not_reached ();
-    }
-  }
-
-  g_slist_free_full (mapped_events, (GDestroyNotify) g_free);
-}
-
-static void
 manette_device_finalize (GObject *object)
 {
   ManetteDevice *self = (ManetteDevice *)object;
 
   g_clear_pointer (&self->guid, g_free);
-  g_clear_object (&self->mapping);
   g_clear_object (&self->backend);
 
   G_OBJECT_CLASS (manette_device_parent_class)->finalize (object);
@@ -299,7 +238,30 @@ event_cb (ManetteDevice *self,
 {
   self->current_event_time = event->any.time;
 
-  // Send the unmapped event first.
+  switch (event->any.type) {
+  case MANETTE_EVENT_BUTTON_PRESS:
+    g_signal_emit (self, signals[SIG_BUTTON_PRESSED], 0,
+                   (guint) event->button.button);
+    break;
+  case MANETTE_EVENT_BUTTON_RELEASE:
+    g_signal_emit (self, signals[SIG_BUTTON_RELEASED], 0,
+                   (guint) event->button.button);
+    break;
+  case MANETTE_EVENT_ABSOLUTE:
+    g_signal_emit (self, signals[SIG_ABSOLUTE_AXIS_CHANGED], 0,
+                   (guint) event->absolute.axis,
+                   event->absolute.value);
+    break;
+  default:
+    break;
+  }
+}
+
+static void
+unmapped_event_cb (ManetteDevice *self,
+          ManetteEvent  *event)
+{
+  self->current_event_time = event->any.time;
 
   switch (event->any.type) {
   case MANETTE_EVENT_BUTTON_PRESS:
@@ -323,12 +285,6 @@ event_cb (ManetteDevice *self,
   default:
     break;
   }
-
-  // Then map or forward the event using dedicated signals.
-  if (self->mapping == NULL)
-    forward_event (self, event);
-  else
-    map_event (self, event);
 }
 
 /**
@@ -359,6 +315,7 @@ manette_device_new (ManetteBackend  *backend,
   self->device_type = manette_device_type_guess (vendor, product);
 
   g_signal_connect_swapped (self->backend, "event", G_CALLBACK (event_cb), self);
+  g_signal_connect_swapped (self->backend, "unmapped-event", G_CALLBACK (unmapped_event_cb), self);
 
   return g_steal_pointer (&self);
 }
@@ -402,25 +359,6 @@ manette_device_has_input (ManetteDevice *self,
                           guint          code)
 {
   g_return_val_if_fail (MANETTE_IS_DEVICE (self), FALSE);
-
-  if (self->mapping) {
-    ManetteMappingDestinationType dest_type;
-
-    switch (type) {
-    case EV_ABS:
-      dest_type = MANETTE_MAPPING_DESTINATION_TYPE_AXIS;
-      break;
-
-    case EV_KEY:
-      dest_type = MANETTE_MAPPING_DESTINATION_TYPE_BUTTON;
-      break;
-
-    default:
-      return FALSE;
-    }
-
-    return manette_mapping_has_destination_input (self->mapping, dest_type, code);
-  }
 
   return manette_backend_has_input (self->backend, type, code);
 }
@@ -581,7 +519,7 @@ manette_device_set_mapping (ManetteDevice  *self,
   g_return_if_fail (MANETTE_IS_DEVICE (self));
   g_return_if_fail (manette_device_supports_mapping (self));
 
-  g_set_object (&self->mapping, mapping);
+  manette_backend_set_mapping (self->backend, mapping);
 }
 
 /**
