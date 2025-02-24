@@ -66,12 +66,6 @@ enum {
 
 static guint signals[N_SIGNALS];
 
-typedef struct {
-  ManetteDevice *self;
-  guint          signal_id;
-  ManetteEvent  *event;
-} ManetteDeviceEventSignalData;
-
 /* Private */
 
 static guint
@@ -89,47 +83,6 @@ event_type_to_signal (ManetteEventType event_type)
   }
 }
 
-static ManetteDeviceEventSignalData *
-manette_device_event_signal_data_new (ManetteDevice *self,
-                                      guint          signal_id,
-                                      ManetteEvent  *event)
-{
-  ManetteDeviceEventSignalData *signal_data = g_new (ManetteDeviceEventSignalData, 1);
-
-  signal_data->self = g_object_ref (self);
-  signal_data->signal_id = signal_id;
-  signal_data->event = manette_event_copy (event);
-
-  return signal_data;
-}
-
-static void
-manette_device_event_signal_data_free (ManetteDeviceEventSignalData *signal_data)
-{
-  g_clear_object (&signal_data->self);
-  g_clear_pointer (&signal_data->event, manette_event_free);
-  g_clear_pointer (&signal_data, g_free);
-}
-
-static gboolean
-manette_device_event_signal_data_emit (ManetteDeviceEventSignalData *signal_data)
-{
-  g_signal_emit (signal_data->self, signal_data->signal_id, 0, signal_data->event);
-
-  return FALSE;
-}
-
-static void
-emit_event_signal_deferred (ManetteDevice *self,
-                            guint          signal_id,
-                            ManetteEvent  *event)
-{
-  g_idle_add_full (G_PRIORITY_DEFAULT_IDLE,
-                   (GSourceFunc) manette_device_event_signal_data_emit,
-                   manette_device_event_signal_data_new (self, signal_id, event),
-                   (GDestroyNotify) manette_device_event_signal_data_free);
-}
-
 static void
 forward_event (ManetteDevice *self,
                ManetteEvent  *event)
@@ -137,7 +90,7 @@ forward_event (ManetteDevice *self,
   guint signal = event_type_to_signal (manette_event_get_event_type (event));
 
   if (signal != N_SIGNALS)
-    emit_event_signal_deferred (self, signals[signal], event);
+    g_signal_emit (self, signals[signal], 0, event);
 }
 
 static void
@@ -273,7 +226,7 @@ event_cb (ManetteDevice *self,
   self->current_event_time = event->any.time;
 
   // Send the unmapped event first.
-  emit_event_signal_deferred (self, signals[SIG_EVENT], event);
+  g_signal_emit (self, signals[SIG_EVENT], 0, event);
 
   // Then map or forward the event using dedicated signals.
   if (self->mapping == NULL)
