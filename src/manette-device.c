@@ -270,8 +270,6 @@ static void
 event_cb (ManetteDevice *self,
           ManetteEvent  *event)
 {
-  event->any.device = self;
-
   self->current_event_time = event->any.time;
 
   // Send the unmapped event first.

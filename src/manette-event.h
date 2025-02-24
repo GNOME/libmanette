@@ -60,21 +60,6 @@ MANETTE_AVAILABLE_IN_ALL
 ManetteEventType manette_event_get_event_type (const ManetteEvent *self);
 
 MANETTE_AVAILABLE_IN_ALL
-guint32 manette_event_get_time (const ManetteEvent *self);
-
-MANETTE_AVAILABLE_IN_ALL
-ManetteDevice *manette_event_get_device (const ManetteEvent *self);
-
-MANETTE_AVAILABLE_IN_ALL
-guint16 manette_event_get_hardware_type (const ManetteEvent *self);
-
-MANETTE_AVAILABLE_IN_ALL
-guint16 manette_event_get_hardware_code (const ManetteEvent *self);
-
-MANETTE_AVAILABLE_IN_ALL
-guint16 manette_event_get_hardware_value (const ManetteEvent *self);
-
-MANETTE_AVAILABLE_IN_ALL
 guint16 manette_event_get_hardware_index (const ManetteEvent *self);
 
 MANETTE_AVAILABLE_IN_ALL
