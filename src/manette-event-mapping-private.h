@@ -22,7 +22,6 @@
 # error "This file is private, only <libmanette.h> can be included directly."
 #endif
 
-#include "manette-event-private.h"
 #include "manette-mapping-private.h"
 
 G_BEGIN_DECLS
@@ -41,7 +40,16 @@ typedef union {
   } axis;
 } ManetteMappedEvent;
 
-GSList *manette_map_event (ManetteMapping *mapping,
-                           ManetteEvent   *event);
+GSList *manette_map_button_event (ManetteMapping *mapping,
+                                  guint           index,
+                                  gboolean        pressed);
+
+GSList *manette_map_absolute_event (ManetteMapping *mapping,
+                                    guint           index,
+                                    double          value);
+
+GSList *manette_map_hat_event (ManetteMapping *mapping,
+                               guint           index,
+                               gint8           value);
 
 G_END_DECLS
