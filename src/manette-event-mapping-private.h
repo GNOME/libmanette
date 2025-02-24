@@ -27,6 +27,20 @@
 
 G_BEGIN_DECLS
 
+typedef union {
+  ManetteMappingDestinationType type;
+  struct {
+    ManetteMappingDestinationType type;
+    guint16 button;
+    gboolean pressed;
+  } button;
+  struct {
+    ManetteMappingDestinationType type;
+    guint16 axis;
+    double value;
+  } axis;
+} ManetteMappedEvent;
+
 GSList *manette_map_event (ManetteMapping *mapping,
                            ManetteEvent   *event);
 
