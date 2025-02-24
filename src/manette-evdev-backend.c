@@ -185,7 +185,7 @@ on_evdev_event (ManetteEvdevBackend *self,
 
     break;
   default:
-    manette_event.any.type = MANETTE_EVENT_NOTHING;
+    return;
   }
 
   manette_backend_emit_event (MANETTE_BACKEND (self), &manette_event);
