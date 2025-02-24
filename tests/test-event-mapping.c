@@ -34,10 +34,6 @@ cmp_event_any_except_type (ManetteEvent *event1,
                            ManetteEvent *event2)
 {
   g_assert_cmpint (event1->any.time, ==, event2->any.time);
-  g_assert (event1->any.device == event2->any.device);
-  g_assert_cmpuint (event1->any.hardware_type, ==, event2->any.hardware_type);
-  g_assert_cmpuint (event1->any.hardware_code, ==, event2->any.hardware_code);
-  g_assert_cmpint (event1->any.hardware_value, ==, event2->any.hardware_value);
   g_assert_cmpuint (event1->any.hardware_index, ==, event2->any.hardware_index);
 }
 
@@ -70,9 +66,6 @@ test_empty_mapping (void)
 
   event.any.type = MANETTE_EVENT_BUTTON_PRESS;
   event.any.time = DUMMY_TIMESTAMP;
-  event.any.hardware_type = EV_KEY;
-  event.any.hardware_code = BTN_SOUTH;
-  event.any.hardware_value = G_MAXINT;
   event.any.hardware_index = 0;
   event.button.button = 0;
 
@@ -96,9 +89,6 @@ test_button_mapping (void)
 
   event.any.type = MANETTE_EVENT_BUTTON_PRESS;
   event.any.time = DUMMY_TIMESTAMP;
-  event.any.hardware_type = EV_KEY;
-  event.any.hardware_code = BTN_SOUTH;
-  event.any.hardware_value = G_MAXINT;
   event.any.hardware_index = 0;
 
   mapped_events = manette_map_event (mapping, &event);
@@ -128,8 +118,6 @@ test_axis_mapping (void)
 
   event.any.type = MANETTE_EVENT_ABSOLUTE;
   event.any.time = DUMMY_TIMESTAMP;
-  event.any.hardware_type = EV_ABS;
-  event.any.hardware_code = ABS_X;
 
   mapped_events = manette_map_event (mapping, &event);
   g_assert_cmpint (g_slist_length (mapped_events), ==, 1);
@@ -144,8 +132,6 @@ test_axis_mapping (void)
 
   event.any.type = MANETTE_EVENT_ABSOLUTE;
   event.any.time = DUMMY_TIMESTAMP;
-  event.any.hardware_type = EV_ABS;
-  event.any.hardware_code = ABS_Y;
   event.any.hardware_index = 1;
 
   mapped_events = manette_map_event (mapping, &event);
@@ -176,8 +162,6 @@ test_hat_mapping (void)
 
   event.any.type = MANETTE_EVENT_HAT;
   event.any.time = DUMMY_TIMESTAMP;
-  event.any.hardware_type = EV_ABS;
-  event.any.hardware_code = ABS_HAT0X;
 
   mapped_events = manette_map_event (mapping, &event);
   g_assert_cmpint (g_slist_length (mapped_events), ==, 2);
@@ -245,8 +229,6 @@ test_axis_dpad_mapping (void)
 
   event.any.type = MANETTE_EVENT_ABSOLUTE;
   event.any.time = DUMMY_TIMESTAMP;
-  event.any.hardware_type = EV_ABS;
-  event.any.hardware_code = ABS_X;
   event.any.hardware_index = 0;
   event.absolute.axis = ABS_RX;
   event.absolute.value = 0.0;
@@ -268,8 +250,6 @@ test_axis_dpad_mapping (void)
 
   event.any.type = MANETTE_EVENT_ABSOLUTE;
   event.any.time = DUMMY_TIMESTAMP;
-  event.any.hardware_type = EV_ABS;
-  event.any.hardware_code = ABS_X;
   event.any.hardware_index = 0;
   event.absolute.axis = ABS_RX;
   event.absolute.value = -1.0;
@@ -291,8 +271,6 @@ test_axis_dpad_mapping (void)
 
   event.any.type = MANETTE_EVENT_ABSOLUTE;
   event.any.time = DUMMY_TIMESTAMP;
-  event.any.hardware_type = EV_ABS;
-  event.any.hardware_code = ABS_X;
   event.any.hardware_index = 0;
   event.absolute.axis = ABS_RX;
   event.absolute.value = 1.0;
@@ -314,8 +292,6 @@ test_axis_dpad_mapping (void)
 
   event.any.type = MANETTE_EVENT_ABSOLUTE;
   event.any.time = DUMMY_TIMESTAMP;
-  event.any.hardware_type = EV_ABS;
-  event.any.hardware_code = ABS_Y;
   event.any.hardware_index = 1;
   event.absolute.axis = ABS_RY;
   event.absolute.value = 0.0;
@@ -337,8 +313,6 @@ test_axis_dpad_mapping (void)
 
   event.any.type = MANETTE_EVENT_ABSOLUTE;
   event.any.time = DUMMY_TIMESTAMP;
-  event.any.hardware_type = EV_ABS;
-  event.any.hardware_code = ABS_Y;
   event.any.hardware_index = 1;
   event.absolute.axis = ABS_RY;
   event.absolute.value = -1.0;
@@ -359,8 +333,6 @@ test_axis_dpad_mapping (void)
 
   event.any.type = MANETTE_EVENT_ABSOLUTE;
   event.any.time = DUMMY_TIMESTAMP;
-  event.any.hardware_type = EV_ABS;
-  event.any.hardware_code = ABS_Y;
   event.any.hardware_index = 1;
   event.absolute.axis = ABS_RY;
   event.absolute.value = 1.0;
@@ -396,8 +368,6 @@ test_axis_trigger_mapping (void)
 
   event.any.type = MANETTE_EVENT_ABSOLUTE;
   event.any.time = DUMMY_TIMESTAMP;
-  event.any.hardware_type = EV_ABS;
-  event.any.hardware_code = ABS_X;
   event.any.hardware_index = 0;
   event.absolute.axis = ABS_RX;
   event.absolute.value = 1.0;
@@ -414,8 +384,6 @@ test_axis_trigger_mapping (void)
 
   event.any.type = MANETTE_EVENT_ABSOLUTE;
   event.any.time = DUMMY_TIMESTAMP;
-  event.any.hardware_type = EV_ABS;
-  event.any.hardware_code = ABS_X;
   event.any.hardware_index = 0;
   event.absolute.axis = ABS_RX;
   event.absolute.value = -1.0;
@@ -432,8 +400,6 @@ test_axis_trigger_mapping (void)
 
   event.any.type = MANETTE_EVENT_ABSOLUTE;
   event.any.time = DUMMY_TIMESTAMP;
-  event.any.hardware_type = EV_ABS;
-  event.any.hardware_code = ABS_Y;
   event.any.hardware_index = 1;
   event.absolute.axis = ABS_RY;
   event.absolute.value = 1.0;
@@ -450,8 +416,6 @@ test_axis_trigger_mapping (void)
 
   event.any.type = MANETTE_EVENT_ABSOLUTE;
   event.any.time = DUMMY_TIMESTAMP;
-  event.any.hardware_type = EV_ABS;
-  event.any.hardware_code = ABS_Y;
   event.any.hardware_index = 1;
   event.absolute.axis = ABS_RY;
   event.absolute.value = -1.0;

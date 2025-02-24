@@ -545,9 +545,6 @@ send_button_event (ManetteSteamDeckDriver *self,
   ManetteEvent event;
 
   event.any.time = time;
-  event.any.hardware_type = EV_KEY;
-  event.any.hardware_code = code;
-  event.any.hardware_value = pressed ? G_MAXINT : 0;
   event.any.type = pressed ?
     MANETTE_EVENT_BUTTON_PRESS :
     MANETTE_EVENT_BUTTON_RELEASE;
@@ -568,9 +565,6 @@ send_absolute_event (ManetteSteamDeckDriver *self,
   ManetteEvent event;
 
   event.any.time = time;
-  event.any.hardware_type = EV_ABS;
-  event.any.hardware_code = code;
-  event.any.hardware_value = value;
 
   event.any.type = MANETTE_EVENT_ABSOLUTE;
   event.absolute.hardware_index = code;

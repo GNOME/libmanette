@@ -140,9 +140,6 @@ on_evdev_event (ManetteEvdevBackend *self,
 
   manette_event.any.time = evdev_event->input_event_sec * 1000 +
                            evdev_event->input_event_usec / 1000;
-  manette_event.any.hardware_type = evdev_event->type;
-  manette_event.any.hardware_code = evdev_event->code;
-  manette_event.any.hardware_value = evdev_event->value;
 
   switch (evdev_event->type) {
   case EV_KEY:
