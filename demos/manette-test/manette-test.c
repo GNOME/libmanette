@@ -100,10 +100,10 @@ device_disconnected_cb (ManetteDevice *emitter,
 }
 
 static void
-absolute_axis_event_cb (ManetteDevice *emitter,
-                        guint          axis,
-                        double         value,
-                        gpointer       user_data)
+absolute_axis_changed_cb (ManetteDevice *emitter,
+                          guint          axis,
+                          double         value,
+                          gpointer       user_data)
 {
   const char *device_name;
   const char *axis_name;
@@ -118,9 +118,9 @@ absolute_axis_event_cb (ManetteDevice *emitter,
 }
 
 static void
-button_press_event_cb (ManetteDevice *emitter,
-                       guint          button,
-                       gpointer       user_data)
+button_pressed_cb (ManetteDevice *emitter,
+                   guint          button,
+                   gpointer       user_data)
 {
   const char *device_name;
   const char *button_name;
@@ -135,9 +135,9 @@ button_press_event_cb (ManetteDevice *emitter,
 }
 
 static void
-button_release_event_cb (ManetteDevice *emitter,
-                       guint          button,
-                         gpointer       user_data)
+button_released_cb (ManetteDevice *emitter,
+                    guint          button,
+                    gpointer       user_data)
 {
   const char *device_name;
   const char *button_name;
@@ -200,18 +200,18 @@ listen_to_device (ManetteDevice *device)
                            NULL,
                            0);
   g_signal_connect_object (G_OBJECT (device),
-                           "absolute-axis-event",
-                           (GCallback) absolute_axis_event_cb,
+                           "absolute-axis-changed",
+                           (GCallback) absolute_axis_changed_cb,
                            NULL,
                            0);
   g_signal_connect_object (G_OBJECT (device),
-                           "button-press-event",
-                           (GCallback) button_press_event_cb,
+                           "button-pressed",
+                           (GCallback) button_pressed_cb,
                            NULL,
                            0);
   g_signal_connect_object (G_OBJECT (device),
-                           "button-release-event",
-                           (GCallback) button_release_event_cb,
+                           "button-released",
+                           (GCallback) button_released_cb,
                            NULL,
                            0);
   if (manette_device_has_rumble (device)) {
