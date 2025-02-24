@@ -61,7 +61,6 @@ libmanette_private_sources = [
   'drivers/manette-steam-deck-driver.c',
   'manette-backend.c',
   'manette-evdev-backend.c',
-  'manette-event.c',
   'manette-event-mapping.c',
   'manette-hid-backend.c',
   'manette-hid-driver.c',
