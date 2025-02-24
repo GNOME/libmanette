@@ -25,7 +25,9 @@ G_DEFINE_INTERFACE (ManetteBackend, manette_backend, G_TYPE_OBJECT)
 enum {
   SIGNAL_BUTTON_EVENT,
   SIGNAL_AXIS_EVENT,
-  SIGNAL_UNMAPPED_EVENT,
+  SIGNAL_UNMAPPED_BUTTON_EVENT,
+  SIGNAL_UNMAPPED_ABSOLUTE_EVENT,
+  SIGNAL_UNMAPPED_HAT_EVENT,
   SIGNAL_LAST_SIGNAL,
 };
 
@@ -54,15 +56,35 @@ manette_backend_default_init (ManetteBackendInterface *iface)
                   3,
                   G_TYPE_UINT64, G_TYPE_UINT, G_TYPE_DOUBLE);
 
-  signals[SIGNAL_UNMAPPED_EVENT] =
-    g_signal_new ("unmapped-event",
+  signals[SIGNAL_UNMAPPED_BUTTON_EVENT] =
+    g_signal_new ("unmapped-button-event",
                   G_TYPE_FROM_INTERFACE (iface),
                   G_SIGNAL_RUN_FIRST,
                   0,
                   NULL, NULL, NULL,
                   G_TYPE_NONE,
-                  1,
-                  G_TYPE_POINTER);
+                  3,
+                  G_TYPE_UINT64, G_TYPE_UINT, G_TYPE_BOOLEAN);
+
+  signals[SIGNAL_UNMAPPED_ABSOLUTE_EVENT] =
+    g_signal_new ("unmapped-absolute-event",
+                  G_TYPE_FROM_INTERFACE (iface),
+                  G_SIGNAL_RUN_FIRST,
+                  0,
+                  NULL, NULL, NULL,
+                  G_TYPE_NONE,
+                  3,
+                  G_TYPE_UINT64, G_TYPE_UINT, G_TYPE_DOUBLE);
+
+  signals[SIGNAL_UNMAPPED_HAT_EVENT] =
+    g_signal_new ("unmapped-hat-event",
+                  G_TYPE_FROM_INTERFACE (iface),
+                  G_SIGNAL_RUN_FIRST,
+                  0,
+                  NULL, NULL, NULL,
+                  G_TYPE_NONE,
+                  3,
+                  G_TYPE_UINT64, G_TYPE_UINT, G_TYPE_CHAR);
 }
 
 gboolean
@@ -238,11 +260,36 @@ manette_backend_emit_axis_event (ManetteBackend *self,
 }
 
 void
-manette_backend_emit_unmapped_event (ManetteBackend *self,
-                                     ManetteEvent   *event)
+manette_backend_emit_unmapped_button_event (ManetteBackend *self,
+                                            guint64         time,
+                                            guint           index,
+                                            gboolean        pressed)
 {
   g_assert (MANETTE_IS_BACKEND (self));
-  g_assert (event != NULL);
 
-  g_signal_emit (self, signals[SIGNAL_UNMAPPED_EVENT], 0, event);
+  pressed = !!pressed;
+
+  g_signal_emit (self, signals[SIGNAL_UNMAPPED_BUTTON_EVENT], 0, time, index, pressed);
+}
+
+void
+manette_backend_emit_unmapped_absolute_event (ManetteBackend *self,
+                                              guint64         time,
+                                              guint           index,
+                                              double          value)
+{
+  g_assert (MANETTE_IS_BACKEND (self));
+
+  g_signal_emit (self, signals[SIGNAL_UNMAPPED_ABSOLUTE_EVENT], 0, time, index, value);
+}
+
+void
+manette_backend_emit_unmapped_hat_event (ManetteBackend *self,
+                                         guint64         time,
+                                         guint           index,
+                                         gint8           value)
+{
+  g_assert (MANETTE_IS_BACKEND (self));
+
+  g_signal_emit (self, signals[SIGNAL_UNMAPPED_HAT_EVENT], 0, time, index, value);
 }
