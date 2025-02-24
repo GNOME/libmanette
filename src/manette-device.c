@@ -56,11 +56,14 @@ struct _ManetteDevice
 G_DEFINE_FINAL_TYPE (ManetteDevice, manette_device, G_TYPE_OBJECT)
 
 enum {
-  SIG_EVENT,
   SIG_DISCONNECTED,
   SIG_BUTTON_PRESSED,
   SIG_BUTTON_RELEASED,
   SIG_ABSOLUTE_AXIS_CHANGED,
+  SIG_UNMAPPED_BUTTON_PRESSED,
+  SIG_UNMAPPED_BUTTON_RELEASED,
+  SIG_UNMAPPED_ABSOLUTE_AXIS_CHANGED,
+  SIG_UNMAPPED_HAT_AXIS_CHANGED,
   N_SIGNALS,
 };
 
@@ -146,20 +149,18 @@ manette_device_class_init (ManetteDeviceClass *klass)
   object_class->finalize = manette_device_finalize;
 
   /**
-   * ManetteDevice::event:
+   * ManetteDevice::disconnected:
    * @self: a device
-   * @event: the event emitted by the device
    *
-   * Emitted for any kind of event before mapping it.
+   * Emitted when the device is disconnected.
    */
-  signals[SIG_EVENT] =
-    g_signal_new ("event",
+  signals[SIG_DISCONNECTED] =
+    g_signal_new ("disconnected",
                   MANETTE_TYPE_DEVICE,
                   G_SIGNAL_RUN_LAST,
                   0, NULL, NULL,
-                  g_cclosure_marshal_VOID__BOXED,
-                  G_TYPE_NONE, 1,
-                  MANETTE_TYPE_EVENT | G_SIGNAL_TYPE_STATIC_SCOPE);
+                  g_cclosure_marshal_VOID__VOID,
+                  G_TYPE_NONE, 0);
 
   /**
    * ManetteDevice::button-pressed:
@@ -211,18 +212,70 @@ manette_device_class_init (ManetteDeviceClass *klass)
                   G_TYPE_UINT, G_TYPE_DOUBLE);
 
   /**
-   * ManetteDevice::disconnected:
+   * ManetteDevice::unmapped-button-pressed:
    * @self: a device
+   * @index: the button hardware index
    *
-   * Emitted when the device is disconnected.
+   * Emitted when an unmapped button is pressed.
    */
-  signals[SIG_DISCONNECTED] =
-    g_signal_new ("disconnected",
+  signals[SIG_UNMAPPED_BUTTON_PRESSED] =
+    g_signal_new ("unmapped-button-pressed",
                   MANETTE_TYPE_DEVICE,
                   G_SIGNAL_RUN_LAST,
                   0, NULL, NULL,
-                  g_cclosure_marshal_VOID__VOID,
-                  G_TYPE_NONE, 0);
+                  g_cclosure_marshal_VOID__UINT,
+                  G_TYPE_NONE, 1,
+                  G_TYPE_UINT);
+
+  /**
+   * ManetteDevice::unmapped-button-released:
+   * @self: a device
+   * @index: the button hardware index
+   *
+   * Emitted when an unmapped button is released.
+   */
+  signals[SIG_UNMAPPED_BUTTON_RELEASED] =
+    g_signal_new ("unmapped-button-released",
+                  MANETTE_TYPE_DEVICE,
+                  G_SIGNAL_RUN_LAST,
+                  0, NULL, NULL,
+                  g_cclosure_marshal_VOID__UINT,
+                  G_TYPE_NONE, 1,
+                  G_TYPE_UINT);
+
+  /**
+   * ManetteDevice::unmapped-absolute-axis-changed:
+   * @self: a device
+   * @axis: the axis hardware index
+   * @value: the axis value
+   *
+   * Emitted when an unmapped absolute axis' value changes.
+   */
+  signals[SIG_UNMAPPED_ABSOLUTE_AXIS_CHANGED] =
+    g_signal_new ("unmapped-absolute-axis-changed",
+                  MANETTE_TYPE_DEVICE,
+                  G_SIGNAL_RUN_LAST,
+                  0, NULL, NULL,
+                  NULL,
+                  G_TYPE_NONE, 2,
+                  G_TYPE_UINT, G_TYPE_DOUBLE);
+
+  /**
+   * ManetteDevice::unmapped-hat-axis-changed:
+   * @self: a device
+   * @axis: the axis hardware index
+   * @value: (type gint8): the axis value
+   *
+   * Emitted when an unmapped hat axis' value changes.
+   */
+  signals[SIG_UNMAPPED_HAT_AXIS_CHANGED] =
+    g_signal_new ("unmapped-hat-axis-changed",
+                  MANETTE_TYPE_DEVICE,
+                  G_SIGNAL_RUN_LAST,
+                  0, NULL, NULL,
+                  NULL,
+                  G_TYPE_NONE, 2,
+                  G_TYPE_UINT, G_TYPE_CHAR);
 }
 
 static void
@@ -247,7 +300,29 @@ event_cb (ManetteDevice *self,
   self->current_event_time = event->any.time;
 
   // Send the unmapped event first.
-  g_signal_emit (self, signals[SIG_EVENT], 0, event);
+
+  switch (manette_event_get_event_type (event)) {
+  case MANETTE_EVENT_BUTTON_PRESS:
+    g_signal_emit (self, signals[SIG_UNMAPPED_BUTTON_PRESSED], 0, event->any.hardware_index);
+    break;
+
+  case MANETTE_EVENT_BUTTON_RELEASE:
+    g_signal_emit (self, signals[SIG_UNMAPPED_BUTTON_RELEASED], 0, event->any.hardware_index);
+    break;
+
+  case MANETTE_EVENT_ABSOLUTE:
+    g_signal_emit (self, signals[SIG_UNMAPPED_ABSOLUTE_AXIS_CHANGED], 0,
+                   event->any.hardware_index, event->absolute.value);
+    break;
+
+  case MANETTE_EVENT_HAT:
+    g_signal_emit (self, signals[SIG_UNMAPPED_HAT_AXIS_CHANGED], 0,
+                   event->any.hardware_index, event->hat.value);
+    break;
+
+  default:
+    break;
+  }
 
   // Then map or forward the event using dedicated signals.
   if (self->mapping == NULL)
