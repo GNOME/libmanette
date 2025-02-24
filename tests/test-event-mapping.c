@@ -18,7 +18,6 @@
 
 #include <linux/input-event-codes.h>
 #include "../src/manette-event-mapping-private.h"
-#include "../src/manette-event-private.h"
 
 #define MAPPING_EMPTY "00000000000000000000000000000000,empty,"
 #define MAPPING_BUTTON "00000000000000000000000000000000,button,a:b0,b:b1,x:b2,y:b3,"
@@ -26,8 +25,6 @@
 #define MAPPING_HAT "00000000000000000000000000000000,hat,dpleft:h0.8,dpright:h0.2,dpup:h0.1,dpdown:h0.4,"
 #define MAPPING_AXIS_DPAD "00000000000000000000000000000000,button,dpleft:-a0,dpright:+a0,dpup:-a1,dpdown:+a1,"
 #define MAPPING_AXIS_TRIGGER "00000000000000000000000000000000,trigger,lefttrigger:a0,righttrigger:a1,"
-
-#define DUMMY_TIMESTAMP 0x76543210
 
 static void
 test_null (void)
@@ -47,7 +44,6 @@ static void
 test_empty_mapping (void)
 {
   g_autoptr (ManetteMapping) mapping = NULL;
-  ManetteEvent event = {};
   GSList *mapped_events;
   GError *error = NULL;
 
@@ -56,12 +52,7 @@ test_empty_mapping (void)
   g_assert_nonnull (mapping);
   g_assert_true (MANETTE_IS_MAPPING (mapping));
 
-  event.any.type = MANETTE_EVENT_BUTTON_PRESS;
-  event.any.time = DUMMY_TIMESTAMP;
-  event.any.hardware_index = 0;
-  event.button.button = 0;
-
-  mapped_events = manette_map_event (mapping, &event);
+  mapped_events = manette_map_button_event (mapping, 0, TRUE);
   g_assert_cmpint (g_slist_length (mapped_events), ==, 0);
 }
 
@@ -69,7 +60,6 @@ static void
 test_button_mapping (void)
 {
   g_autoptr (ManetteMapping) mapping = NULL;
-  ManetteEvent event = {};
   GSList *mapped_events;
   ManetteMappedEvent *mapped_event;
   GError *error = NULL;
@@ -79,11 +69,7 @@ test_button_mapping (void)
   g_assert_nonnull (mapping);
   g_assert_true (MANETTE_IS_MAPPING (mapping));
 
-  event.any.type = MANETTE_EVENT_BUTTON_PRESS;
-  event.any.time = DUMMY_TIMESTAMP;
-  event.any.hardware_index = 0;
-
-  mapped_events = manette_map_event (mapping, &event);
+  mapped_events = manette_map_button_event (mapping, 0, TRUE);
   g_assert_cmpint (g_slist_length (mapped_events), ==, 1);
 
   mapped_event = mapped_events->data;
@@ -98,7 +84,6 @@ static void
 test_axis_mapping (void)
 {
   g_autoptr (ManetteMapping) mapping = NULL;
-  ManetteEvent event = {};
   GSList *mapped_events;
   ManetteMappedEvent *mapped_event;
   GError *error = NULL;
@@ -108,10 +93,7 @@ test_axis_mapping (void)
   g_assert_nonnull (mapping);
   g_assert_true (MANETTE_IS_MAPPING (mapping));
 
-  event.any.type = MANETTE_EVENT_ABSOLUTE;
-  event.any.time = DUMMY_TIMESTAMP;
-
-  mapped_events = manette_map_event (mapping, &event);
+  mapped_events = manette_map_absolute_event (mapping, 0, 0.0);
   g_assert_cmpint (g_slist_length (mapped_events), ==, 1);
 
   mapped_event = mapped_events->data;
@@ -121,11 +103,7 @@ test_axis_mapping (void)
 
   g_slist_free_full (mapped_events, (GDestroyNotify) g_free);
 
-  event.any.type = MANETTE_EVENT_ABSOLUTE;
-  event.any.time = DUMMY_TIMESTAMP;
-  event.any.hardware_index = 1;
-
-  mapped_events = manette_map_event (mapping, &event);
+  mapped_events = manette_map_absolute_event (mapping, 1, 0.0);
   g_assert_cmpint (g_slist_length (mapped_events), ==, 1);
 
   mapped_event = mapped_events->data;
@@ -140,7 +118,6 @@ static void
 test_hat_mapping (void)
 {
   g_autoptr (ManetteMapping) mapping = NULL;
-  ManetteEvent event = {};
   GSList *mapped_events;
   ManetteMappedEvent *mapped_event;
   GError *error = NULL;
@@ -150,10 +127,7 @@ test_hat_mapping (void)
   g_assert_nonnull (mapping);
   g_assert_true (MANETTE_IS_MAPPING (mapping));
 
-  event.any.type = MANETTE_EVENT_HAT;
-  event.any.time = DUMMY_TIMESTAMP;
-
-  mapped_events = manette_map_event (mapping, &event);
+  mapped_events = manette_map_hat_event (mapping, 0, 0);
   g_assert_cmpint (g_slist_length (mapped_events), ==, 2);
 
   mapped_event = mapped_events->data;
@@ -168,9 +142,7 @@ test_hat_mapping (void)
 
   g_slist_free_full (mapped_events, (GDestroyNotify) g_free);
 
-  event.hat.value = -1;
-
-  mapped_events = manette_map_event (mapping, &event);
+  mapped_events = manette_map_hat_event (mapping, 0, -1);
   g_assert_cmpint (g_slist_length (mapped_events), ==, 2);
 
   mapped_event = mapped_events->data;
@@ -185,9 +157,7 @@ test_hat_mapping (void)
 
   g_slist_free_full (mapped_events, (GDestroyNotify) g_free);
 
-  event.hat.value = 1;
-
-  mapped_events = manette_map_event (mapping, &event);
+  mapped_events = manette_map_hat_event (mapping, 0, 1);
   g_assert_cmpint (g_slist_length (mapped_events), ==, 2);
 
   mapped_event = mapped_events->data;
@@ -207,7 +177,6 @@ static void
 test_axis_dpad_mapping (void)
 {
   g_autoptr (ManetteMapping) mapping = NULL;
-  ManetteEvent event = {};
   GSList *mapped_events;
   ManetteMappedEvent *mapped_event;
   GError *error = NULL;
@@ -217,13 +186,7 @@ test_axis_dpad_mapping (void)
   g_assert_nonnull (mapping);
   g_assert_true (MANETTE_IS_MAPPING (mapping));
 
-  event.any.type = MANETTE_EVENT_ABSOLUTE;
-  event.any.time = DUMMY_TIMESTAMP;
-  event.any.hardware_index = 0;
-  event.absolute.axis = ABS_RX;
-  event.absolute.value = 0.0;
-
-  mapped_events = manette_map_event (mapping, &event);
+  mapped_events = manette_map_absolute_event (mapping, 0, 0.0);
   g_assert_cmpint (g_slist_length (mapped_events), ==, 2);
 
   mapped_event = mapped_events->data;
@@ -238,13 +201,7 @@ test_axis_dpad_mapping (void)
 
   g_slist_free_full (mapped_events, (GDestroyNotify) g_free);
 
-  event.any.type = MANETTE_EVENT_ABSOLUTE;
-  event.any.time = DUMMY_TIMESTAMP;
-  event.any.hardware_index = 0;
-  event.absolute.axis = ABS_RX;
-  event.absolute.value = -1.0;
-
-  mapped_events = manette_map_event (mapping, &event);
+  mapped_events = manette_map_absolute_event (mapping, 0, -1.0);
   g_assert_cmpint (g_slist_length (mapped_events), ==, 1);
 
   mapped_event = mapped_events->data;
@@ -254,13 +211,7 @@ test_axis_dpad_mapping (void)
 
   g_slist_free_full (mapped_events, (GDestroyNotify) g_free);
 
-  event.any.type = MANETTE_EVENT_ABSOLUTE;
-  event.any.time = DUMMY_TIMESTAMP;
-  event.any.hardware_index = 0;
-  event.absolute.axis = ABS_RX;
-  event.absolute.value = 1.0;
-
-  mapped_events = manette_map_event (mapping, &event);
+  mapped_events = manette_map_absolute_event (mapping, 0, 1.0);
   g_assert_cmpint (g_slist_length (mapped_events), ==, 1);
 
   mapped_event = mapped_events->data;
@@ -270,13 +221,7 @@ test_axis_dpad_mapping (void)
 
   g_slist_free_full (mapped_events, (GDestroyNotify) g_free);
 
-  event.any.type = MANETTE_EVENT_ABSOLUTE;
-  event.any.time = DUMMY_TIMESTAMP;
-  event.any.hardware_index = 1;
-  event.absolute.axis = ABS_RY;
-  event.absolute.value = 0.0;
-
-  mapped_events = manette_map_event (mapping, &event);
+  mapped_events = manette_map_absolute_event (mapping, 1, 0.0);
   g_assert_cmpint (g_slist_length (mapped_events), ==, 2);
 
   mapped_event = mapped_events->data;
@@ -291,13 +236,7 @@ test_axis_dpad_mapping (void)
 
   g_slist_free_full (mapped_events, (GDestroyNotify) g_free);
 
-  event.any.type = MANETTE_EVENT_ABSOLUTE;
-  event.any.time = DUMMY_TIMESTAMP;
-  event.any.hardware_index = 1;
-  event.absolute.axis = ABS_RY;
-  event.absolute.value = -1.0;
-
-  mapped_events = manette_map_event (mapping, &event);
+  mapped_events = manette_map_absolute_event (mapping, 1, -1.0);
   g_assert_cmpint (g_slist_length (mapped_events), ==, 1);
 
   mapped_event = mapped_events->data;
@@ -307,13 +246,7 @@ test_axis_dpad_mapping (void)
 
   g_slist_free_full (mapped_events, (GDestroyNotify) g_free);
 
-  event.any.type = MANETTE_EVENT_ABSOLUTE;
-  event.any.time = DUMMY_TIMESTAMP;
-  event.any.hardware_index = 1;
-  event.absolute.axis = ABS_RY;
-  event.absolute.value = 1.0;
-
-  mapped_events = manette_map_event (mapping, &event);
+  mapped_events = manette_map_absolute_event (mapping, 1, 1.0);
   g_assert_cmpint (g_slist_length (mapped_events), ==, 1);
 
   mapped_event = mapped_events->data;
@@ -328,7 +261,6 @@ static void
 test_axis_trigger_mapping (void)
 {
   g_autoptr (ManetteMapping) mapping = NULL;
-  ManetteEvent event = {};
   GSList *mapped_events;
   ManetteMappedEvent *mapped_event;
   GError *error = NULL;
@@ -338,13 +270,7 @@ test_axis_trigger_mapping (void)
   g_assert_nonnull (mapping);
   g_assert_true (MANETTE_IS_MAPPING (mapping));
 
-  event.any.type = MANETTE_EVENT_ABSOLUTE;
-  event.any.time = DUMMY_TIMESTAMP;
-  event.any.hardware_index = 0;
-  event.absolute.axis = ABS_RX;
-  event.absolute.value = 1.0;
-
-  mapped_events = manette_map_event (mapping, &event);
+  mapped_events = manette_map_absolute_event (mapping, 0, 1.0);
   g_assert_cmpint (g_slist_length (mapped_events), ==, 1);
 
   mapped_event = mapped_events->data;
@@ -354,13 +280,7 @@ test_axis_trigger_mapping (void)
 
   g_slist_free_full (mapped_events, (GDestroyNotify) g_free);
 
-  event.any.type = MANETTE_EVENT_ABSOLUTE;
-  event.any.time = DUMMY_TIMESTAMP;
-  event.any.hardware_index = 0;
-  event.absolute.axis = ABS_RX;
-  event.absolute.value = -1.0;
-
-  mapped_events = manette_map_event (mapping, &event);
+  mapped_events = manette_map_absolute_event (mapping, 0, -1.0);
   g_assert_cmpint (g_slist_length (mapped_events), ==, 1);
 
   mapped_event = mapped_events->data;
@@ -370,13 +290,7 @@ test_axis_trigger_mapping (void)
 
   g_slist_free_full (mapped_events, (GDestroyNotify) g_free);
 
-  event.any.type = MANETTE_EVENT_ABSOLUTE;
-  event.any.time = DUMMY_TIMESTAMP;
-  event.any.hardware_index = 1;
-  event.absolute.axis = ABS_RY;
-  event.absolute.value = 1.0;
-
-  mapped_events = manette_map_event (mapping, &event);
+  mapped_events = manette_map_absolute_event (mapping, 1, 1.0);
   g_assert_cmpint (g_slist_length (mapped_events), ==, 1);
 
   mapped_event = mapped_events->data;
@@ -386,13 +300,7 @@ test_axis_trigger_mapping (void)
 
   g_slist_free_full (mapped_events, (GDestroyNotify) g_free);
 
-  event.any.type = MANETTE_EVENT_ABSOLUTE;
-  event.any.time = DUMMY_TIMESTAMP;
-  event.any.hardware_index = 1;
-  event.absolute.axis = ABS_RY;
-  event.absolute.value = -1.0;
-
-  mapped_events = manette_map_event (mapping, &event);
+  mapped_events = manette_map_absolute_event (mapping, 1, -1.0);
   g_assert_cmpint (g_slist_length (mapped_events), ==, 1);
 
   mapped_event = mapped_events->data;
