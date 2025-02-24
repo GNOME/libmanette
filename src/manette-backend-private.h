@@ -24,7 +24,7 @@
 
 #include <glib-object.h>
 
-#include "manette-event.h"
+#include "manette-event-private.h"
 
 G_BEGIN_DECLS
 
