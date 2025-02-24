@@ -98,10 +98,32 @@ map_event (ManetteDevice *self,
   GSList *mapped_events = manette_map_event (self->mapping, event);
   GSList *l = NULL;
 
-  for (l = mapped_events; l != NULL; l = l ->next)
-    forward_event (self, l->data);
+  for (l = mapped_events; l != NULL; l = l->next) {
+    ManetteMappedEvent *mapped_event = l->data;
 
-  g_slist_free_full (mapped_events, (GDestroyNotify) manette_event_free);
+    switch (mapped_event->type) {
+    case MANETTE_MAPPING_DESTINATION_TYPE_AXIS:
+      g_signal_emit (self, signals[SIG_ABSOLUTE_AXIS_EVENT], 0,
+                     (guint) mapped_event->axis.axis,
+                     mapped_event->axis.value);
+      break;
+
+    case MANETTE_MAPPING_DESTINATION_TYPE_BUTTON:
+      if (mapped_event->button.pressed) {
+        g_signal_emit (self, signals[SIG_BUTTON_PRESS_EVENT], 0,
+                       (guint) mapped_event->button.button);
+      } else {
+        g_signal_emit (self, signals[SIG_BUTTON_RELEASE_EVENT], 0,
+                       (guint) mapped_event->button.button);
+      }
+      break;
+
+    default:
+      g_assert_not_reached ();
+    }
+  }
+
+  g_slist_free_full (mapped_events, (GDestroyNotify) g_free);
 }
 
 static void
@@ -306,9 +328,26 @@ manette_device_has_input (ManetteDevice *self,
 {
   g_return_val_if_fail (MANETTE_IS_DEVICE (self), FALSE);
 
-  return MANETTE_IS_MAPPING (self->mapping) ?
-    manette_mapping_has_destination_input (self->mapping, type, code) :
-    manette_backend_has_input (self->backend, type, code);
+  if (self->mapping) {
+    ManetteMappingDestinationType dest_type;
+
+    switch (type) {
+    case EV_ABS:
+      dest_type = MANETTE_MAPPING_DESTINATION_TYPE_AXIS;
+      break;
+
+    case EV_KEY:
+      dest_type = MANETTE_MAPPING_DESTINATION_TYPE_BUTTON;
+      break;
+
+    default:
+      return FALSE;
+    }
+
+    return manette_mapping_has_destination_input (self->mapping, dest_type, code);
+  }
+
+  return manette_backend_has_input (self->backend, type, code);
 }
 
 /**

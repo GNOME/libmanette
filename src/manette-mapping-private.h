@@ -40,6 +40,11 @@ typedef enum {
 } ManetteMappingInputType;
 
 typedef enum {
+  MANETTE_MAPPING_DESTINATION_TYPE_AXIS,
+  MANETTE_MAPPING_DESTINATION_TYPE_BUTTON,
+} ManetteMappingDestinationType;
+
+typedef enum {
   MANETTE_MAPPING_RANGE_NEGATIVE = -1,
   MANETTE_MAPPING_RANGE_FULL = 0,
   MANETTE_MAPPING_RANGE_POSITIVE = 1,
@@ -53,7 +58,7 @@ struct _ManetteMappingBinding {
     gboolean invert;
   } source;
   struct {
-    guint16 type;
+    ManetteMappingDestinationType type;
     guint16 code;
     ManetteMappingRange range;
   } destination;
@@ -67,8 +72,8 @@ const ManetteMappingBinding * const *manette_mapping_get_bindings (ManetteMappin
 
 ManetteMappingBinding *manette_mapping_binding_copy (ManetteMappingBinding *self);
 void manette_mapping_binding_free (ManetteMappingBinding *self);
-gboolean manette_mapping_has_destination_input (ManetteMapping *self,
-                                                guint           type,
-                                                guint           code);
+gboolean manette_mapping_has_destination_input (ManetteMapping                *self,
+                                                ManetteMappingDestinationType  type,
+                                                guint                          code);
 
 G_END_DECLS
