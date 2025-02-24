@@ -25,6 +25,7 @@
 #include <glib-object.h>
 
 #include "manette-event-private.h"
+#include "manette-mapping-private.h"
 
 G_BEGIN_DECLS
 
@@ -43,6 +44,9 @@ struct _ManetteBackendInterface
   int (* get_product_id) (ManetteBackend *self);
   int (* get_bustype_id) (ManetteBackend *self);
   int (* get_version_id) (ManetteBackend *self);
+
+  void (* set_mapping) (ManetteBackend *self,
+                        ManetteMapping *mapping);
 
   gboolean (* has_input) (ManetteBackend *self,
                           guint           type,
@@ -63,6 +67,9 @@ int manette_backend_get_product_id (ManetteBackend *self);
 int manette_backend_get_bustype_id (ManetteBackend *self);
 int manette_backend_get_version_id (ManetteBackend *self);
 
+void manette_backend_set_mapping (ManetteBackend *self,
+                                  ManetteMapping *mapping);
+
 gboolean manette_backend_has_input (ManetteBackend *self,
                                     guint           type,
                                     guint           code);
@@ -75,5 +82,8 @@ gboolean manette_backend_rumble     (ManetteBackend *self,
 
 void manette_backend_emit_event (ManetteBackend *self,
                                  ManetteEvent   *event);
+
+void manette_backend_emit_unmapped_event (ManetteBackend *self,
+                                          ManetteEvent   *event);
 
 G_END_DECLS

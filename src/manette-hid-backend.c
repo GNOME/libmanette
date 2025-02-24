@@ -206,6 +206,13 @@ manette_hid_backend_get_version_id (ManetteBackend *backend)
   return info->release_number;
 }
 
+void
+manette_hid_backend_set_mapping (ManetteBackend *backend,
+                                 ManetteMapping *mapping)
+{
+  g_assert_not_reached ();
+}
+
 gboolean
 manette_hid_backend_has_input (ManetteBackend *backend,
                                guint           type,
@@ -247,6 +254,8 @@ manette_hid_backend_backend_init (ManetteBackendInterface *iface)
   iface->get_product_id = manette_hid_backend_get_product_id;
   iface->get_bustype_id = manette_hid_backend_get_bustype_id;
   iface->get_version_id = manette_hid_backend_get_version_id;
+  iface->set_mapping = manette_hid_backend_set_mapping;
+  iface->has_input = manette_hid_backend_has_input;
   iface->has_rumble = manette_hid_backend_has_rumble;
   iface->rumble = manette_hid_backend_rumble;
 }
