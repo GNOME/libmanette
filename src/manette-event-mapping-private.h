@@ -22,7 +22,7 @@
 # error "This file is private, only <libmanette.h> can be included directly."
 #endif
 
-#include "manette-event.h"
+#include "manette-event-private.h"
 #include "manette-mapping-private.h"
 
 G_BEGIN_DECLS

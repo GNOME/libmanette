@@ -22,9 +22,23 @@
 # error "This file is private, only <libmanette.h> can be included directly."
 #endif
 
-#include "manette-event.h"
+#include "manette-version.h"
+
+#include <glib-object.h>
+
+#include "manette-event-private.h"
 
 G_BEGIN_DECLS
+
+typedef enum {
+  MANETTE_EVENT_NOTHING = -1,
+  MANETTE_EVENT_BUTTON_PRESS = 0,
+  MANETTE_EVENT_BUTTON_RELEASE = 1,
+  MANETTE_EVENT_ABSOLUTE = 2,
+  MANETTE_EVENT_HAT = 3,
+  /*< private >*/
+  MANETTE_LAST_EVENT,
+} ManetteEventType;
 
 typedef struct _ManetteEventAny ManetteEventAny;
 typedef struct _ManetteEventButton ManetteEventButton;
@@ -69,5 +83,34 @@ union _ManetteEvent {
   ManetteEventAbsolute absolute;
   ManetteEventHat hat;
 };
+
+#define MANETTE_TYPE_EVENT (manette_event_get_type())
+
+typedef union _ManetteEvent ManetteEvent;
+
+GType manette_event_get_type (void) G_GNUC_CONST;
+
+ManetteEvent *manette_event_copy (const ManetteEvent *self);
+
+void manette_event_free (ManetteEvent *self);
+
+ManetteEventType manette_event_get_event_type (const ManetteEvent *self);
+
+guint16 manette_event_get_hardware_index (const ManetteEvent *self);
+
+gboolean manette_event_get_button (const ManetteEvent *self,
+                                   guint16            *button);
+
+gboolean manette_event_get_absolute (const ManetteEvent *self,
+                                     guint16            *axis,
+                                     double             *value);
+
+gboolean manette_event_get_hat (const ManetteEvent *self,
+                                guint16            *axis,
+                                gint8              *value);
+
+G_DEFINE_AUTOPTR_CLEANUP_FUNC (ManetteEvent, manette_event_free)
+
+G_END_DECLS
 
 G_END_DECLS

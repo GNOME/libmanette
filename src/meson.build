@@ -10,7 +10,6 @@ libmanette_resources = gnome.compile_resources(
 
 libmanette_public_enum_headers = [
   'manette-device-type.h',
-  'manette-event.h',
 ]
 
 libmanette_public_enums = gnome.mkenums_simple('manette-enums',
@@ -53,7 +52,6 @@ libmanette_public_sources = [
   libmanette_public_enums,
   'manette-device.c',
   'manette-device-type.c',
-  'manette-event.c',
   'manette-monitor.c',
   'manette-version.c',
 ]
@@ -63,6 +61,7 @@ libmanette_private_sources = [
   'drivers/manette-steam-deck-driver.c',
   'manette-backend.c',
   'manette-evdev-backend.c',
+  'manette-event.c',
   'manette-event-mapping.c',
   'manette-hid-backend.c',
   'manette-hid-driver.c',
@@ -83,7 +82,6 @@ libmanette_headers = [
   manette_version_h,
   'manette-device.h',
   'manette-device-type.h',
-  'manette-event.h',
   'manette-monitor.h',
 ]
 
