@@ -101,37 +101,29 @@ device_disconnected_cb (ManetteDevice *emitter,
 
 static void
 absolute_axis_event_cb (ManetteDevice *emitter,
-                        ManetteEvent  *event,
+                        guint          axis,
+                        double         value,
                         gpointer       user_data)
 {
   const char *device_name;
-  const char *absolute_axis_name;
-  guint16 absolute_axis;
-  double value;
-
-  if (!manette_event_get_absolute (event, &absolute_axis, &value))
-    return;
+  const char *axis_name;
 
   device_name = manette_device_get_name (emitter);
-  absolute_axis_name = get_absolute_name (absolute_axis);
+  axis_name = get_absolute_name (axis);
 
-  if (absolute_axis_name != NULL)
-    g_printf ("%s: Absolute axis %s moved to %lf\n", device_name, absolute_axis_name, value);
+  if (axis_name != NULL)
+    g_printf ("%s: Absolute axis %s moved to %lf\n", device_name, axis_name, value);
   else
-    g_printf ("%s: Unknown absolute axis %u moved to %lf\n", device_name, absolute_axis, value);
+    g_printf ("%s: Unknown absolute axis %u moved to %lf\n", device_name, axis, value);
 }
 
 static void
 button_press_event_cb (ManetteDevice *emitter,
-                       ManetteEvent  *event,
+                       guint          button,
                        gpointer       user_data)
 {
   const char *device_name;
   const char *button_name;
-  guint16 button;
-
-  if (!manette_event_get_button (event, &button))
-    return;
 
   device_name = manette_device_get_name (emitter);
   button_name = get_button_name (button);
@@ -144,15 +136,11 @@ button_press_event_cb (ManetteDevice *emitter,
 
 static void
 button_release_event_cb (ManetteDevice *emitter,
-                         ManetteEvent  *event,
+                       guint          button,
                          gpointer       user_data)
 {
   const char *device_name;
   const char *button_name;
-  guint16 button;
-
-  if (!manette_event_get_button (event, &button))
-    return;
 
   device_name = manette_device_get_name (emitter);
   button_name = get_button_name (button);
