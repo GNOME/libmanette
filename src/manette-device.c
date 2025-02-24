@@ -47,7 +47,7 @@ struct _ManetteDevice
 
   ManetteDeviceType device_type;
 
-  guint32 current_event_time;
+  guint64 current_event_time;
 };
 
 G_DEFINE_FINAL_TYPE (ManetteDevice, manette_device, G_TYPE_OBJECT)
@@ -488,7 +488,7 @@ manette_device_get_device_type (ManetteDevice *self)
  *
  * Returns: the timestamp of when the current event was emitted
  */
-guint32
+guint64
 manette_device_get_current_event_time (ManetteDevice *self)
 {
   g_return_val_if_fail (MANETTE_IS_DEVICE (self), 0);
