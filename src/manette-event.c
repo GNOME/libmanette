@@ -71,9 +71,8 @@ manette_event_copy (const ManetteEvent *self)
   g_return_val_if_fail (self, NULL);
 
   copy = manette_event_new ();
+
   memcpy(copy, self, sizeof (ManetteEvent));
-  if (self->any.device != NULL)
-    copy->any.device = g_object_ref (self->any.device);
 
   return copy;
 }
@@ -88,8 +87,6 @@ void
 manette_event_free (ManetteEvent *self)
 {
   g_return_if_fail (self);
-
-  g_clear_object (&self->any.device);
 
   g_slice_free (ManetteEvent, self);
 }
@@ -108,90 +105,6 @@ manette_event_get_event_type (const ManetteEvent *self)
   g_return_val_if_fail (self, MANETTE_EVENT_NOTHING);
 
   return self->any.type;
-}
-
-/**
- * manette_event_get_time:
- * @self: an event
- *
- * Gets the timestamp of when @self was received by the input driver that takes
- * care of its device.
- *
- * Use this timestamp to ensure external factors such as synchronous disk writes
- * don't influence your timing computations.
- *
- * Returns: the timestamp of when @self was received by the input driver
- */
-guint32
-manette_event_get_time (const ManetteEvent *self)
-{
-  g_return_val_if_fail (self, 0);
-
-  return self->any.time;
-}
-
-/**
- * manette_event_get_device:
- * @self: an event
- *
- * Gets the [class@Device] associated with the @self.
- *
- * Returns: (transfer none): the device associated with the @self
- */
-ManetteDevice *
-manette_event_get_device (const ManetteEvent *self)
-{
-  g_return_val_if_fail (self, NULL);
-
-  return self->any.device;
-}
-
-/**
- * manette_event_get_hardware_type:
- * @self: an event
- *
- * Gets the hardware type of @self.
- *
- * Returns: the hardware type of @self
- */
-guint16
-manette_event_get_hardware_type (const ManetteEvent *self)
-{
-  g_return_val_if_fail (self, 0);
-
-  return self->any.hardware_type;
-}
-
-/**
- * manette_event_get_hardware_code:
- * @self: an event
- *
- * Gets the hardware code of @self.
- *
- * Returns: the hardware code of @self
- */
-guint16
-manette_event_get_hardware_code (const ManetteEvent *self)
-{
-  g_return_val_if_fail (self, 0);
-
-  return self->any.hardware_code;
-}
-
-/**
- * manette_event_get_hardware_value:
- * @self: an event
- *
- * Gets the hardware value of @self.
- *
- * Returns: the hardware value of @self
- */
-guint16
-manette_event_get_hardware_value (const ManetteEvent *self)
-{
-  g_return_val_if_fail (self, 0);
-
-  return self->any.hardware_value;
 }
 
 /**

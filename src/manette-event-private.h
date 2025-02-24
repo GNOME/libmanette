@@ -34,32 +34,22 @@ typedef struct _ManetteEventHat ManetteEventHat;
 struct _ManetteEventAny {
   ManetteEventType type;
   guint32 time;
-  ManetteDevice *device;
-  guint16 hardware_type;
-  guint16 hardware_code;
-  gint32 hardware_value;
   guint8 hardware_index;
 };
 
 struct _ManetteEventButton {
   ManetteEventType type;
   guint32 time;
-  ManetteDevice *device;
-  guint16 hardware_type;
-  guint16 hardware_code;
-  gint32 hardware_value;
   guint8 hardware_index;
+
   guint16 button;
 };
 
 struct _ManetteEventAbsolute {
   ManetteEventType type;
   guint32 time;
-  ManetteDevice *device;
-  guint16 hardware_type;
-  guint16 hardware_code;
-  gint32 hardware_value;
   guint8 hardware_index;
+
   guint16 axis;
   double value;
 };
@@ -67,11 +57,8 @@ struct _ManetteEventAbsolute {
 struct _ManetteEventHat {
   ManetteEventType type;
   guint32 time;
-  ManetteDevice *device;
-  guint16 hardware_type;
-  guint16 hardware_code;
-  gint32 hardware_value;
   guint8 hardware_index;
+
   guint16 axis;
   gint8 value;
 };
