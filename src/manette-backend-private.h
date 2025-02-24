@@ -24,6 +24,7 @@
 
 #include <glib-object.h>
 
+#include "manette-inputs.h"
 #include "manette-mapping-private.h"
 
 G_BEGIN_DECLS
@@ -81,11 +82,11 @@ gboolean manette_backend_rumble     (ManetteBackend *self,
 
 void manette_backend_emit_button_event (ManetteBackend *self,
                                         guint64         time,
-                                        guint           button,
+                                        ManetteButton   button,
                                         gboolean        pressed);
 void manette_backend_emit_axis_event   (ManetteBackend *self,
                                         guint64         time,
-                                        guint           axis,
+                                        ManetteAxis     axis,
                                         double          value);
 
 void manette_backend_emit_unmapped_button_event   (ManetteBackend *self,
