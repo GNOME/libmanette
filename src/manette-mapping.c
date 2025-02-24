@@ -86,9 +86,9 @@ manette_mapping_init (ManetteMapping *self)
 }
 
 static gboolean
-bindings_array_has_destination_input (GArray *array,
-                                      guint   type,
-                                      guint   code)
+bindings_array_has_destination_input (GArray                        *array,
+                                      ManetteMappingDestinationType  type,
+                                      guint                          code)
 {
   gsize i;
   gsize j;
@@ -267,60 +267,76 @@ parse_mapping_hat (char                 *start,
 }
 
 static gboolean
-parse_destination_input (char     *start,
-                         char    **end,
-                         guint16  *type,
-                         guint16  *code)
+parse_destination_input (char                           *start,
+                         char                          **end,
+                         ManetteMappingDestinationType  *type,
+                         guint16                        *code)
 {
   const static struct {
-    guint16 type;
     guint16 code;
     const char *string_value;
-  } values[] = {
-    { EV_ABS, ABS_X, "leftx" },
-    { EV_ABS, ABS_Y, "lefty" },
-    { EV_ABS, ABS_RX, "rightx" },
-    { EV_ABS, ABS_RY, "righty" },
-    { EV_KEY, BTN_A, "a" },
-    { EV_KEY, BTN_B, "b" },
-    { EV_KEY, BTN_DPAD_DOWN, "dpdown" },
-    { EV_KEY, BTN_DPAD_LEFT, "dpleft" },
-    { EV_KEY, BTN_DPAD_RIGHT, "dpright" },
-    { EV_KEY, BTN_DPAD_UP, "dpup" },
-    { EV_KEY, BTN_MODE, "guide" },
-    { EV_KEY, BTN_SELECT, "back" },
-    { EV_KEY, BTN_TL, "leftshoulder" },
-    { EV_KEY, BTN_TR, "rightshoulder" },
-    { EV_KEY, BTN_START, "start" },
-    { EV_KEY, BTN_THUMBL, "leftstick" },
-    { EV_KEY, BTN_THUMBR, "rightstick" },
-    { EV_KEY, BTN_TL2, "lefttrigger" },
-    { EV_KEY, BTN_TR2, "righttrigger" },
-    { EV_KEY, BTN_Y, "x" },
-    { EV_KEY, BTN_X, "y" },
-    { EV_KEY, BTN_TRIGGER_HAPPY2, "paddle1" },
-    { EV_KEY, BTN_TRIGGER_HAPPY1, "paddle2" },
-    { EV_KEY, BTN_TRIGGER_HAPPY4, "paddle3" },
-    { EV_KEY, BTN_TRIGGER_HAPPY3, "paddle4" },
-    { EV_KEY, BTN_TRIGGER_HAPPY5, "misc1" },
-    { EV_KEY, BTN_TRIGGER_HAPPY6, "misc2" },
-    { EV_KEY, BTN_TRIGGER_HAPPY7, "misc3" },
-    { EV_KEY, BTN_TRIGGER_HAPPY8, "misc4" },
-    { EV_KEY, BTN_TRIGGER_HAPPY9, "misc5" },
-    { EV_KEY, BTN_TRIGGER_HAPPY10, "misc6" },
-    { EV_KEY, BTN_TRIGGER_HAPPY11, "touchpad" },
+  } axis_values[] = {
+    { ABS_X, "leftx" },
+    { ABS_Y, "lefty" },
+    { ABS_RX, "rightx" },
+    { ABS_RY, "righty" },
   };
-  const int length = sizeof (values) / sizeof (values[0]);
+
+  const static struct {
+    guint16 code;
+    const char *string_value;
+  } button_values[] = {
+    { BTN_A, "a" },
+    { BTN_B, "b" },
+    { BTN_DPAD_DOWN, "dpdown" },
+    { BTN_DPAD_LEFT, "dpleft" },
+    { BTN_DPAD_RIGHT, "dpright" },
+    { BTN_DPAD_UP, "dpup" },
+    { BTN_MODE, "guide" },
+    { BTN_SELECT, "back" },
+    { BTN_TL, "leftshoulder" },
+    { BTN_TR, "rightshoulder" },
+    { BTN_START, "start" },
+    { BTN_THUMBL, "leftstick" },
+    { BTN_THUMBR, "rightstick" },
+    { BTN_TL2, "lefttrigger" },
+    { BTN_TR2, "righttrigger" },
+    { BTN_Y, "x" },
+    { BTN_X, "y" },
+    { BTN_TRIGGER_HAPPY2, "paddle1" },
+    { BTN_TRIGGER_HAPPY1, "paddle2" },
+    { BTN_TRIGGER_HAPPY4, "paddle3" },
+    { BTN_TRIGGER_HAPPY3, "paddle4" },
+    { BTN_TRIGGER_HAPPY5, "misc1" },
+    { BTN_TRIGGER_HAPPY6, "misc2" },
+    { BTN_TRIGGER_HAPPY7, "misc3" },
+    { BTN_TRIGGER_HAPPY8, "misc4" },
+    { BTN_TRIGGER_HAPPY9, "misc5" },
+    { BTN_TRIGGER_HAPPY10, "misc6" },
+    { BTN_TRIGGER_HAPPY11, "touchpad" },
+  };
+
   int i;
 
-  for (i = 0; i < length; i++)
-    if (g_strcmp0 (start, values[i].string_value) == 0) {
-      *type = values[i].type;
-      *code = values[i].code;
-      *end = start + strlen (values[i].string_value);
+  for (i = 0; i < G_N_ELEMENTS (axis_values); i++) {
+    if (g_strcmp0 (start, axis_values[i].string_value) == 0) {
+      *type = MANETTE_MAPPING_DESTINATION_TYPE_AXIS;
+      *code = axis_values[i].code;
+      *end = start + strlen (axis_values[i].string_value);
 
       return TRUE;
     }
+  }
+
+  for (i = 0; i < G_N_ELEMENTS (button_values); i++) {
+    if (g_strcmp0 (start, button_values[i].string_value) == 0) {
+      *type = MANETTE_MAPPING_DESTINATION_TYPE_BUTTON;
+      *code = button_values[i].code;
+      *end = start + strlen (button_values[i].string_value);
+
+      return TRUE;
+    }
+  }
 
   return FALSE;
 }
@@ -668,9 +684,9 @@ manette_mapping_binding_free (ManetteMappingBinding *self)
  * Returns: whether the device has the given destination input
  */
 gboolean
-manette_mapping_has_destination_input (ManetteMapping *self,
-                                       guint           type,
-                                       guint           code)
+manette_mapping_has_destination_input (ManetteMapping                *self,
+                                       ManetteMappingDestinationType  type,
+                                       guint                          code)
 {
   g_return_val_if_fail (MANETTE_IS_MAPPING (self), FALSE);
 
