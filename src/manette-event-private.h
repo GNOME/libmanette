@@ -31,13 +31,10 @@
 G_BEGIN_DECLS
 
 typedef enum {
-  MANETTE_EVENT_NOTHING = -1,
   MANETTE_EVENT_BUTTON_PRESS = 0,
   MANETTE_EVENT_BUTTON_RELEASE = 1,
   MANETTE_EVENT_ABSOLUTE = 2,
   MANETTE_EVENT_HAT = 3,
-  /*< private >*/
-  MANETTE_LAST_EVENT,
 } ManetteEventType;
 
 typedef struct _ManetteEventAny ManetteEventAny;
