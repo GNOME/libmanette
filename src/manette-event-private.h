@@ -94,21 +94,6 @@ ManetteEvent *manette_event_copy (const ManetteEvent *self);
 
 void manette_event_free (ManetteEvent *self);
 
-ManetteEventType manette_event_get_event_type (const ManetteEvent *self);
-
-guint16 manette_event_get_hardware_index (const ManetteEvent *self);
-
-gboolean manette_event_get_button (const ManetteEvent *self,
-                                   guint16            *button);
-
-gboolean manette_event_get_absolute (const ManetteEvent *self,
-                                     guint16            *axis,
-                                     double             *value);
-
-gboolean manette_event_get_hat (const ManetteEvent *self,
-                                guint16            *axis,
-                                gint8              *value);
-
 G_DEFINE_AUTOPTR_CLEANUP_FUNC (ManetteEvent, manette_event_free)
 
 G_END_DECLS
