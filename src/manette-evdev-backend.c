@@ -24,6 +24,7 @@
 #include <fcntl.h>
 #include <libevdev/libevdev.h>
 #include <linux/input.h>
+#include <linux/input-event-codes.h>
 #include <sys/ioctl.h>
 #include <unistd.h>
 
@@ -165,6 +166,66 @@ emit_mapped_events (ManetteEvdevBackend *self,
   g_slist_free_full (mapped_events, (GDestroyNotify) g_free);
 }
 
+static ManetteButton
+evdev_code_to_button (guint code)
+{
+  switch (code) {
+  case BTN_DPAD_UP:
+    return MANETTE_BUTTON_DPAD_UP;
+  case BTN_DPAD_DOWN:
+    return MANETTE_BUTTON_DPAD_DOWN;
+  case BTN_DPAD_LEFT:
+    return MANETTE_BUTTON_DPAD_LEFT;
+  case BTN_DPAD_RIGHT:
+    return MANETTE_BUTTON_DPAD_RIGHT;
+  case BTN_NORTH:
+    return MANETTE_BUTTON_NORTH;
+  case BTN_SOUTH:
+    return MANETTE_BUTTON_SOUTH;
+  case BTN_WEST:
+    return MANETTE_BUTTON_WEST;
+  case BTN_EAST:
+    return MANETTE_BUTTON_EAST;
+  case BTN_SELECT:
+    return MANETTE_BUTTON_SELECT;
+  case BTN_START:
+    return MANETTE_BUTTON_START;
+  case BTN_MODE:
+    return MANETTE_BUTTON_MODE;
+  case BTN_TL:
+    return MANETTE_BUTTON_LEFT_SHOULDER;
+  case BTN_TR:
+    return MANETTE_BUTTON_RIGHT_SHOULDER;
+  case BTN_TL2:
+    return MANETTE_BUTTON_LEFT_TRIGGER;
+  case BTN_TR2:
+    return MANETTE_BUTTON_RIGHT_TRIGGER;
+  case BTN_THUMBL:
+    return MANETTE_BUTTON_LEFT_STICK;
+  case BTN_THUMBR:
+    return MANETTE_BUTTON_RIGHT_STICK;
+  default:
+    return -1;
+  }
+}
+
+static ManetteAxis
+evdev_code_to_axis (guint code)
+{
+  switch (code) {
+  case ABS_X:
+    return MANETTE_AXIS_LEFT_X;
+  case ABS_Y:
+    return MANETTE_AXIS_LEFT_Y;
+  case ABS_RX:
+    return MANETTE_AXIS_RIGHT_X;
+  case ABS_RY:
+    return MANETTE_AXIS_RIGHT_Y;
+  default:
+    return -1;
+  }
+}
+
 static void
 on_evdev_event (ManetteEvdevBackend *self,
                 struct input_event  *evdev_event)
@@ -183,8 +244,12 @@ on_evdev_event (ManetteEvdevBackend *self,
                                                 self->key_map[index], pressed);
 
     if (self->mapping == NULL) {
-      manette_backend_emit_button_event (MANETTE_BACKEND (self), time,
-                                         evdev_event->code, pressed);
+      ManetteButton button = evdev_code_to_button (evdev_event->code);
+
+      if (button != -1) {
+        manette_backend_emit_button_event (MANETTE_BACKEND (self),
+                                           time, button, pressed);
+      }
     } else {
       GSList *mapped = manette_map_button_event (self->mapping,
                                                  self->key_map[index],
@@ -229,8 +294,10 @@ on_evdev_event (ManetteEvdevBackend *self,
                                                     evdev_event->code, value);
 
       if (self->mapping == NULL) {
-        manette_backend_emit_axis_event (MANETTE_BACKEND (self), time,
-                                         evdev_event->code, value);
+        ManetteAxis axis = evdev_code_to_axis (evdev_event->code);
+
+        if (axis != -1)
+          manette_backend_emit_axis_event (MANETTE_BACKEND (self), time, axis, value);
       } else {
         GSList *mapped = manette_map_absolute_event (self->mapping,
                                                      evdev_event->code, value);

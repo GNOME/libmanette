@@ -16,7 +16,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <linux/input-event-codes.h>
 #include "../src/manette-mapping-private.h"
 
 #define MAPPING_STEAM_CONTROLLER "03000000de280000fc11000001000000,Steam Controller,a:b0,b:b1,back:b6,dpdown:h0.4,dpleft:h0.8,dpright:h0.2,dpup:h0.1,guide:b8,leftshoulder:b4,leftstick:b9,lefttrigger:a2,leftx:a0,lefty:a1,rightshoulder:b5,rightstick:b10,righttrigger:a5,rightx:a3,righty:a4,start:b7,x:b2,y:b3,"
@@ -91,7 +90,7 @@ test_button_bindings (void)
   g_assert_cmpint (binding->source.range, ==, MANETTE_MAPPING_RANGE_FULL);
   g_assert_false (binding->source.invert);
   g_assert_cmpint (binding->destination.type, ==, MANETTE_MAPPING_DESTINATION_TYPE_BUTTON);
-  g_assert_cmpint (binding->destination.code, ==, BTN_SOUTH);
+  g_assert_cmpint (binding->destination.code, ==, MANETTE_BUTTON_SOUTH);
   g_assert_cmpint (binding->destination.range, ==, MANETTE_MAPPING_RANGE_FULL);
 
   bindings = manette_mapping_get_bindings (mapping,
@@ -108,7 +107,7 @@ test_button_bindings (void)
   g_assert_cmpint (binding->source.range, ==, MANETTE_MAPPING_RANGE_FULL);
   g_assert_false (binding->source.invert);
   g_assert_cmpint (binding->destination.type, ==, MANETTE_MAPPING_DESTINATION_TYPE_BUTTON);
-  g_assert_cmpint (binding->destination.code, ==, BTN_EAST);
+  g_assert_cmpint (binding->destination.code, ==, MANETTE_BUTTON_EAST);
   g_assert_cmpint (binding->destination.range, ==, MANETTE_MAPPING_RANGE_FULL);
 
   bindings = manette_mapping_get_bindings (mapping,
@@ -125,7 +124,7 @@ test_button_bindings (void)
   g_assert_cmpint (binding->source.range, ==, MANETTE_MAPPING_RANGE_FULL);
   g_assert_false (binding->source.invert);
   g_assert_cmpint (binding->destination.type, ==, MANETTE_MAPPING_DESTINATION_TYPE_BUTTON);
-  g_assert_cmpint (binding->destination.code, ==, BTN_WEST);
+  g_assert_cmpint (binding->destination.code, ==, MANETTE_BUTTON_WEST);
   g_assert_cmpint (binding->destination.range, ==, MANETTE_MAPPING_RANGE_FULL);
 
   bindings = manette_mapping_get_bindings (mapping,
@@ -142,7 +141,7 @@ test_button_bindings (void)
   g_assert_cmpint (binding->source.range, ==, MANETTE_MAPPING_RANGE_FULL);
   g_assert_false (binding->source.invert);
   g_assert_cmpint (binding->destination.type, ==, MANETTE_MAPPING_DESTINATION_TYPE_BUTTON);
-  g_assert_cmpint (binding->destination.code, ==, BTN_NORTH);
+  g_assert_cmpint (binding->destination.code, ==, MANETTE_BUTTON_NORTH);
   g_assert_cmpint (binding->destination.range, ==, MANETTE_MAPPING_RANGE_FULL);
 }
 
@@ -173,7 +172,7 @@ test_axis_bindings (void)
   g_assert_cmpint (binding->source.range, ==, MANETTE_MAPPING_RANGE_FULL);
   g_assert_false (binding->source.invert);
   g_assert_cmpint (binding->destination.type, ==, MANETTE_MAPPING_DESTINATION_TYPE_AXIS);
-  g_assert_cmpint (binding->destination.code, ==, ABS_X);
+  g_assert_cmpint (binding->destination.code, ==, MANETTE_AXIS_LEFT_X);
   g_assert_cmpint (binding->destination.range, ==, MANETTE_MAPPING_RANGE_FULL);
 
   bindings = manette_mapping_get_bindings (mapping,
@@ -190,7 +189,7 @@ test_axis_bindings (void)
   g_assert_cmpint (binding->source.range, ==, MANETTE_MAPPING_RANGE_FULL);
   g_assert_false (binding->source.invert);
   g_assert_cmpint (binding->destination.type, ==, MANETTE_MAPPING_DESTINATION_TYPE_AXIS);
-  g_assert_cmpint (binding->destination.code, ==, ABS_Y);
+  g_assert_cmpint (binding->destination.code, ==, MANETTE_AXIS_LEFT_Y);
   g_assert_cmpint (binding->destination.range, ==, MANETTE_MAPPING_RANGE_FULL);
 }
 
@@ -222,7 +221,7 @@ test_axis_range_bindings (void)
   g_assert_cmpint (binding->source.range, ==, MANETTE_MAPPING_RANGE_NEGATIVE);
   g_assert_false (binding->source.invert);
   g_assert_cmpint (binding->destination.type, ==, MANETTE_MAPPING_DESTINATION_TYPE_AXIS);
-  g_assert_cmpint (binding->destination.code, ==, ABS_RX);
+  g_assert_cmpint (binding->destination.code, ==, MANETTE_AXIS_RIGHT_X);
   g_assert_cmpint (binding->destination.range, ==, MANETTE_MAPPING_RANGE_NEGATIVE);
 
   binding = bindings[1];
@@ -231,7 +230,7 @@ test_axis_range_bindings (void)
   g_assert_cmpint (binding->source.range, ==, MANETTE_MAPPING_RANGE_POSITIVE);
   g_assert_false (binding->source.invert);
   g_assert_cmpint (binding->destination.type, ==, MANETTE_MAPPING_DESTINATION_TYPE_AXIS);
-  g_assert_cmpint (binding->destination.code, ==, ABS_RX);
+  g_assert_cmpint (binding->destination.code, ==, MANETTE_AXIS_RIGHT_X);
   g_assert_cmpint (binding->destination.range, ==, MANETTE_MAPPING_RANGE_POSITIVE);
 
   bindings = manette_mapping_get_bindings (mapping,
@@ -249,7 +248,7 @@ test_axis_range_bindings (void)
   g_assert_cmpint (binding->source.range, ==, MANETTE_MAPPING_RANGE_POSITIVE);
   g_assert_true (binding->source.invert);
   g_assert_cmpint (binding->destination.type, ==, MANETTE_MAPPING_DESTINATION_TYPE_AXIS);
-  g_assert_cmpint (binding->destination.code, ==, ABS_RY);
+  g_assert_cmpint (binding->destination.code, ==, MANETTE_AXIS_RIGHT_Y);
   g_assert_cmpint (binding->destination.range, ==, MANETTE_MAPPING_RANGE_NEGATIVE);
 
   binding = bindings[1];
@@ -258,7 +257,7 @@ test_axis_range_bindings (void)
   g_assert_cmpint (binding->source.range, ==, MANETTE_MAPPING_RANGE_NEGATIVE);
   g_assert_true (binding->source.invert);
   g_assert_cmpint (binding->destination.type, ==, MANETTE_MAPPING_DESTINATION_TYPE_AXIS);
-  g_assert_cmpint (binding->destination.code, ==, ABS_RY);
+  g_assert_cmpint (binding->destination.code, ==, MANETTE_AXIS_RIGHT_Y);
   g_assert_cmpint (binding->destination.range, ==, MANETTE_MAPPING_RANGE_POSITIVE);
 }
 
@@ -290,7 +289,7 @@ test_hat_x_bindings (void)
   g_assert_cmpint (binding->source.range, ==, MANETTE_MAPPING_RANGE_NEGATIVE);
   g_assert_true (binding->source.invert);
   g_assert_cmpint (binding->destination.type, ==, MANETTE_MAPPING_DESTINATION_TYPE_BUTTON);
-  g_assert_cmpint (binding->destination.code, ==, BTN_DPAD_LEFT);
+  g_assert_cmpint (binding->destination.code, ==, MANETTE_BUTTON_DPAD_LEFT);
   g_assert_cmpint (binding->destination.range, ==, MANETTE_MAPPING_RANGE_FULL);
 
   binding = bindings[1];
@@ -299,7 +298,7 @@ test_hat_x_bindings (void)
   g_assert_cmpint (binding->source.range, ==, MANETTE_MAPPING_RANGE_POSITIVE);
   g_assert_false (binding->source.invert);
   g_assert_cmpint (binding->destination.type, ==, MANETTE_MAPPING_DESTINATION_TYPE_BUTTON);
-  g_assert_cmpint (binding->destination.code, ==, BTN_DPAD_RIGHT);
+  g_assert_cmpint (binding->destination.code, ==, MANETTE_BUTTON_DPAD_RIGHT);
   g_assert_cmpint (binding->destination.range, ==, MANETTE_MAPPING_RANGE_FULL);
 }
 
@@ -331,7 +330,7 @@ test_hat_y_bindings (void)
   g_assert_cmpint (binding->source.range, ==, MANETTE_MAPPING_RANGE_NEGATIVE);
   g_assert_true (binding->source.invert);
   g_assert_cmpint (binding->destination.type, ==, MANETTE_MAPPING_DESTINATION_TYPE_BUTTON);
-  g_assert_cmpint (binding->destination.code, ==, BTN_DPAD_UP);
+  g_assert_cmpint (binding->destination.code, ==, MANETTE_BUTTON_DPAD_UP);
   g_assert_cmpint (binding->destination.range, ==, MANETTE_MAPPING_RANGE_FULL);
 
   binding = bindings[1];
@@ -340,7 +339,7 @@ test_hat_y_bindings (void)
   g_assert_cmpint (binding->source.range, ==, MANETTE_MAPPING_RANGE_POSITIVE);
   g_assert_false (binding->source.invert);
   g_assert_cmpint (binding->destination.type, ==, MANETTE_MAPPING_DESTINATION_TYPE_BUTTON);
-  g_assert_cmpint (binding->destination.code, ==, BTN_DPAD_DOWN);
+  g_assert_cmpint (binding->destination.code, ==, MANETTE_BUTTON_DPAD_DOWN);
   g_assert_cmpint (binding->destination.range, ==, MANETTE_MAPPING_RANGE_FULL);
 }
 
@@ -355,35 +354,35 @@ test_has_destination_input (void)
   g_assert_nonnull (mapping);
   g_assert_true (MANETTE_IS_MAPPING (mapping));
 
-  g_assert_true (manette_mapping_has_destination_input (mapping, MANETTE_MAPPING_DESTINATION_TYPE_BUTTON, BTN_SOUTH));
-  g_assert_true (manette_mapping_has_destination_input (mapping, MANETTE_MAPPING_DESTINATION_TYPE_BUTTON, BTN_EAST));
-  g_assert_true (manette_mapping_has_destination_input (mapping, MANETTE_MAPPING_DESTINATION_TYPE_BUTTON, BTN_NORTH));
-  g_assert_true (manette_mapping_has_destination_input (mapping, MANETTE_MAPPING_DESTINATION_TYPE_BUTTON, BTN_WEST));
-  g_assert_true (manette_mapping_has_destination_input (mapping, MANETTE_MAPPING_DESTINATION_TYPE_BUTTON, BTN_TL));
-  g_assert_true (manette_mapping_has_destination_input (mapping, MANETTE_MAPPING_DESTINATION_TYPE_BUTTON, BTN_TR));
-  g_assert_true (manette_mapping_has_destination_input (mapping, MANETTE_MAPPING_DESTINATION_TYPE_BUTTON, BTN_TL2));
-  g_assert_true (manette_mapping_has_destination_input (mapping, MANETTE_MAPPING_DESTINATION_TYPE_BUTTON, BTN_TR2));
-  g_assert_true (manette_mapping_has_destination_input (mapping, MANETTE_MAPPING_DESTINATION_TYPE_BUTTON, BTN_SELECT));
-  g_assert_true (manette_mapping_has_destination_input (mapping, MANETTE_MAPPING_DESTINATION_TYPE_BUTTON, BTN_START));
-  g_assert_true (manette_mapping_has_destination_input (mapping, MANETTE_MAPPING_DESTINATION_TYPE_BUTTON, BTN_MODE));
-  g_assert_true (manette_mapping_has_destination_input (mapping, MANETTE_MAPPING_DESTINATION_TYPE_BUTTON, BTN_THUMBL));
-  g_assert_true (manette_mapping_has_destination_input (mapping, MANETTE_MAPPING_DESTINATION_TYPE_BUTTON, BTN_THUMBR));
-  g_assert_true (manette_mapping_has_destination_input (mapping, MANETTE_MAPPING_DESTINATION_TYPE_BUTTON, BTN_DPAD_UP));
-  g_assert_true (manette_mapping_has_destination_input (mapping, MANETTE_MAPPING_DESTINATION_TYPE_BUTTON, BTN_DPAD_DOWN));
-  g_assert_true (manette_mapping_has_destination_input (mapping, MANETTE_MAPPING_DESTINATION_TYPE_BUTTON, BTN_DPAD_LEFT));
-  g_assert_true (manette_mapping_has_destination_input (mapping, MANETTE_MAPPING_DESTINATION_TYPE_BUTTON, BTN_DPAD_RIGHT));
-  g_assert_true (manette_mapping_has_destination_input (mapping, MANETTE_MAPPING_DESTINATION_TYPE_AXIS, ABS_X));
-  g_assert_true (manette_mapping_has_destination_input (mapping, MANETTE_MAPPING_DESTINATION_TYPE_AXIS, ABS_Y));
-  g_assert_true (manette_mapping_has_destination_input (mapping, MANETTE_MAPPING_DESTINATION_TYPE_AXIS, ABS_RX));
-  g_assert_true (manette_mapping_has_destination_input (mapping, MANETTE_MAPPING_DESTINATION_TYPE_AXIS, ABS_RY));
+  g_assert_true (manette_mapping_has_destination_input (mapping, MANETTE_MAPPING_DESTINATION_TYPE_BUTTON, MANETTE_BUTTON_SOUTH));
+  g_assert_true (manette_mapping_has_destination_input (mapping, MANETTE_MAPPING_DESTINATION_TYPE_BUTTON, MANETTE_BUTTON_EAST));
+  g_assert_true (manette_mapping_has_destination_input (mapping, MANETTE_MAPPING_DESTINATION_TYPE_BUTTON, MANETTE_BUTTON_NORTH));
+  g_assert_true (manette_mapping_has_destination_input (mapping, MANETTE_MAPPING_DESTINATION_TYPE_BUTTON, MANETTE_BUTTON_WEST));
+  g_assert_true (manette_mapping_has_destination_input (mapping, MANETTE_MAPPING_DESTINATION_TYPE_BUTTON, MANETTE_BUTTON_LEFT_SHOULDER));
+  g_assert_true (manette_mapping_has_destination_input (mapping, MANETTE_MAPPING_DESTINATION_TYPE_BUTTON, MANETTE_BUTTON_RIGHT_SHOULDER));
+  g_assert_true (manette_mapping_has_destination_input (mapping, MANETTE_MAPPING_DESTINATION_TYPE_BUTTON, MANETTE_BUTTON_LEFT_TRIGGER));
+  g_assert_true (manette_mapping_has_destination_input (mapping, MANETTE_MAPPING_DESTINATION_TYPE_BUTTON, MANETTE_BUTTON_RIGHT_TRIGGER));
+  g_assert_true (manette_mapping_has_destination_input (mapping, MANETTE_MAPPING_DESTINATION_TYPE_BUTTON, MANETTE_BUTTON_SELECT));
+  g_assert_true (manette_mapping_has_destination_input (mapping, MANETTE_MAPPING_DESTINATION_TYPE_BUTTON, MANETTE_BUTTON_START));
+  g_assert_true (manette_mapping_has_destination_input (mapping, MANETTE_MAPPING_DESTINATION_TYPE_BUTTON, MANETTE_BUTTON_MODE));
+  g_assert_true (manette_mapping_has_destination_input (mapping, MANETTE_MAPPING_DESTINATION_TYPE_BUTTON, MANETTE_BUTTON_LEFT_STICK));
+  g_assert_true (manette_mapping_has_destination_input (mapping, MANETTE_MAPPING_DESTINATION_TYPE_BUTTON, MANETTE_BUTTON_RIGHT_STICK));
+  g_assert_true (manette_mapping_has_destination_input (mapping, MANETTE_MAPPING_DESTINATION_TYPE_BUTTON, MANETTE_BUTTON_DPAD_UP));
+  g_assert_true (manette_mapping_has_destination_input (mapping, MANETTE_MAPPING_DESTINATION_TYPE_BUTTON, MANETTE_BUTTON_DPAD_DOWN));
+  g_assert_true (manette_mapping_has_destination_input (mapping, MANETTE_MAPPING_DESTINATION_TYPE_BUTTON, MANETTE_BUTTON_DPAD_LEFT));
+  g_assert_true (manette_mapping_has_destination_input (mapping, MANETTE_MAPPING_DESTINATION_TYPE_BUTTON, MANETTE_BUTTON_DPAD_RIGHT));
+  g_assert_true (manette_mapping_has_destination_input (mapping, MANETTE_MAPPING_DESTINATION_TYPE_AXIS, MANETTE_AXIS_LEFT_X));
+  g_assert_true (manette_mapping_has_destination_input (mapping, MANETTE_MAPPING_DESTINATION_TYPE_AXIS, MANETTE_AXIS_LEFT_Y));
+  g_assert_true (manette_mapping_has_destination_input (mapping, MANETTE_MAPPING_DESTINATION_TYPE_AXIS, MANETTE_AXIS_RIGHT_X));
+  g_assert_true (manette_mapping_has_destination_input (mapping, MANETTE_MAPPING_DESTINATION_TYPE_AXIS, MANETTE_AXIS_RIGHT_Y));
 
-  g_assert_false (manette_mapping_has_destination_input (mapping, MANETTE_MAPPING_DESTINATION_TYPE_BUTTON, KEY_SPACE));
-  g_assert_false (manette_mapping_has_destination_input (mapping, MANETTE_MAPPING_DESTINATION_TYPE_BUTTON, BTN_C));
-  g_assert_false (manette_mapping_has_destination_input (mapping, MANETTE_MAPPING_DESTINATION_TYPE_BUTTON, BTN_Z));
-  g_assert_false (manette_mapping_has_destination_input (mapping, MANETTE_MAPPING_DESTINATION_TYPE_AXIS, ABS_Z));
-  g_assert_false (manette_mapping_has_destination_input (mapping, MANETTE_MAPPING_DESTINATION_TYPE_AXIS, ABS_RZ));
-  g_assert_false (manette_mapping_has_destination_input (mapping, MANETTE_MAPPING_DESTINATION_TYPE_AXIS, ABS_HAT0X));
-  g_assert_false (manette_mapping_has_destination_input (mapping, MANETTE_MAPPING_DESTINATION_TYPE_AXIS, ABS_HAT0Y));
+//  g_assert_false (manette_mapping_has_destination_input (mapping, MANETTE_MAPPING_DESTINATION_TYPE_BUTTON, KEY_SPACE));
+//  g_assert_false (manette_mapping_has_destination_input (mapping, MANETTE_MAPPING_DESTINATION_TYPE_BUTTON, BTN_C));
+//  g_assert_false (manette_mapping_has_destination_input (mapping, MANETTE_MAPPING_DESTINATION_TYPE_BUTTON, BTN_Z));
+//  g_assert_false (manette_mapping_has_destination_input (mapping, MANETTE_MAPPING_DESTINATION_TYPE_AXIS, ABS_Z));
+//  g_assert_false (manette_mapping_has_destination_input (mapping, MANETTE_MAPPING_DESTINATION_TYPE_AXIS, ABS_RZ));
+//  g_assert_false (manette_mapping_has_destination_input (mapping, MANETTE_MAPPING_DESTINATION_TYPE_AXIS, ABS_HAT0X));
+//  g_assert_false (manette_mapping_has_destination_input (mapping, MANETTE_MAPPING_DESTINATION_TYPE_AXIS, ABS_HAT0Y));
 }
 
 int

@@ -44,7 +44,7 @@ manette_backend_default_init (ManetteBackendInterface *iface)
                   NULL, NULL, NULL,
                   G_TYPE_NONE,
                   3,
-                  G_TYPE_UINT64, G_TYPE_UINT, G_TYPE_BOOLEAN);
+                  G_TYPE_UINT64, MANETTE_TYPE_BUTTON, G_TYPE_BOOLEAN);
 
   signals[SIGNAL_AXIS_EVENT] =
     g_signal_new ("axis-event",
@@ -54,7 +54,7 @@ manette_backend_default_init (ManetteBackendInterface *iface)
                   NULL, NULL, NULL,
                   G_TYPE_NONE,
                   3,
-                  G_TYPE_UINT64, G_TYPE_UINT, G_TYPE_DOUBLE);
+                  G_TYPE_UINT64, MANETTE_TYPE_AXIS, G_TYPE_DOUBLE);
 
   signals[SIGNAL_UNMAPPED_BUTTON_EVENT] =
     g_signal_new ("unmapped-button-event",
@@ -238,7 +238,7 @@ manette_backend_rumble (ManetteBackend *self,
 void
 manette_backend_emit_button_event (ManetteBackend *self,
                                    guint64         time,
-                                   guint           button,
+                                   ManetteButton   button,
                                    gboolean        pressed)
 {
   g_assert (MANETTE_IS_BACKEND (self));
@@ -251,7 +251,7 @@ manette_backend_emit_button_event (ManetteBackend *self,
 void
 manette_backend_emit_axis_event (ManetteBackend *self,
                                  guint64         time,
-                                 guint           axis,
+                                 ManetteAxis     axis,
                                  double          value)
 {
   g_assert (MANETTE_IS_BACKEND (self));

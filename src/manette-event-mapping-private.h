@@ -24,18 +24,20 @@
 
 #include "manette-mapping-private.h"
 
+#include "manette-inputs.h"
+
 G_BEGIN_DECLS
 
 typedef union {
   ManetteMappingDestinationType type;
   struct {
     ManetteMappingDestinationType type;
-    guint16 button;
+    ManetteButton button;
     gboolean pressed;
   } button;
   struct {
     ManetteMappingDestinationType type;
-    guint16 axis;
+    ManetteAxis axis;
     double value;
   } axis;
 } ManetteMappedEvent;
