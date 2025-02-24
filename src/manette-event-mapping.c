@@ -220,7 +220,7 @@ GSList *
 manette_map_event (ManetteMapping *mapping,
                    ManetteEvent   *event)
 {
-  switch (manette_event_get_event_type (event)) {
+  switch (event->any.type) {
   case MANETTE_EVENT_BUTTON_PRESS:
   case MANETTE_EVENT_BUTTON_RELEASE:
     return map_button_event (mapping, &event->button);
