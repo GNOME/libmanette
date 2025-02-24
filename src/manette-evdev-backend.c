@@ -28,6 +28,7 @@
 #include <unistd.h>
 
 #include "manette-device-type-private.h"
+#include "manette-event-mapping-private.h"
 #include "manette-event-private.h"
 
 #define VENDOR_SONY       0x054C
@@ -48,6 +49,8 @@ struct _ManetteEvdevBackend
   struct input_absinfo abs_info[ABS_MAX];
 
   struct ff_effect rumble_effect;
+
+  ManetteMapping *mapping;
 };
 
 static void manette_evdev_backend_backend_init (ManetteBackendInterface *iface);
@@ -133,6 +136,43 @@ centered_absolute_value (struct input_absinfo *abs_info,
 }
 
 static void
+map_event (ManetteEvdevBackend *self,
+           ManetteEvent        *event)
+{
+  GSList *mapped_events = manette_map_event (self->mapping, event);
+  GSList *l = NULL;
+
+  for (l = mapped_events; l != NULL; l = l->next) {
+    ManetteMappedEvent *mapped_event = l->data;
+    ManetteEvent manette_event;
+
+    manette_event.any.time = event->any.time;
+
+    switch (mapped_event->type) {
+    case MANETTE_MAPPING_DESTINATION_TYPE_AXIS:
+      manette_event.any.type = MANETTE_EVENT_ABSOLUTE;
+      manette_event.absolute.axis = mapped_event->axis.axis;
+      manette_event.absolute.value = mapped_event->axis.value;
+      break;
+
+    case MANETTE_MAPPING_DESTINATION_TYPE_BUTTON:
+      manette_event.any.type = mapped_event->button.pressed ?
+        MANETTE_EVENT_BUTTON_PRESS :
+        MANETTE_EVENT_BUTTON_RELEASE;
+      manette_event.button.button = mapped_event->button.button;
+      break;
+
+    default:
+      g_assert_not_reached ();
+    }
+
+    manette_backend_emit_event (MANETTE_BACKEND (self), &manette_event);
+  }
+
+  g_slist_free_full (mapped_events, (GDestroyNotify) g_free);
+}
+
+static void
 on_evdev_event (ManetteEvdevBackend *self,
                 struct input_event  *evdev_event)
 {
@@ -188,7 +228,12 @@ on_evdev_event (ManetteEvdevBackend *self,
     return;
   }
 
-  manette_backend_emit_event (MANETTE_BACKEND (self), &manette_event);
+  manette_backend_emit_unmapped_event (MANETTE_BACKEND (self), &manette_event);
+
+  if (self->mapping == NULL)
+    manette_backend_emit_event (MANETTE_BACKEND (self), &manette_event);
+  else
+    map_event (self, &manette_event);
 }
 
 static gboolean
@@ -216,6 +261,7 @@ manette_evdev_backend_finalize (GObject *object)
 {
   ManetteEvdevBackend *self = MANETTE_EVDEV_BACKEND (object);
 
+  g_clear_object (&self->mapping);
   g_clear_handle_id (&self->event_source_id, g_source_remove);
   close (self->fd);
   libevdev_free (self->evdev_device);
@@ -357,12 +403,40 @@ manette_evdev_backend_get_version_id (ManetteBackend *backend)
   return libevdev_get_id_version (self->evdev_device);
 }
 
+void
+manette_evdev_backend_set_mapping (ManetteBackend *backend,
+                                   ManetteMapping *mapping)
+{
+  ManetteEvdevBackend *self = MANETTE_EVDEV_BACKEND (backend);
+
+  g_set_object (&self->mapping, mapping);
+}
+
 gboolean
 manette_evdev_backend_has_input (ManetteBackend *backend,
                                  guint           type,
                                  guint           code)
 {
   ManetteEvdevBackend *self = MANETTE_EVDEV_BACKEND (backend);
+
+  if (self->mapping) {
+    ManetteMappingDestinationType dest_type;
+
+    switch (type) {
+    case EV_ABS:
+      dest_type = MANETTE_MAPPING_DESTINATION_TYPE_AXIS;
+      break;
+
+    case EV_KEY:
+      dest_type = MANETTE_MAPPING_DESTINATION_TYPE_BUTTON;
+      break;
+
+    default:
+      return FALSE;
+    }
+
+    return manette_mapping_has_destination_input (self->mapping, dest_type, code);
+  }
 
   return libevdev_has_event_code (self->evdev_device, type, code);
 }
@@ -424,6 +498,7 @@ manette_evdev_backend_backend_init (ManetteBackendInterface *iface)
   iface->get_product_id = manette_evdev_backend_get_product_id;
   iface->get_bustype_id = manette_evdev_backend_get_bustype_id;
   iface->get_version_id = manette_evdev_backend_get_version_id;
+  iface->set_mapping = manette_evdev_backend_set_mapping;
   iface->has_input = manette_evdev_backend_has_input;
   iface->has_rumble = manette_evdev_backend_has_rumble;
   iface->rumble = manette_evdev_backend_rumble;
