@@ -28,7 +28,6 @@
 #include <unistd.h>
 #include "manette-backend-private.h"
 #include "manette-device-type-private.h"
-#include "manette-event-private.h"
 #include "manette-mapping-manager-private.h"
 
 /**
@@ -258,33 +257,39 @@ axis_event_cb (ManetteDevice *self,
 }
 
 static void
-unmapped_event_cb (ManetteDevice *self,
-                   ManetteEvent  *event)
+unmapped_button_event_cb (ManetteDevice *self,
+                          guint64        time,
+                          guint          index,
+                          gboolean       pressed)
 {
-  self->current_event_time = event->any.time;
+  self->current_event_time = time;
 
-  switch (event->any.type) {
-  case MANETTE_EVENT_BUTTON_PRESS:
-    g_signal_emit (self, signals[SIG_UNMAPPED_BUTTON_PRESSED], 0, event->any.hardware_index);
-    break;
+  if (pressed)
+    g_signal_emit (self, signals[SIG_UNMAPPED_BUTTON_PRESSED], 0, index);
+  else
+    g_signal_emit (self, signals[SIG_UNMAPPED_BUTTON_RELEASED], 0, index);
+}
 
-  case MANETTE_EVENT_BUTTON_RELEASE:
-    g_signal_emit (self, signals[SIG_UNMAPPED_BUTTON_RELEASED], 0, event->any.hardware_index);
-    break;
+static void
+unmapped_absolute_event_cb (ManetteDevice *self,
+                            guint64        time,
+                            guint          index,
+                            double         value)
+{
+  self->current_event_time = time;
 
-  case MANETTE_EVENT_ABSOLUTE:
-    g_signal_emit (self, signals[SIG_UNMAPPED_ABSOLUTE_AXIS_CHANGED], 0,
-                   event->any.hardware_index, event->absolute.value);
-    break;
+  g_signal_emit (self, signals[SIG_UNMAPPED_ABSOLUTE_AXIS_CHANGED], 0, index, value);
+}
 
-  case MANETTE_EVENT_HAT:
-    g_signal_emit (self, signals[SIG_UNMAPPED_HAT_AXIS_CHANGED], 0,
-                   event->any.hardware_index, event->hat.value);
-    break;
+static void
+unmapped_hat_event_cb (ManetteDevice *self,
+                       guint64        time,
+                       guint          index,
+                       gint8          value)
+{
+  self->current_event_time = time;
 
-  default:
-    break;
-  }
+  g_signal_emit (self, signals[SIG_UNMAPPED_HAT_AXIS_CHANGED], 0, index, value);
 }
 
 /**
@@ -316,7 +321,9 @@ manette_device_new (ManetteBackend  *backend,
 
   g_signal_connect_swapped (self->backend, "button-event", G_CALLBACK (button_event_cb), self);
   g_signal_connect_swapped (self->backend, "axis-event", G_CALLBACK (axis_event_cb), self);
-  g_signal_connect_swapped (self->backend, "unmapped-event", G_CALLBACK (unmapped_event_cb), self);
+  g_signal_connect_swapped (self->backend, "unmapped-button-event", G_CALLBACK (unmapped_button_event_cb), self);
+  g_signal_connect_swapped (self->backend, "unmapped-absolute-event", G_CALLBACK (unmapped_absolute_event_cb), self);
+  g_signal_connect_swapped (self->backend, "unmapped-hat-event", G_CALLBACK (unmapped_hat_event_cb), self);
 
   return g_steal_pointer (&self);
 }
