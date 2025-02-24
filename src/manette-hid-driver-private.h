@@ -24,6 +24,8 @@
 
 #include <glib-object.h>
 
+#include "manette-inputs.h"
+
 G_BEGIN_DECLS
 
 #define MANETTE_TYPE_HID_DRIVER (manette_hid_driver_get_type ())
@@ -76,11 +78,11 @@ gboolean manette_hid_driver_rumble (ManetteHidDriver *self,
 
 void manette_hid_driver_emit_button_event (ManetteHidDriver *self,
                                            guint64           time,
-                                           guint             button,
+                                           ManetteButton     button,
                                            gboolean          pressed);
 void manette_hid_driver_emit_axis_event   (ManetteHidDriver *self,
                                            guint64           time,
-                                           guint             axis,
+                                           ManetteAxis       axis,
                                            double            value);
 
 G_END_DECLS

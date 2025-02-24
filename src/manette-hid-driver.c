@@ -76,7 +76,7 @@ manette_hid_driver_default_init (ManetteHidDriverInterface *iface)
                   NULL, NULL, NULL,
                   G_TYPE_NONE,
                   3,
-                  G_TYPE_UINT64, G_TYPE_UINT, G_TYPE_DOUBLE);
+                  G_TYPE_UINT64, MANETTE_TYPE_AXIS, G_TYPE_DOUBLE);
 }
 
 gboolean
@@ -187,7 +187,7 @@ manette_hid_driver_rumble (ManetteHidDriver *self,
 void
 manette_hid_driver_emit_button_event (ManetteHidDriver *self,
                                       guint64           time,
-                                      guint             button,
+                                      ManetteButton     button,
                                       gboolean          pressed)
 {
   g_assert (MANETTE_IS_HID_DRIVER (self));
@@ -200,7 +200,7 @@ manette_hid_driver_emit_button_event (ManetteHidDriver *self,
 void
 manette_hid_driver_emit_axis_event (ManetteHidDriver *self,
                                     guint64           time,
-                                    guint             axis,
+                                    ManetteAxis       axis,
                                     double            value)
 {
   g_assert (MANETTE_IS_HID_DRIVER (self));

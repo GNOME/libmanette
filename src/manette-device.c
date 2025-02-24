@@ -22,12 +22,12 @@
 
 #include <errno.h>
 #include <fcntl.h>
-#include <linux/input-event-codes.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
 #include "manette-backend-private.h"
 #include "manette-device-type-private.h"
+#include "manette-inputs.h"
 #include "manette-mapping-manager-private.h"
 
 /**
@@ -103,42 +103,42 @@ manette_device_class_init (ManetteDeviceClass *klass)
   /**
    * ManetteDevice::button-pressed:
    * @self: a device
-   * @button: the button hardware code
+   * @button: the button
    *
-   * Emitted when a button is pressed.
+   * Emitted when @button is pressed.
    */
   signals[SIG_BUTTON_PRESSED] =
     g_signal_new ("button-pressed",
                   MANETTE_TYPE_DEVICE,
                   G_SIGNAL_RUN_LAST,
                   0, NULL, NULL,
-                  g_cclosure_marshal_VOID__UINT,
+                  g_cclosure_marshal_VOID__ENUM,
                   G_TYPE_NONE, 1,
-                  G_TYPE_UINT);
+                  MANETTE_TYPE_BUTTON);
 
   /**
    * ManetteDevice::button-released:
    * @self: a device
-   * @button: the button hardware code
+   * @button: the button
    *
-   * Emitted when a button is released.
+   * Emitted when @button is released.
    */
   signals[SIG_BUTTON_RELEASED] =
     g_signal_new ("button-released",
                   MANETTE_TYPE_DEVICE,
                   G_SIGNAL_RUN_LAST,
                   0, NULL, NULL,
-                  g_cclosure_marshal_VOID__UINT,
+                  g_cclosure_marshal_VOID__ENUM,
                   G_TYPE_NONE, 1,
-                  G_TYPE_UINT);
+                  MANETTE_TYPE_BUTTON);
 
   /**
    * ManetteDevice::absolute-axis-changed:
    * @self: a device
-   * @axis: the axis hardware code
+   * @axis: the axis
    * @value: the axis value
    *
-   * Emitted when an absolute axis' value changes.
+   * Emitted when value of @axis changes.
    */
   signals[SIG_ABSOLUTE_AXIS_CHANGED] =
     g_signal_new ("absolute-axis-changed",
@@ -147,7 +147,7 @@ manette_device_class_init (ManetteDeviceClass *klass)
                   0, NULL, NULL,
                   NULL,
                   G_TYPE_NONE, 2,
-                  G_TYPE_UINT, G_TYPE_DOUBLE);
+                  MANETTE_TYPE_AXIS, G_TYPE_DOUBLE);
 
   /**
    * ManetteDevice::unmapped-button-pressed:
@@ -234,7 +234,7 @@ compute_guid_string (ManetteDevice *self)
 static void
 button_event_cb (ManetteDevice *self,
                  guint64        time,
-                 guint          button,
+                 ManetteButton  button,
                  gboolean       pressed)
 {
   self->current_event_time = time;
@@ -248,7 +248,7 @@ button_event_cb (ManetteDevice *self,
 static void
 axis_event_cb (ManetteDevice *self,
                guint64        time,
-               guint          axis,
+               ManetteAxis    axis,
                double         value)
 {
   self->current_event_time = time;

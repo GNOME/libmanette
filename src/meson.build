@@ -10,6 +10,7 @@ libmanette_resources = gnome.compile_resources(
 
 libmanette_public_enum_headers = [
   'manette-device-type.h',
+  'manette-inputs.h',
 ]
 
 libmanette_public_enums = gnome.mkenums_simple('manette-enums',
@@ -52,6 +53,7 @@ libmanette_public_sources = [
   libmanette_public_enums,
   'manette-device.c',
   'manette-device-type.c',
+  'manette-inputs.c',
   'manette-monitor.c',
   'manette-version.c',
 ]
@@ -81,6 +83,7 @@ libmanette_headers = [
   manette_version_h,
   'manette-device.h',
   'manette-device-type.h',
+  'manette-inputs.h',
   'manette-monitor.h',
 ]
 

@@ -18,77 +18,35 @@
 
 #include <glib/gprintf.h>
 #include <libmanette.h>
-#include <linux/input-event-codes.h>
 
-#define CASE_THEN_STRING(x) case x: return #x;
-
-const char *
-get_absolute_name (guint16 axis)
+char *
+get_absolute_name (ManetteAxis axis)
 {
-  switch (axis) {
-  CASE_THEN_STRING (ABS_X)
-  CASE_THEN_STRING (ABS_Y)
-  CASE_THEN_STRING (ABS_RX)
-  CASE_THEN_STRING (ABS_RY)
-  default:
+  GEnumClass *enum_class;
+  GEnumValue *value;
+
+  if (axis < 0 || axis > MANETTE_AXIS_RIGHT_Y)
     return NULL;
-  }
+
+  enum_class = g_type_class_ref (MANETTE_TYPE_AXIS);
+  value = g_enum_get_value (enum_class, axis);
+
+  return g_strdup (value->value_nick);
 }
 
-const char *
-get_button_name (guint16 button)
+char *
+get_button_name (ManetteButton button)
 {
-  switch (button) {
-  CASE_THEN_STRING (BTN_A)
-  CASE_THEN_STRING (BTN_B)
-  CASE_THEN_STRING (BTN_C)
-  CASE_THEN_STRING (BTN_X)
-  CASE_THEN_STRING (BTN_Y)
-  CASE_THEN_STRING (BTN_Z)
-  CASE_THEN_STRING (BTN_TL)
-  CASE_THEN_STRING (BTN_TR)
-  CASE_THEN_STRING (BTN_TL2)
-  CASE_THEN_STRING (BTN_TR2)
-  CASE_THEN_STRING (BTN_SELECT)
-  CASE_THEN_STRING (BTN_START)
-  CASE_THEN_STRING (BTN_MODE)
-  CASE_THEN_STRING (BTN_THUMBL)
-  CASE_THEN_STRING (BTN_THUMBR)
-  CASE_THEN_STRING (BTN_DPAD_UP)
-  CASE_THEN_STRING (BTN_DPAD_DOWN)
-  CASE_THEN_STRING (BTN_DPAD_LEFT)
-  CASE_THEN_STRING (BTN_DPAD_RIGHT)
-  CASE_THEN_STRING (BTN_TRIGGER_HAPPY1)
-  CASE_THEN_STRING (BTN_TRIGGER_HAPPY2)
-  CASE_THEN_STRING (BTN_TRIGGER_HAPPY3)
-  CASE_THEN_STRING (BTN_TRIGGER_HAPPY4)
-  CASE_THEN_STRING (BTN_TRIGGER_HAPPY5)
-  CASE_THEN_STRING (BTN_TRIGGER_HAPPY6)
-  CASE_THEN_STRING (BTN_TRIGGER_HAPPY7)
-  CASE_THEN_STRING (BTN_TRIGGER_HAPPY8)
-  CASE_THEN_STRING (BTN_TRIGGER_HAPPY9)
-  CASE_THEN_STRING (BTN_TRIGGER_HAPPY10)
-  CASE_THEN_STRING (BTN_TRIGGER_HAPPY11)
-  default:
-    return NULL;
-  }
-}
+  GEnumClass *enum_class;
+  GEnumValue *value;
 
-const char *
-get_hat_name (guint16 axis)
-{
-  switch (axis) {
-  CASE_THEN_STRING (ABS_HAT0X)
-  CASE_THEN_STRING (ABS_HAT0Y)
-  CASE_THEN_STRING (ABS_HAT1X)
-  CASE_THEN_STRING (ABS_HAT1Y)
-  CASE_THEN_STRING (ABS_HAT2X)
-  CASE_THEN_STRING (ABS_HAT2Y)
-  CASE_THEN_STRING (ABS_HAT3X)
-  CASE_THEN_STRING (ABS_HAT3Y)
-  default:
+  if (button < 0 || button > MANETTE_BUTTON_TOUCHPAD)
     return NULL;
-  }
+
+  enum_class = g_type_class_ref (MANETTE_TYPE_BUTTON);
+  value = g_enum_get_value (enum_class, button);
+
+  return g_strdup (value->value_nick);
 }
 
 static void
@@ -101,15 +59,12 @@ device_disconnected_cb (ManetteDevice *emitter,
 
 static void
 absolute_axis_changed_cb (ManetteDevice *emitter,
-                          guint          axis,
+                          ManetteAxis    axis,
                           double         value,
                           gpointer       user_data)
 {
-  const char *device_name;
-  const char *axis_name;
-
-  device_name = manette_device_get_name (emitter);
-  axis_name = get_absolute_name (axis);
+  g_autofree char *axis_name = get_absolute_name (axis);
+  const char *device_name = manette_device_get_name (emitter);
 
   if (axis_name != NULL)
     g_printf ("%s: Absolute axis %s moved to %lf\n", device_name, axis_name, value);
@@ -122,11 +77,8 @@ button_pressed_cb (ManetteDevice *emitter,
                    guint          button,
                    gpointer       user_data)
 {
-  const char *device_name;
-  const char *button_name;
-
-  device_name = manette_device_get_name (emitter);
-  button_name = get_button_name (button);
+  g_autofree char *button_name = get_button_name (button);
+  const char *device_name = manette_device_get_name (emitter);
 
   if (button_name != NULL)
     g_printf ("%s: Button %s pressed\n", device_name, button_name);

@@ -535,7 +535,7 @@ disable_lizard_mode (ManetteSteamDeckDriver *self)
 
 static void
 send_absolute_event (ManetteSteamDeckDriver *self,
-                     int                     code,
+                     ManetteAxis             axis,
                      short                   value,
                      gint64                  time,
                      gboolean                inverted)
@@ -548,7 +548,7 @@ send_absolute_event (ManetteSteamDeckDriver *self,
     axis_value = (double) value / 32767.0;
 
   manette_hid_driver_emit_axis_event (MANETTE_HID_DRIVER (self),
-                                      time, code, axis_value);
+                                      time, axis, axis_value);
 }
 
 static void
@@ -556,7 +556,7 @@ handle_button_l (ManetteSteamDeckDriver *self,
                  SteamDeckState         *state,
                  gint64                  time,
                  int                     deck_button,
-                 int                     code)
+                 ManetteButton           button)
 {
   gboolean old_pressed = (self->last_buttons_l & deck_button) > 0;
   gboolean new_pressed = (state->buttons_l & deck_button) > 0;
@@ -565,7 +565,7 @@ handle_button_l (ManetteSteamDeckDriver *self,
     return;
 
   manette_hid_driver_emit_button_event (MANETTE_HID_DRIVER (self),
-                                        time, code, new_pressed);
+                                        time, button, new_pressed);
 }
 
 static void
@@ -573,7 +573,7 @@ handle_button_h (ManetteSteamDeckDriver *self,
                  SteamDeckState         *state,
                  gint64                  time,
                  int                     deck_button,
-                 int                     code)
+                 ManetteButton           button)
 {
   gboolean old_pressed = (self->last_buttons_h & deck_button) > 0;
   gboolean new_pressed = (state->buttons_h & deck_button) > 0;
@@ -582,7 +582,7 @@ handle_button_h (ManetteSteamDeckDriver *self,
     return;
 
   manette_hid_driver_emit_button_event (MANETTE_HID_DRIVER (self),
-                                        time, code, new_pressed);
+                                        time, button, new_pressed);
 }
 
 static inline short
@@ -607,29 +607,29 @@ handle_state (ManetteSteamDeckDriver *self,
 
   self->last_packet = state->packet_num;
 
-  handle_button_l (self, state, time, STEAM_DECK_LBUTTON_R2,         BTN_TR2);
-  handle_button_l (self, state, time, STEAM_DECK_LBUTTON_L2,         BTN_TL2);
-  handle_button_l (self, state, time, STEAM_DECK_LBUTTON_R,          BTN_TR);
-  handle_button_l (self, state, time, STEAM_DECK_LBUTTON_L,          BTN_TL);
-  handle_button_l (self, state, time, STEAM_DECK_LBUTTON_Y,          BTN_X);
-  handle_button_l (self, state, time, STEAM_DECK_LBUTTON_B,          BTN_B);
-  handle_button_l (self, state, time, STEAM_DECK_LBUTTON_X,          BTN_Y);
-  handle_button_l (self, state, time, STEAM_DECK_LBUTTON_A,          BTN_A);
-  handle_button_l (self, state, time, STEAM_DECK_LBUTTON_DPAD_UP,    BTN_DPAD_UP);
-  handle_button_l (self, state, time, STEAM_DECK_LBUTTON_DPAD_RIGHT, BTN_DPAD_RIGHT);
-  handle_button_l (self, state, time, STEAM_DECK_LBUTTON_DPAD_LEFT,  BTN_DPAD_LEFT);
-  handle_button_l (self, state, time, STEAM_DECK_LBUTTON_DPAD_DOWN,  BTN_DPAD_DOWN);
-  handle_button_l (self, state, time, STEAM_DECK_LBUTTON_VIEW,       BTN_SELECT);
-  handle_button_l (self, state, time, STEAM_DECK_LBUTTON_STEAM,      BTN_MODE);
-  handle_button_l (self, state, time, STEAM_DECK_LBUTTON_MENU,       BTN_START);
-  handle_button_l (self, state, time, STEAM_DECK_LBUTTON_L5,         BTN_TRIGGER_HAPPY3);
-  handle_button_l (self, state, time, STEAM_DECK_LBUTTON_R5,         BTN_TRIGGER_HAPPY4);
+  handle_button_l (self, state, time, STEAM_DECK_LBUTTON_R2,         MANETTE_BUTTON_RIGHT_TRIGGER);
+  handle_button_l (self, state, time, STEAM_DECK_LBUTTON_L2,         MANETTE_BUTTON_LEFT_TRIGGER);
+  handle_button_l (self, state, time, STEAM_DECK_LBUTTON_R,          MANETTE_BUTTON_RIGHT_SHOULDER);
+  handle_button_l (self, state, time, STEAM_DECK_LBUTTON_L,          MANETTE_BUTTON_LEFT_SHOULDER);
+  handle_button_l (self, state, time, STEAM_DECK_LBUTTON_Y,          MANETTE_BUTTON_NORTH);
+  handle_button_l (self, state, time, STEAM_DECK_LBUTTON_B,          MANETTE_BUTTON_EAST);
+  handle_button_l (self, state, time, STEAM_DECK_LBUTTON_X,          MANETTE_BUTTON_WEST);
+  handle_button_l (self, state, time, STEAM_DECK_LBUTTON_A,          MANETTE_BUTTON_SOUTH);
+  handle_button_l (self, state, time, STEAM_DECK_LBUTTON_DPAD_UP,    MANETTE_BUTTON_DPAD_UP);
+  handle_button_l (self, state, time, STEAM_DECK_LBUTTON_DPAD_RIGHT, MANETTE_BUTTON_DPAD_RIGHT);
+  handle_button_l (self, state, time, STEAM_DECK_LBUTTON_DPAD_LEFT,  MANETTE_BUTTON_DPAD_LEFT);
+  handle_button_l (self, state, time, STEAM_DECK_LBUTTON_DPAD_DOWN,  MANETTE_BUTTON_DPAD_DOWN);
+  handle_button_l (self, state, time, STEAM_DECK_LBUTTON_VIEW,       MANETTE_BUTTON_SELECT);
+  handle_button_l (self, state, time, STEAM_DECK_LBUTTON_STEAM,      MANETTE_BUTTON_MODE);
+  handle_button_l (self, state, time, STEAM_DECK_LBUTTON_MENU,       MANETTE_BUTTON_START);
+  handle_button_l (self, state, time, STEAM_DECK_LBUTTON_L5,         MANETTE_BUTTON_LEFT_PADDLE2);
+  handle_button_l (self, state, time, STEAM_DECK_LBUTTON_R5,         MANETTE_BUTTON_RIGHT_PADDLE2);
   // touchpads
-  handle_button_l (self, state, time, STEAM_DECK_LBUTTON_L3,         BTN_THUMBL);
-  handle_button_l (self, state, time, STEAM_DECK_LBUTTON_R3,         BTN_THUMBR);
-  handle_button_h (self, state, time, STEAM_DECK_HBUTTON_L4,         BTN_TRIGGER_HAPPY1);
-  handle_button_h (self, state, time, STEAM_DECK_HBUTTON_R4,         BTN_TRIGGER_HAPPY2);
-  handle_button_h (self, state, time, STEAM_DECK_HBUTTON_QAM,        BTN_TRIGGER_HAPPY5);
+  handle_button_l (self, state, time, STEAM_DECK_LBUTTON_L3,         MANETTE_BUTTON_LEFT_STICK);
+  handle_button_l (self, state, time, STEAM_DECK_LBUTTON_R3,         MANETTE_BUTTON_RIGHT_STICK);
+  handle_button_h (self, state, time, STEAM_DECK_HBUTTON_L4,         MANETTE_BUTTON_LEFT_PADDLE1);
+  handle_button_h (self, state, time, STEAM_DECK_HBUTTON_R4,         MANETTE_BUTTON_RIGHT_PADDLE1);
+  handle_button_h (self, state, time, STEAM_DECK_HBUTTON_QAM,        MANETTE_BUTTON_MISC1);
 
   normalized_left_stick_x = normalize_stick (state->left_stick_x);
   normalized_left_stick_y = normalize_stick (state->left_stick_y);
@@ -637,16 +637,16 @@ handle_state (ManetteSteamDeckDriver *self,
   normalized_right_stick_y = normalize_stick (state->right_stick_y);
 
   if (self->last_left_stick_x != normalized_left_stick_x)
-    send_absolute_event (self, ABS_X, normalized_left_stick_x, time, FALSE);
+    send_absolute_event (self, MANETTE_AXIS_LEFT_X, normalized_left_stick_x, time, FALSE);
 
   if (self->last_left_stick_y != normalized_left_stick_y)
-    send_absolute_event (self, ABS_Y, normalized_left_stick_y, time, TRUE);
+    send_absolute_event (self, MANETTE_AXIS_LEFT_Y, normalized_left_stick_y, time, TRUE);
 
   if (self->last_right_stick_x != normalized_right_stick_x)
-    send_absolute_event (self, ABS_RX, normalized_right_stick_x, time, FALSE);
+    send_absolute_event (self, MANETTE_AXIS_RIGHT_X, normalized_right_stick_x, time, FALSE);
 
   if (self->last_right_stick_y != normalized_right_stick_y)
-    send_absolute_event (self, ABS_RY, normalized_right_stick_y, time, TRUE);
+    send_absolute_event (self, MANETTE_AXIS_RIGHT_Y, normalized_right_stick_y, time, TRUE);
 
   self->last_buttons_l = state->buttons_l;
   self->last_buttons_h = state->buttons_h;

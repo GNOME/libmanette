@@ -16,7 +16,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <linux/input-event-codes.h>
 #include "../src/manette-event-mapping-private.h"
 
 #define MAPPING_EMPTY "00000000000000000000000000000000,empty,"
@@ -74,7 +73,7 @@ test_button_mapping (void)
 
   mapped_event = mapped_events->data;
   g_assert_cmpint (mapped_event->type, ==, MANETTE_MAPPING_DESTINATION_TYPE_BUTTON);
-  g_assert_cmpuint (mapped_event->button.button, ==, BTN_SOUTH);
+  g_assert_cmpint (mapped_event->button.button, ==, MANETTE_BUTTON_SOUTH);
   g_assert_true (mapped_event->button.pressed);
 
   g_slist_free_full (mapped_events, (GDestroyNotify) g_free);
@@ -98,7 +97,7 @@ test_axis_mapping (void)
 
   mapped_event = mapped_events->data;
   g_assert_cmpint (mapped_event->type, ==, MANETTE_MAPPING_DESTINATION_TYPE_AXIS);
-  g_assert_cmpuint (mapped_event->axis.axis, ==, ABS_X);
+  g_assert_cmpint (mapped_event->axis.axis, ==, MANETTE_AXIS_LEFT_X);
   g_assert_cmpfloat (mapped_event->axis.value, ==, 0);
 
   g_slist_free_full (mapped_events, (GDestroyNotify) g_free);
@@ -108,7 +107,7 @@ test_axis_mapping (void)
 
   mapped_event = mapped_events->data;
   g_assert_cmpint (mapped_event->type, ==, MANETTE_MAPPING_DESTINATION_TYPE_AXIS);
-  g_assert_cmpuint (mapped_event->axis.axis, ==, ABS_Y);
+  g_assert_cmpint (mapped_event->axis.axis, ==, MANETTE_AXIS_LEFT_Y);
   g_assert_cmpfloat (mapped_event->axis.value, ==, 0);
 
   g_slist_free_full (mapped_events, (GDestroyNotify) g_free);
@@ -132,12 +131,12 @@ test_hat_mapping (void)
 
   mapped_event = mapped_events->data;
   g_assert_cmpint (mapped_event->type, ==, MANETTE_MAPPING_DESTINATION_TYPE_BUTTON);
-  g_assert_cmpuint (mapped_event->button.button, ==, BTN_DPAD_LEFT);
+  g_assert_cmpint (mapped_event->button.button, ==, MANETTE_BUTTON_DPAD_LEFT);
   g_assert_false (mapped_event->button.pressed);
 
   mapped_event = mapped_events->next->data;
   g_assert_cmpint (mapped_event->type, ==, MANETTE_MAPPING_DESTINATION_TYPE_BUTTON);
-  g_assert_cmpuint (mapped_event->button.button, ==, BTN_DPAD_RIGHT);
+  g_assert_cmpint (mapped_event->button.button, ==, MANETTE_BUTTON_DPAD_RIGHT);
   g_assert_false (mapped_event->button.pressed);
 
   g_slist_free_full (mapped_events, (GDestroyNotify) g_free);
@@ -147,12 +146,12 @@ test_hat_mapping (void)
 
   mapped_event = mapped_events->data;
   g_assert_cmpint (mapped_event->type, ==, MANETTE_MAPPING_DESTINATION_TYPE_BUTTON);
-  g_assert_cmpuint (mapped_event->button.button, ==, BTN_DPAD_LEFT);
+  g_assert_cmpint (mapped_event->button.button, ==, MANETTE_BUTTON_DPAD_LEFT);
   g_assert_true (mapped_event->button.pressed);
 
   mapped_event = mapped_events->next->data;
   g_assert_cmpint (mapped_event->type, ==, MANETTE_MAPPING_DESTINATION_TYPE_BUTTON);
-  g_assert_cmpuint (mapped_event->button.button, ==, BTN_DPAD_RIGHT);
+  g_assert_cmpint (mapped_event->button.button, ==, MANETTE_BUTTON_DPAD_RIGHT);
   g_assert_false (mapped_event->button.pressed);
 
   g_slist_free_full (mapped_events, (GDestroyNotify) g_free);
@@ -162,12 +161,12 @@ test_hat_mapping (void)
 
   mapped_event = mapped_events->data;
   g_assert_cmpint (mapped_event->type, ==, MANETTE_MAPPING_DESTINATION_TYPE_BUTTON);
-  g_assert_cmpuint (mapped_event->button.button, ==, BTN_DPAD_LEFT);
+  g_assert_cmpint (mapped_event->button.button, ==, MANETTE_BUTTON_DPAD_LEFT);
   g_assert_false (mapped_event->button.pressed);
 
   mapped_event = mapped_events->next->data;
   g_assert_cmpint (mapped_event->type, ==, MANETTE_MAPPING_DESTINATION_TYPE_BUTTON);
-  g_assert_cmpuint (mapped_event->button.button, ==, BTN_DPAD_RIGHT);
+  g_assert_cmpint (mapped_event->button.button, ==, MANETTE_BUTTON_DPAD_RIGHT);
   g_assert_true (mapped_event->button.pressed);
 
   g_slist_free_full (mapped_events, (GDestroyNotify) g_free);
@@ -191,12 +190,12 @@ test_axis_dpad_mapping (void)
 
   mapped_event = mapped_events->data;
   g_assert_cmpint (mapped_event->type, ==, MANETTE_MAPPING_DESTINATION_TYPE_BUTTON);
-  g_assert_cmpuint (mapped_event->button.button, ==, BTN_DPAD_LEFT);
+  g_assert_cmpint (mapped_event->button.button, ==, MANETTE_BUTTON_DPAD_LEFT);
   g_assert_false (mapped_event->button.pressed);
 
   mapped_event = mapped_events->next->data;
   g_assert_cmpint (mapped_event->type, ==, MANETTE_MAPPING_DESTINATION_TYPE_BUTTON);
-  g_assert_cmpuint (mapped_event->button.button, ==, BTN_DPAD_RIGHT);
+  g_assert_cmpint (mapped_event->button.button, ==, MANETTE_BUTTON_DPAD_RIGHT);
   g_assert_false (mapped_event->button.pressed);
 
   g_slist_free_full (mapped_events, (GDestroyNotify) g_free);
@@ -206,12 +205,12 @@ test_axis_dpad_mapping (void)
 
   mapped_event = mapped_events->data;
   g_assert_cmpint (mapped_event->type, ==, MANETTE_MAPPING_DESTINATION_TYPE_BUTTON);
-  g_assert_cmpuint (mapped_event->button.button, ==, BTN_DPAD_LEFT);
+  g_assert_cmpint (mapped_event->button.button, ==, MANETTE_BUTTON_DPAD_LEFT);
   g_assert_true (mapped_event->button.pressed);
 
   mapped_event = mapped_events->next->data;
   g_assert_cmpint (mapped_event->type, ==, MANETTE_MAPPING_DESTINATION_TYPE_BUTTON);
-  g_assert_cmpuint (mapped_event->button.button, ==, BTN_DPAD_RIGHT);
+  g_assert_cmpuint (mapped_event->button.button, ==, MANETTE_BUTTON_DPAD_RIGHT);
   g_assert_false (mapped_event->button.pressed);
 
   g_slist_free_full (mapped_events, (GDestroyNotify) g_free);
@@ -221,12 +220,12 @@ test_axis_dpad_mapping (void)
 
   mapped_event = mapped_events->data;
   g_assert_cmpint (mapped_event->type, ==, MANETTE_MAPPING_DESTINATION_TYPE_BUTTON);
-  g_assert_cmpuint (mapped_event->button.button, ==, BTN_DPAD_LEFT);
+  g_assert_cmpuint (mapped_event->button.button, ==, MANETTE_BUTTON_DPAD_LEFT);
   g_assert_false (mapped_event->button.pressed);
 
   mapped_event = mapped_events->next->data;
   g_assert_cmpint (mapped_event->type, ==, MANETTE_MAPPING_DESTINATION_TYPE_BUTTON);
-  g_assert_cmpuint (mapped_event->button.button, ==, BTN_DPAD_RIGHT);
+  g_assert_cmpuint (mapped_event->button.button, ==, MANETTE_BUTTON_DPAD_RIGHT);
   g_assert_true (mapped_event->button.pressed);
 
   g_slist_free_full (mapped_events, (GDestroyNotify) g_free);
@@ -236,12 +235,12 @@ test_axis_dpad_mapping (void)
 
   mapped_event = mapped_events->data;
   g_assert_cmpint (mapped_event->type, ==, MANETTE_MAPPING_DESTINATION_TYPE_BUTTON);
-  g_assert_cmpuint (mapped_event->button.button, ==, BTN_DPAD_UP);
+  g_assert_cmpint (mapped_event->button.button, ==, MANETTE_BUTTON_DPAD_UP);
   g_assert_false (mapped_event->button.pressed);
 
   mapped_event = mapped_events->next->data;
   g_assert_cmpint (mapped_event->type, ==, MANETTE_MAPPING_DESTINATION_TYPE_BUTTON);
-  g_assert_cmpuint (mapped_event->button.button, ==, BTN_DPAD_DOWN);
+  g_assert_cmpint (mapped_event->button.button, ==, MANETTE_BUTTON_DPAD_DOWN);
   g_assert_false (mapped_event->button.pressed);
 
   g_slist_free_full (mapped_events, (GDestroyNotify) g_free);
@@ -251,12 +250,12 @@ test_axis_dpad_mapping (void)
 
   mapped_event = mapped_events->data;
   g_assert_cmpint (mapped_event->type, ==, MANETTE_MAPPING_DESTINATION_TYPE_BUTTON);
-  g_assert_cmpuint (mapped_event->button.button, ==, BTN_DPAD_UP);
+  g_assert_cmpint (mapped_event->button.button, ==, MANETTE_BUTTON_DPAD_UP);
   g_assert_true (mapped_event->button.pressed);
 
   mapped_event = mapped_events->next->data;
   g_assert_cmpint (mapped_event->type, ==, MANETTE_MAPPING_DESTINATION_TYPE_BUTTON);
-  g_assert_cmpuint (mapped_event->button.button, ==, BTN_DPAD_DOWN);
+  g_assert_cmpuint (mapped_event->button.button, ==, MANETTE_BUTTON_DPAD_DOWN);
   g_assert_false (mapped_event->button.pressed);
 
   g_slist_free_full (mapped_events, (GDestroyNotify) g_free);
@@ -266,12 +265,12 @@ test_axis_dpad_mapping (void)
 
   mapped_event = mapped_events->data;
   g_assert_cmpint (mapped_event->type, ==, MANETTE_MAPPING_DESTINATION_TYPE_BUTTON);
-  g_assert_cmpuint (mapped_event->button.button, ==, BTN_DPAD_UP);
+  g_assert_cmpuint (mapped_event->button.button, ==, MANETTE_BUTTON_DPAD_UP);
   g_assert_false (mapped_event->button.pressed);
 
   mapped_event = mapped_events->next->data;
   g_assert_cmpint (mapped_event->type, ==, MANETTE_MAPPING_DESTINATION_TYPE_BUTTON);
-  g_assert_cmpuint (mapped_event->button.button, ==, BTN_DPAD_DOWN);
+  g_assert_cmpuint (mapped_event->button.button, ==, MANETTE_BUTTON_DPAD_DOWN);
   g_assert_true (mapped_event->button.pressed);
 
   g_slist_free_full (mapped_events, (GDestroyNotify) g_free);
@@ -295,7 +294,7 @@ test_axis_trigger_mapping (void)
 
   mapped_event = mapped_events->data;
   g_assert_cmpint (mapped_event->type, ==, MANETTE_MAPPING_DESTINATION_TYPE_BUTTON);
-  g_assert_cmpuint (mapped_event->button.button, ==, BTN_TL2);
+  g_assert_cmpint (mapped_event->button.button, ==, MANETTE_BUTTON_LEFT_TRIGGER);
   g_assert_true (mapped_event->button.pressed);
 
   g_slist_free_full (mapped_events, (GDestroyNotify) g_free);
@@ -305,7 +304,7 @@ test_axis_trigger_mapping (void)
 
   mapped_event = mapped_events->data;
   g_assert_cmpint (mapped_event->type, ==, MANETTE_MAPPING_DESTINATION_TYPE_BUTTON);
-  g_assert_cmpuint (mapped_event->button.button, ==, BTN_TL2);
+  g_assert_cmpint (mapped_event->button.button, ==, MANETTE_BUTTON_LEFT_TRIGGER);
   g_assert_false (mapped_event->button.pressed);
 
   g_slist_free_full (mapped_events, (GDestroyNotify) g_free);
@@ -315,7 +314,7 @@ test_axis_trigger_mapping (void)
 
   mapped_event = mapped_events->data;
   g_assert_cmpint (mapped_event->type, ==, MANETTE_MAPPING_DESTINATION_TYPE_BUTTON);
-  g_assert_cmpuint (mapped_event->button.button, ==, BTN_TR2);
+  g_assert_cmpint (mapped_event->button.button, ==, MANETTE_BUTTON_RIGHT_TRIGGER);
   g_assert_true (mapped_event->button.pressed);
 
   g_slist_free_full (mapped_events, (GDestroyNotify) g_free);
@@ -325,7 +324,7 @@ test_axis_trigger_mapping (void)
 
   mapped_event = mapped_events->data;
   g_assert_cmpint (mapped_event->type, ==, MANETTE_MAPPING_DESTINATION_TYPE_BUTTON);
-  g_assert_cmpuint (mapped_event->button.button, ==, BTN_TR2);
+  g_assert_cmpint (mapped_event->button.button, ==, MANETTE_BUTTON_RIGHT_TRIGGER);
   g_assert_false (mapped_event->button.pressed);
 
   g_slist_free_full (mapped_events, (GDestroyNotify) g_free);

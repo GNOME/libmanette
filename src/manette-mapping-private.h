@@ -23,6 +23,8 @@
 #endif
 
 #include <glib-object.h>
+
+#include "manette-inputs.h"
 #include "manette-mapping-error-private.h"
 
 G_BEGIN_DECLS
@@ -59,7 +61,7 @@ struct _ManetteMappingBinding {
   } source;
   struct {
     ManetteMappingDestinationType type;
-    guint16 code;
+    int code;
     ManetteMappingRange range;
   } destination;
 };
@@ -74,6 +76,6 @@ ManetteMappingBinding *manette_mapping_binding_copy (ManetteMappingBinding *self
 void manette_mapping_binding_free (ManetteMappingBinding *self);
 gboolean manette_mapping_has_destination_input (ManetteMapping                *self,
                                                 ManetteMappingDestinationType  type,
-                                                guint                          code);
+                                                int                            code);
 
 G_END_DECLS

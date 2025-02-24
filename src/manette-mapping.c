@@ -21,7 +21,6 @@
 #include "manette-mapping-private.h"
 
 #include <errno.h>
-#include <linux/input-event-codes.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -270,50 +269,50 @@ static gboolean
 parse_destination_input (char                           *start,
                          char                          **end,
                          ManetteMappingDestinationType  *type,
-                         guint16                        *code)
+                         int                            *code)
 {
   const static struct {
-    guint16 code;
+    ManetteAxis axis;
     const char *string_value;
   } axis_values[] = {
-    { ABS_X, "leftx" },
-    { ABS_Y, "lefty" },
-    { ABS_RX, "rightx" },
-    { ABS_RY, "righty" },
+    { MANETTE_AXIS_LEFT_X, "leftx" },
+    { MANETTE_AXIS_LEFT_Y, "lefty" },
+    { MANETTE_AXIS_RIGHT_X, "rightx" },
+    { MANETTE_AXIS_RIGHT_Y, "righty" },
   };
 
   const static struct {
-    guint16 code;
+    ManetteButton button;
     const char *string_value;
   } button_values[] = {
-    { BTN_A, "a" },
-    { BTN_B, "b" },
-    { BTN_DPAD_DOWN, "dpdown" },
-    { BTN_DPAD_LEFT, "dpleft" },
-    { BTN_DPAD_RIGHT, "dpright" },
-    { BTN_DPAD_UP, "dpup" },
-    { BTN_MODE, "guide" },
-    { BTN_SELECT, "back" },
-    { BTN_TL, "leftshoulder" },
-    { BTN_TR, "rightshoulder" },
-    { BTN_START, "start" },
-    { BTN_THUMBL, "leftstick" },
-    { BTN_THUMBR, "rightstick" },
-    { BTN_TL2, "lefttrigger" },
-    { BTN_TR2, "righttrigger" },
-    { BTN_Y, "x" },
-    { BTN_X, "y" },
-    { BTN_TRIGGER_HAPPY2, "paddle1" },
-    { BTN_TRIGGER_HAPPY1, "paddle2" },
-    { BTN_TRIGGER_HAPPY4, "paddle3" },
-    { BTN_TRIGGER_HAPPY3, "paddle4" },
-    { BTN_TRIGGER_HAPPY5, "misc1" },
-    { BTN_TRIGGER_HAPPY6, "misc2" },
-    { BTN_TRIGGER_HAPPY7, "misc3" },
-    { BTN_TRIGGER_HAPPY8, "misc4" },
-    { BTN_TRIGGER_HAPPY9, "misc5" },
-    { BTN_TRIGGER_HAPPY10, "misc6" },
-    { BTN_TRIGGER_HAPPY11, "touchpad" },
+    { MANETTE_BUTTON_DPAD_UP, "dpup" },
+    { MANETTE_BUTTON_DPAD_DOWN, "dpdown" },
+    { MANETTE_BUTTON_DPAD_LEFT, "dpleft" },
+    { MANETTE_BUTTON_DPAD_RIGHT, "dpright" },
+    { MANETTE_BUTTON_NORTH, "y" },
+    { MANETTE_BUTTON_SOUTH, "a" },
+    { MANETTE_BUTTON_WEST, "x" },
+    { MANETTE_BUTTON_EAST, "b" },
+    { MANETTE_BUTTON_SELECT, "back" },
+    { MANETTE_BUTTON_START, "start" },
+    { MANETTE_BUTTON_MODE, "guide" },
+    { MANETTE_BUTTON_LEFT_SHOULDER, "leftshoulder" },
+    { MANETTE_BUTTON_RIGHT_SHOULDER, "rightshoulder" },
+    { MANETTE_BUTTON_LEFT_TRIGGER, "lefttrigger" },
+    { MANETTE_BUTTON_RIGHT_TRIGGER, "righttrigger" },
+    { MANETTE_BUTTON_LEFT_STICK, "leftstick" },
+    { MANETTE_BUTTON_RIGHT_STICK, "rightstick" },
+    { MANETTE_BUTTON_LEFT_PADDLE1, "paddle2" },
+    { MANETTE_BUTTON_LEFT_PADDLE2, "paddle4" },
+    { MANETTE_BUTTON_RIGHT_PADDLE1, "paddle1" },
+    { MANETTE_BUTTON_RIGHT_PADDLE2, "paddle3" },
+    { MANETTE_BUTTON_MISC1, "misc1" },
+    { MANETTE_BUTTON_MISC2, "misc2" },
+    { MANETTE_BUTTON_MISC3, "misc3" },
+    { MANETTE_BUTTON_MISC4, "misc4" },
+    { MANETTE_BUTTON_MISC5, "misc5" },
+    { MANETTE_BUTTON_MISC6, "misc6" },
+    { MANETTE_BUTTON_TOUCHPAD, "touchpad" },
   };
 
   int i;
@@ -321,7 +320,7 @@ parse_destination_input (char                           *start,
   for (i = 0; i < G_N_ELEMENTS (axis_values); i++) {
     if (g_strcmp0 (start, axis_values[i].string_value) == 0) {
       *type = MANETTE_MAPPING_DESTINATION_TYPE_AXIS;
-      *code = axis_values[i].code;
+      *code = axis_values[i].axis;
       *end = start + strlen (axis_values[i].string_value);
 
       return TRUE;
@@ -331,7 +330,7 @@ parse_destination_input (char                           *start,
   for (i = 0; i < G_N_ELEMENTS (button_values); i++) {
     if (g_strcmp0 (start, button_values[i].string_value) == 0) {
       *type = MANETTE_MAPPING_DESTINATION_TYPE_BUTTON;
-      *code = button_values[i].code;
+      *code = button_values[i].button;
       *end = start + strlen (button_values[i].string_value);
 
       return TRUE;
@@ -520,12 +519,6 @@ set_from_mapping_string (ManetteMapping  *self,
       continue;
     }
 
-    if  (binding.destination.type == EV_MAX) {
-      g_critical ("Invalid token: %s", destination_string);
-
-      continue;
-    }
-
     if (!parse_mapping_source (source_string, &binding)) {
       g_critical ("Invalid binding source: %s:%s in %s", destination_string, source_string, mapping_string);
 
@@ -686,7 +679,7 @@ manette_mapping_binding_free (ManetteMappingBinding *self)
 gboolean
 manette_mapping_has_destination_input (ManetteMapping                *self,
                                        ManetteMappingDestinationType  type,
-                                       guint                          code)
+                                       int                            code)
 {
   g_return_val_if_fail (MANETTE_IS_MAPPING (self), FALSE);
 
