@@ -68,29 +68,27 @@ static guint signals[N_SIGNALS];
 
 /* Private */
 
-static guint
-event_type_to_signal (ManetteEventType event_type)
-{
-  switch (event_type) {
-  case MANETTE_EVENT_BUTTON_PRESS:
-    return SIG_BUTTON_PRESS_EVENT;
-  case MANETTE_EVENT_BUTTON_RELEASE:
-    return SIG_BUTTON_RELEASE_EVENT;
-  case MANETTE_EVENT_ABSOLUTE:
-    return SIG_ABSOLUTE_AXIS_EVENT;
-  default:
-    return N_SIGNALS;
-  }
-}
-
 static void
 forward_event (ManetteDevice *self,
                ManetteEvent  *event)
 {
-  guint signal = event_type_to_signal (manette_event_get_event_type (event));
-
-  if (signal != N_SIGNALS)
-    g_signal_emit (self, signals[signal], 0, event);
+  switch (manette_event_get_event_type (event)) {
+  case MANETTE_EVENT_BUTTON_PRESS:
+    g_signal_emit (self, signals[SIG_BUTTON_PRESS_EVENT], 0,
+                   (guint) event->button.button);
+    break;
+  case MANETTE_EVENT_BUTTON_RELEASE:
+    g_signal_emit (self, signals[SIG_BUTTON_RELEASE_EVENT], 0,
+                   (guint) event->button.button);
+    break;
+  case MANETTE_EVENT_ABSOLUTE:
+    g_signal_emit (self, signals[SIG_ABSOLUTE_AXIS_EVENT], 0,
+                   (guint) event->absolute.axis,
+                   event->absolute.value);
+    break;
+  default:
+    break;
+  }
 }
 
 static void
@@ -144,7 +142,7 @@ manette_device_class_init (ManetteDeviceClass *klass)
   /**
    * ManetteDevice::button-press-event:
    * @self: a device
-   * @event: the event emitted by the device
+   * @button: the button hardware code
    *
    * Emitted when a button is pressed.
    */
@@ -153,14 +151,14 @@ manette_device_class_init (ManetteDeviceClass *klass)
                   MANETTE_TYPE_DEVICE,
                   G_SIGNAL_RUN_LAST,
                   0, NULL, NULL,
-                  g_cclosure_marshal_VOID__BOXED,
+                  g_cclosure_marshal_VOID__UINT,
                   G_TYPE_NONE, 1,
-                  MANETTE_TYPE_EVENT | G_SIGNAL_TYPE_STATIC_SCOPE);
+                  G_TYPE_UINT);
 
   /**
    * ManetteDevice::button-release-event:
    * @self: a device
-   * @event: the event emitted by the device
+   * @button: the button hardware code
    *
    * Emitted when a button is released.
    */
@@ -169,14 +167,15 @@ manette_device_class_init (ManetteDeviceClass *klass)
                   MANETTE_TYPE_DEVICE,
                   G_SIGNAL_RUN_LAST,
                   0, NULL, NULL,
-                  g_cclosure_marshal_VOID__BOXED,
+                  g_cclosure_marshal_VOID__UINT,
                   G_TYPE_NONE, 1,
-                  MANETTE_TYPE_EVENT | G_SIGNAL_TYPE_STATIC_SCOPE);
+                  G_TYPE_UINT);
 
   /**
    * ManetteDevice::absolute-axis-event:
    * @self: a device
-   * @event: the event emitted by the manette device
+   * @axis: the axis hardware code
+   * @value: the axis value
    *
    * Emitted when an absolute axis' value changes.
    */
@@ -185,9 +184,9 @@ manette_device_class_init (ManetteDeviceClass *klass)
                   MANETTE_TYPE_DEVICE,
                   G_SIGNAL_RUN_LAST,
                   0, NULL, NULL,
-                  g_cclosure_marshal_VOID__BOXED,
-                  G_TYPE_NONE, 1,
-                  MANETTE_TYPE_EVENT | G_SIGNAL_TYPE_STATIC_SCOPE);
+                  NULL,
+                  G_TYPE_NONE, 2,
+                  G_TYPE_UINT, G_TYPE_DOUBLE);
 
   /**
    * ManetteDevice::disconnected:
