@@ -29,7 +29,6 @@
 
 #include "manette-device-type-private.h"
 #include "manette-event-mapping-private.h"
-#include "manette-event-private.h"
 
 #define VENDOR_SONY       0x054C
 #define PRODUCT_DUALSENSE 0x0CE6
@@ -136,77 +135,24 @@ centered_absolute_value (struct input_absinfo *abs_info,
 }
 
 static void
-emit_unmapped_event_as_mapped (ManetteEvdevBackend *self,
-                               ManetteEvent        *event)
+emit_mapped_events (ManetteEvdevBackend *self,
+                    guint64              time,
+                    GSList              *mapped_events)
 {
-  guint64 time = event->any.time;
-
-  switch (event->any.type) {
-  case MANETTE_EVENT_BUTTON_PRESS:
-  case MANETTE_EVENT_BUTTON_RELEASE:
-    {
-      guint button = event->button.button;
-      gboolean pressed = (event->any.type == MANETTE_EVENT_BUTTON_PRESS);
-
-      manette_backend_emit_button_event (MANETTE_BACKEND (self),
-                                         time, button, pressed);
-    }
-    break;
-  case MANETTE_EVENT_ABSOLUTE:
-    {
-      guint axis = event->absolute.axis;
-      double value = event->absolute.value;
-
-      manette_backend_emit_axis_event (MANETTE_BACKEND (self),
-                                       time, axis, value);
-    }
-    break;
-  default:
-    break;
-  }
-}
-
-static void
-map_event (ManetteEvdevBackend *self,
-           ManetteEvent        *event)
-{
-  GSList *mapped_events, *l = NULL;
-
-  switch (event->any.type) {
-  case MANETTE_EVENT_BUTTON_PRESS:
-    mapped_events = manette_map_button_event (self->mapping, event->any.hardware_index, TRUE);
-    break;
-
-  case MANETTE_EVENT_BUTTON_RELEASE:
-    mapped_events = manette_map_button_event (self->mapping, event->any.hardware_index, FALSE);
-    break;
-
-  case MANETTE_EVENT_ABSOLUTE:
-    mapped_events = manette_map_absolute_event (self->mapping, event->any.hardware_index, event->absolute.value);
-    break;
-
-  case MANETTE_EVENT_HAT:
-    mapped_events = manette_map_hat_event (self->mapping, event->any.hardware_index, event->hat.value);
-    break;
-
-  default:
-    mapped_events = NULL;
-  }
+  GSList *l = NULL;
 
   for (l = mapped_events; l != NULL; l = l->next) {
     ManetteMappedEvent *mapped_event = l->data;
 
     switch (mapped_event->type) {
     case MANETTE_MAPPING_DESTINATION_TYPE_AXIS:
-      manette_backend_emit_axis_event (MANETTE_BACKEND (self),
-                                       event->any.time,
+      manette_backend_emit_axis_event (MANETTE_BACKEND (self), time,
                                        mapped_event->axis.axis,
                                        mapped_event->axis.value);
       break;
 
     case MANETTE_MAPPING_DESTINATION_TYPE_BUTTON:
-      manette_backend_emit_button_event (MANETTE_BACKEND (self),
-                                         event->any.time,
+      manette_backend_emit_button_event (MANETTE_BACKEND (self), time,
                                          mapped_event->button.button,
                                          mapped_event->button.pressed);
       break;
@@ -223,22 +169,29 @@ static void
 on_evdev_event (ManetteEvdevBackend *self,
                 struct input_event  *evdev_event)
 {
-  ManetteEvent manette_event;
-
-  manette_event.any.time = evdev_event->input_event_sec * 1000 +
-                           evdev_event->input_event_usec / 1000;
+  guint64 time = evdev_event->input_event_sec * 1000 +
+                 evdev_event->input_event_usec / 1000;
 
   switch (evdev_event->type) {
   case EV_KEY:
-    manette_event.any.type = evdev_event->value ?
-      MANETTE_EVENT_BUTTON_PRESS :
-      MANETTE_EVENT_BUTTON_RELEASE;
+    gboolean pressed = !!evdev_event->value;
     guint index = evdev_event->code < BTN_MISC ?
       evdev_event->code + BTN_MISC :
       evdev_event->code - BTN_MISC;
 
-    manette_event.button.hardware_index = self->key_map[index];
-    manette_event.button.button = evdev_event->code;
+    manette_backend_emit_unmapped_button_event (MANETTE_BACKEND (self), time,
+                                                self->key_map[index], pressed);
+
+    if (self->mapping == NULL) {
+      manette_backend_emit_button_event (MANETTE_BACKEND (self), time,
+                                         evdev_event->code, pressed);
+    } else {
+      GSList *mapped = manette_map_button_event (self->mapping,
+                                                 self->key_map[index],
+                                                 pressed);
+
+      emit_mapped_events (self, time, mapped);
+    }
 
     break;
   case EV_ABS:
@@ -251,21 +204,39 @@ on_evdev_event (ManetteEvdevBackend *self,
     case ABS_HAT2Y:
     case ABS_HAT3X:
     case ABS_HAT3Y:
-      manette_event.any.type = MANETTE_EVENT_HAT;
-      manette_event.hat.hardware_index =
+      guint index =
         self->key_map[(evdev_event->code - ABS_HAT0X) / 2] * 2 +
         (evdev_event->code - ABS_HAT0X) % 2;
-      manette_event.hat.axis = evdev_event->code;
-      manette_event.hat.value = evdev_event->value;
+
+      manette_backend_emit_unmapped_hat_event (MANETTE_BACKEND (self), time,
+                                               index, evdev_event->value);
+
+      // We don't send unmapped hat events
+      if (self->mapping != NULL) {
+        GSList *mapped = manette_map_hat_event (self->mapping, index,
+                                                evdev_event->value);
+
+        emit_mapped_events (self, time, mapped);
+      }
 
       break;
     default:
-      manette_event.any.type = MANETTE_EVENT_ABSOLUTE;
-      manette_event.absolute.hardware_index = evdev_event->code;
-      manette_event.absolute.axis = evdev_event->code;
-      manette_event.absolute.value =
+      double value =
         centered_absolute_value (&self->abs_info[self->abs_map[evdev_event->code]],
                                  evdev_event->value);
+
+      manette_backend_emit_unmapped_absolute_event (MANETTE_BACKEND (self), time,
+                                                    evdev_event->code, value);
+
+      if (self->mapping == NULL) {
+        manette_backend_emit_axis_event (MANETTE_BACKEND (self), time,
+                                         evdev_event->code, value);
+      } else {
+        GSList *mapped = manette_map_absolute_event (self->mapping,
+                                                     evdev_event->code, value);
+
+        emit_mapped_events (self, time, mapped);
+      }
 
       break;
     }
@@ -274,44 +245,6 @@ on_evdev_event (ManetteEvdevBackend *self,
   default:
     return;
   }
-
-  switch (manette_event.any.type) {
-  case MANETTE_EVENT_BUTTON_PRESS:
-    manette_backend_emit_unmapped_button_event (MANETTE_BACKEND (self),
-                                                manette_event.any.time,
-                                                manette_event.any.hardware_index,
-                                                TRUE);
-    break;
-
-  case MANETTE_EVENT_BUTTON_RELEASE:
-    manette_backend_emit_unmapped_button_event (MANETTE_BACKEND (self),
-                                                manette_event.any.time,
-                                                manette_event.any.hardware_index,
-                                                FALSE);
-    break;
-
-  case MANETTE_EVENT_ABSOLUTE:
-    manette_backend_emit_unmapped_absolute_event (MANETTE_BACKEND (self),
-                                                  manette_event.any.time,
-                                                  manette_event.any.hardware_index,
-                                                  manette_event.absolute.value);
-    break;
-
-  case MANETTE_EVENT_HAT:
-    manette_backend_emit_unmapped_hat_event (MANETTE_BACKEND (self),
-                                             manette_event.any.time,
-                                             manette_event.any.hardware_index,
-                                             manette_event.hat.value);
-    break;
-
-  default:
-    g_assert_not_reached ();
-  }
-
-  if (self->mapping == NULL)
-    emit_unmapped_event_as_mapped (self, &manette_event);
-  else
-    map_event (self, &manette_event);
 }
 
 static gboolean
