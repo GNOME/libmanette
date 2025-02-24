@@ -24,8 +24,9 @@
 #include "manette-event-private.h"
 
 static GSList *
-map_button_event (ManetteMapping     *mapping,
-                  ManetteEventButton *event)
+map_button_event (ManetteMapping *mapping,
+                  guint           index,
+                  gboolean        pressed)
 {
   const ManetteMappingBinding * const *bindings;
   const ManetteMappingBinding * binding;
@@ -33,13 +34,12 @@ map_button_event (ManetteMapping     *mapping,
 
   bindings = manette_mapping_get_bindings (mapping,
                                            MANETTE_MAPPING_INPUT_TYPE_BUTTON,
-                                           event->hardware_index);
+                                           index);
   if (bindings == NULL)
     return NULL;
 
   for (; *bindings != NULL; bindings++) {
     ManetteMappedEvent *mapped_event = g_new0 (ManetteMappedEvent, 1);
-    gboolean pressed = (event->type == MANETTE_EVENT_BUTTON_PRESS);
 
     binding = *bindings;
 
@@ -79,8 +79,9 @@ map_button_event (ManetteMapping     *mapping,
 }
 
 static GSList *
-map_absolute_event (ManetteMapping       *mapping,
-                    ManetteEventAbsolute *event)
+map_absolute_event (ManetteMapping *mapping,
+                    guint           index,
+                    double          value)
 {
   const ManetteMappingBinding * const *bindings;
   const ManetteMappingBinding * binding;
@@ -89,13 +90,13 @@ map_absolute_event (ManetteMapping       *mapping,
 
   bindings = manette_mapping_get_bindings (mapping,
                                            MANETTE_MAPPING_INPUT_TYPE_AXIS,
-                                           event->hardware_index);
+                                           index);
   if (bindings == NULL)
     return NULL;
 
   for (; *bindings != NULL; bindings++) {
     ManetteMappedEvent *mapped_event;
-    double absolute_value = event->value;
+    double absolute_value = value;
 
     binding = *bindings;
 
@@ -152,8 +153,9 @@ map_absolute_event (ManetteMapping       *mapping,
 }
 
 static GSList *
-map_hat_event (ManetteMapping  *mapping,
-               ManetteEventHat *event)
+map_hat_event (ManetteMapping *mapping,
+               guint           index,
+               gint8           value)
 {
   const ManetteMappingBinding * const *bindings;
   const ManetteMappingBinding * binding;
@@ -161,7 +163,7 @@ map_hat_event (ManetteMapping  *mapping,
 
   bindings = manette_mapping_get_bindings (mapping,
                                            MANETTE_MAPPING_INPUT_TYPE_HAT,
-                                           event->hardware_index);
+                                           index);
   if (bindings == NULL)
     return NULL;
 
@@ -175,15 +177,13 @@ map_hat_event (ManetteMapping  *mapping,
 
     switch (binding->destination.type) {
     case MANETTE_MAPPING_DESTINATION_TYPE_AXIS:
-      if (binding->source.range == MANETTE_MAPPING_RANGE_NEGATIVE &&
-          event->value > 0)
+      if (binding->source.range == MANETTE_MAPPING_RANGE_NEGATIVE && value > 0)
         continue;
-      if (binding->source.range == MANETTE_MAPPING_RANGE_POSITIVE &&
-          event->value < 0)
+      if (binding->source.range == MANETTE_MAPPING_RANGE_POSITIVE && value < 0)
         continue;
 
       mapped_event->axis.axis = binding->destination.code;
-      mapped_event->axis.value = abs (event->value);
+      mapped_event->axis.value = abs (value);
 
       break;
     case MANETTE_MAPPING_DESTINATION_TYPE_BUTTON:
@@ -195,12 +195,12 @@ map_hat_event (ManetteMapping  *mapping,
        * Hence, the opposite direction to the current event must be processed
        * in a way that unpresses the direction that's no longer pressed.
        */
-      if (binding->source.range == MANETTE_MAPPING_RANGE_NEGATIVE && event->value > 0)
+      if (binding->source.range == MANETTE_MAPPING_RANGE_NEGATIVE && value > 0)
         pressed = FALSE;
-      else if (binding->source.range == MANETTE_MAPPING_RANGE_POSITIVE && event->value < 0)
+      else if (binding->source.range == MANETTE_MAPPING_RANGE_POSITIVE && value < 0)
         pressed = FALSE;
       else
-        pressed = abs (event->value);
+        pressed = abs (value);
 
       mapped_event->button.button = binding->destination.code;
       mapped_event->button.pressed = pressed;
@@ -222,12 +222,13 @@ manette_map_event (ManetteMapping *mapping,
 {
   switch (event->any.type) {
   case MANETTE_EVENT_BUTTON_PRESS:
+    return map_button_event (mapping, event->any.hardware_index, TRUE);
   case MANETTE_EVENT_BUTTON_RELEASE:
-    return map_button_event (mapping, &event->button);
+    return map_button_event (mapping, event->any.hardware_index, FALSE);
   case MANETTE_EVENT_ABSOLUTE:
-    return map_absolute_event (mapping, &event->absolute);
+    return map_absolute_event (mapping, event->any.hardware_index, event->absolute.value);
   case MANETTE_EVENT_HAT:
-    return map_hat_event (mapping, &event->hat);
+    return map_hat_event (mapping, event->any.hardware_index, event->hat.value);
   default:
     return NULL;
   }
