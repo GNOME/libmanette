@@ -75,7 +75,7 @@ static void
 forward_event (ManetteDevice *self,
                ManetteEvent  *event)
 {
-  switch (manette_event_get_event_type (event)) {
+  switch (event->any.type) {
   case MANETTE_EVENT_BUTTON_PRESS:
     g_signal_emit (self, signals[SIG_BUTTON_PRESSED], 0,
                    (guint) event->button.button);
@@ -301,7 +301,7 @@ event_cb (ManetteDevice *self,
 
   // Send the unmapped event first.
 
-  switch (manette_event_get_event_type (event)) {
+  switch (event->any.type) {
   case MANETTE_EVENT_BUTTON_PRESS:
     g_signal_emit (self, signals[SIG_UNMAPPED_BUTTON_PRESSED], 0, event->any.hardware_index);
     break;
