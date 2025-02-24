@@ -58,9 +58,9 @@ G_DEFINE_FINAL_TYPE (ManetteDevice, manette_device, G_TYPE_OBJECT)
 enum {
   SIG_EVENT,
   SIG_DISCONNECTED,
-  SIG_BUTTON_PRESS_EVENT,
-  SIG_BUTTON_RELEASE_EVENT,
-  SIG_ABSOLUTE_AXIS_EVENT,
+  SIG_BUTTON_PRESSED,
+  SIG_BUTTON_RELEASED,
+  SIG_ABSOLUTE_AXIS_CHANGED,
   N_SIGNALS,
 };
 
@@ -74,15 +74,15 @@ forward_event (ManetteDevice *self,
 {
   switch (manette_event_get_event_type (event)) {
   case MANETTE_EVENT_BUTTON_PRESS:
-    g_signal_emit (self, signals[SIG_BUTTON_PRESS_EVENT], 0,
+    g_signal_emit (self, signals[SIG_BUTTON_PRESSED], 0,
                    (guint) event->button.button);
     break;
   case MANETTE_EVENT_BUTTON_RELEASE:
-    g_signal_emit (self, signals[SIG_BUTTON_RELEASE_EVENT], 0,
+    g_signal_emit (self, signals[SIG_BUTTON_RELEASED], 0,
                    (guint) event->button.button);
     break;
   case MANETTE_EVENT_ABSOLUTE:
-    g_signal_emit (self, signals[SIG_ABSOLUTE_AXIS_EVENT], 0,
+    g_signal_emit (self, signals[SIG_ABSOLUTE_AXIS_CHANGED], 0,
                    (guint) event->absolute.axis,
                    event->absolute.value);
     break;
@@ -103,17 +103,17 @@ map_event (ManetteDevice *self,
 
     switch (mapped_event->type) {
     case MANETTE_MAPPING_DESTINATION_TYPE_AXIS:
-      g_signal_emit (self, signals[SIG_ABSOLUTE_AXIS_EVENT], 0,
+      g_signal_emit (self, signals[SIG_ABSOLUTE_AXIS_CHANGED], 0,
                      (guint) mapped_event->axis.axis,
                      mapped_event->axis.value);
       break;
 
     case MANETTE_MAPPING_DESTINATION_TYPE_BUTTON:
       if (mapped_event->button.pressed) {
-        g_signal_emit (self, signals[SIG_BUTTON_PRESS_EVENT], 0,
+        g_signal_emit (self, signals[SIG_BUTTON_PRESSED], 0,
                        (guint) mapped_event->button.button);
       } else {
-        g_signal_emit (self, signals[SIG_BUTTON_RELEASE_EVENT], 0,
+        g_signal_emit (self, signals[SIG_BUTTON_RELEASED], 0,
                        (guint) mapped_event->button.button);
       }
       break;
@@ -162,14 +162,14 @@ manette_device_class_init (ManetteDeviceClass *klass)
                   MANETTE_TYPE_EVENT | G_SIGNAL_TYPE_STATIC_SCOPE);
 
   /**
-   * ManetteDevice::button-press-event:
+   * ManetteDevice::button-pressed:
    * @self: a device
    * @button: the button hardware code
    *
    * Emitted when a button is pressed.
    */
-  signals[SIG_BUTTON_PRESS_EVENT] =
-    g_signal_new ("button-press-event",
+  signals[SIG_BUTTON_PRESSED] =
+    g_signal_new ("button-pressed",
                   MANETTE_TYPE_DEVICE,
                   G_SIGNAL_RUN_LAST,
                   0, NULL, NULL,
@@ -178,14 +178,14 @@ manette_device_class_init (ManetteDeviceClass *klass)
                   G_TYPE_UINT);
 
   /**
-   * ManetteDevice::button-release-event:
+   * ManetteDevice::button-released:
    * @self: a device
    * @button: the button hardware code
    *
    * Emitted when a button is released.
    */
-  signals[SIG_BUTTON_RELEASE_EVENT] =
-    g_signal_new ("button-release-event",
+  signals[SIG_BUTTON_RELEASED] =
+    g_signal_new ("button-released",
                   MANETTE_TYPE_DEVICE,
                   G_SIGNAL_RUN_LAST,
                   0, NULL, NULL,
@@ -194,15 +194,15 @@ manette_device_class_init (ManetteDeviceClass *klass)
                   G_TYPE_UINT);
 
   /**
-   * ManetteDevice::absolute-axis-event:
+   * ManetteDevice::absolute-axis-changed:
    * @self: a device
    * @axis: the axis hardware code
    * @value: the axis value
    *
    * Emitted when an absolute axis' value changes.
    */
-  signals[SIG_ABSOLUTE_AXIS_EVENT] =
-    g_signal_new ("absolute-axis-event",
+  signals[SIG_ABSOLUTE_AXIS_CHANGED] =
+    g_signal_new ("absolute-axis-changed",
                   MANETTE_TYPE_DEVICE,
                   G_SIGNAL_RUN_LAST,
                   0, NULL, NULL,
