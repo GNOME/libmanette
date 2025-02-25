@@ -34,6 +34,8 @@
 #define INPUT_REPORT_VERSION 0x01
 #define ID_CONTROLLER_DECK_STATE 0x09
 
+#define STICK_FLAT 2500
+
 typedef enum {
   ID_SET_DIGITAL_MAPPINGS              = 0x80,
   ID_CLEAR_DIGITAL_MAPPINGS            = 0x81,
@@ -612,11 +614,23 @@ handle_button_h (ManetteSteamDeckDriver *self,
     send_button_event (self, index, code, new_pressed, time);
 }
 
+static inline short
+normalize_stick (short value)
+{
+  if (value > -STICK_FLAT && value < STICK_FLAT)
+    return 0;
+
+  return value;
+}
+
 static void
 handle_state (ManetteSteamDeckDriver *self,
               SteamDeckState         *state,
               gint64                  time)
 {
+  short normalized_left_stick_x, normalized_left_stick_y;
+  short normalized_right_stick_x, normalized_right_stick_y;
+
   if (state->packet_num == self->last_packet)
     return;
 
@@ -646,20 +660,29 @@ handle_state (ManetteSteamDeckDriver *self,
   handle_button_h (self, state, time, 20, STEAM_DECK_HBUTTON_R4,         BTN_TRIGGER_HAPPY2);
   handle_button_h (self, state, time, 21, STEAM_DECK_HBUTTON_QAM,        BTN_TRIGGER_HAPPY5);
 
-  if (self->last_left_stick_x != state->left_stick_x)
-    send_absolute_event (self, ABS_X, state->left_stick_x, time, FALSE);
+  normalized_left_stick_x = normalize_stick (state->left_stick_x);
+  normalized_left_stick_y = normalize_stick (state->left_stick_y);
+  normalized_right_stick_x = normalize_stick (state->right_stick_x);
+  normalized_right_stick_y = normalize_stick (state->right_stick_y);
 
-  if (self->last_left_stick_y != state->left_stick_y)
-    send_absolute_event (self, ABS_Y, state->left_stick_y, time, TRUE);
+  if (self->last_left_stick_x != normalized_left_stick_x)
+    send_absolute_event (self, ABS_X, normalized_left_stick_x, time, FALSE);
 
-  if (self->last_right_stick_x != state->right_stick_x)
-    send_absolute_event (self, ABS_RX, state->right_stick_x, time, FALSE);
+  if (self->last_left_stick_y != normalized_left_stick_y)
+    send_absolute_event (self, ABS_Y, normalized_left_stick_y, time, TRUE);
 
-  if (self->last_right_stick_y != state->right_stick_y)
-    send_absolute_event (self, ABS_RY, state->right_stick_y, time, TRUE);
+  if (self->last_right_stick_x != normalized_right_stick_x)
+    send_absolute_event (self, ABS_RX, normalized_right_stick_x, time, FALSE);
+
+  if (self->last_right_stick_y != normalized_right_stick_y)
+    send_absolute_event (self, ABS_RY, normalized_right_stick_y, time, TRUE);
 
   self->last_buttons_l = state->buttons_l;
   self->last_buttons_h = state->buttons_h;
+  self->last_left_stick_x = normalized_left_stick_x;
+  self->last_left_stick_y = normalized_left_stick_y;
+  self->last_right_stick_x = normalized_right_stick_x;
+  self->last_right_stick_y = normalized_right_stick_y;
 }
 
 static void
