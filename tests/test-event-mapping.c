@@ -293,9 +293,9 @@ test_axis_trigger_mapping (void)
   g_assert_cmpint (g_slist_length (mapped_events), ==, 1);
 
   mapped_event = mapped_events->data;
-  g_assert_cmpint (mapped_event->type, ==, MANETTE_MAPPING_DESTINATION_TYPE_BUTTON);
-  g_assert_cmpint (mapped_event->button.button, ==, MANETTE_BUTTON_LEFT_TRIGGER);
-  g_assert_true (mapped_event->button.pressed);
+  g_assert_cmpint (mapped_event->type, ==, MANETTE_MAPPING_DESTINATION_TYPE_AXIS);
+  g_assert_cmpint (mapped_event->axis.axis, ==, MANETTE_AXIS_LEFT_TRIGGER);
+  g_assert_cmpfloat (mapped_event->axis.value, ==, 1.0);
 
   g_slist_free_full (mapped_events, (GDestroyNotify) g_free);
 
@@ -303,9 +303,9 @@ test_axis_trigger_mapping (void)
   g_assert_cmpint (g_slist_length (mapped_events), ==, 1);
 
   mapped_event = mapped_events->data;
-  g_assert_cmpint (mapped_event->type, ==, MANETTE_MAPPING_DESTINATION_TYPE_BUTTON);
-  g_assert_cmpint (mapped_event->button.button, ==, MANETTE_BUTTON_LEFT_TRIGGER);
-  g_assert_false (mapped_event->button.pressed);
+  g_assert_cmpint (mapped_event->type, ==, MANETTE_MAPPING_DESTINATION_TYPE_AXIS);
+  g_assert_cmpint (mapped_event->axis.axis, ==, MANETTE_AXIS_LEFT_TRIGGER);
+  g_assert_cmpfloat (mapped_event->axis.value, ==, 0.0);
 
   g_slist_free_full (mapped_events, (GDestroyNotify) g_free);
 
@@ -313,9 +313,9 @@ test_axis_trigger_mapping (void)
   g_assert_cmpint (g_slist_length (mapped_events), ==, 1);
 
   mapped_event = mapped_events->data;
-  g_assert_cmpint (mapped_event->type, ==, MANETTE_MAPPING_DESTINATION_TYPE_BUTTON);
-  g_assert_cmpint (mapped_event->button.button, ==, MANETTE_BUTTON_RIGHT_TRIGGER);
-  g_assert_true (mapped_event->button.pressed);
+  g_assert_cmpint (mapped_event->type, ==, MANETTE_MAPPING_DESTINATION_TYPE_AXIS);
+  g_assert_cmpint (mapped_event->button.button, ==, MANETTE_AXIS_RIGHT_TRIGGER);
+  g_assert_cmpfloat (mapped_event->axis.value, ==, 1.0);
 
   g_slist_free_full (mapped_events, (GDestroyNotify) g_free);
 
@@ -323,9 +323,9 @@ test_axis_trigger_mapping (void)
   g_assert_cmpint (g_slist_length (mapped_events), ==, 1);
 
   mapped_event = mapped_events->data;
-  g_assert_cmpint (mapped_event->type, ==, MANETTE_MAPPING_DESTINATION_TYPE_BUTTON);
-  g_assert_cmpint (mapped_event->button.button, ==, MANETTE_BUTTON_RIGHT_TRIGGER);
-  g_assert_false (mapped_event->button.pressed);
+  g_assert_cmpint (mapped_event->type, ==, MANETTE_MAPPING_DESTINATION_TYPE_AXIS);
+  g_assert_cmpint (mapped_event->button.button, ==, MANETTE_AXIS_RIGHT_TRIGGER);
+  g_assert_cmpfloat (mapped_event->axis.value, ==, 0.0);
 
   g_slist_free_full (mapped_events, (GDestroyNotify) g_free);
 }
