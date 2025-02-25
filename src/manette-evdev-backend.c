@@ -196,10 +196,6 @@ evdev_code_to_button (guint code)
     return MANETTE_BUTTON_LEFT_SHOULDER;
   case BTN_TR:
     return MANETTE_BUTTON_RIGHT_SHOULDER;
-  case BTN_TL2:
-    return MANETTE_BUTTON_LEFT_TRIGGER;
-  case BTN_TR2:
-    return MANETTE_BUTTON_RIGHT_TRIGGER;
   case BTN_THUMBL:
     return MANETTE_BUTTON_LEFT_STICK;
   case BTN_THUMBR:
@@ -221,6 +217,10 @@ evdev_code_to_axis (guint code)
     return MANETTE_AXIS_RIGHT_X;
   case ABS_RY:
     return MANETTE_AXIS_RIGHT_Y;
+  case ABS_Z:
+    return MANETTE_AXIS_LEFT_TRIGGER;
+  case ABS_RZ:
+    return MANETTE_AXIS_RIGHT_TRIGGER;
   default:
     return -1;
   }

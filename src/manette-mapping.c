@@ -279,6 +279,8 @@ parse_destination_input (char                           *start,
     { MANETTE_AXIS_LEFT_Y, "lefty" },
     { MANETTE_AXIS_RIGHT_X, "rightx" },
     { MANETTE_AXIS_RIGHT_Y, "righty" },
+    { MANETTE_AXIS_LEFT_TRIGGER, "lefttrigger" },
+    { MANETTE_AXIS_RIGHT_TRIGGER, "righttrigger" },
   };
 
   const static struct {
@@ -298,8 +300,6 @@ parse_destination_input (char                           *start,
     { MANETTE_BUTTON_MODE, "guide" },
     { MANETTE_BUTTON_LEFT_SHOULDER, "leftshoulder" },
     { MANETTE_BUTTON_RIGHT_SHOULDER, "rightshoulder" },
-    { MANETTE_BUTTON_LEFT_TRIGGER, "lefttrigger" },
-    { MANETTE_BUTTON_RIGHT_TRIGGER, "righttrigger" },
     { MANETTE_BUTTON_LEFT_STICK, "leftstick" },
     { MANETTE_BUTTON_RIGHT_STICK, "rightstick" },
     { MANETTE_BUTTON_LEFT_PADDLE1, "paddle2" },
