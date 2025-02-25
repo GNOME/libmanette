@@ -25,7 +25,7 @@ get_absolute_name (ManetteAxis axis)
   GEnumClass *enum_class;
   GEnumValue *value;
 
-  if (axis < 0 || axis > MANETTE_AXIS_RIGHT_Y)
+  if (axis < 0 || axis > MANETTE_AXIS_RIGHT_TRIGGER)
     return NULL;
 
   enum_class = g_type_class_ref (MANETTE_TYPE_AXIS);

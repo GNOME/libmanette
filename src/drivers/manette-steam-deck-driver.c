@@ -376,6 +376,8 @@ struct _ManetteSteamDeckDriver {
   short last_left_stick_y;
   short last_right_stick_x;
   short last_right_stick_y;
+  short last_trigger_l;
+  short last_trigger_r;
 
   int lizard_watchdog_counter;
 };
@@ -607,8 +609,6 @@ handle_state (ManetteSteamDeckDriver *self,
 
   self->last_packet = state->packet_num;
 
-  handle_button_l (self, state, time, STEAM_DECK_LBUTTON_R2,         MANETTE_BUTTON_RIGHT_TRIGGER);
-  handle_button_l (self, state, time, STEAM_DECK_LBUTTON_L2,         MANETTE_BUTTON_LEFT_TRIGGER);
   handle_button_l (self, state, time, STEAM_DECK_LBUTTON_R,          MANETTE_BUTTON_RIGHT_SHOULDER);
   handle_button_l (self, state, time, STEAM_DECK_LBUTTON_L,          MANETTE_BUTTON_LEFT_SHOULDER);
   handle_button_l (self, state, time, STEAM_DECK_LBUTTON_Y,          MANETTE_BUTTON_NORTH);
@@ -648,12 +648,20 @@ handle_state (ManetteSteamDeckDriver *self,
   if (self->last_right_stick_y != normalized_right_stick_y)
     send_absolute_event (self, MANETTE_AXIS_RIGHT_Y, normalized_right_stick_y, time, TRUE);
 
+  if (self->last_trigger_l != state->trigger_raw_l)
+    send_absolute_event (self, MANETTE_AXIS_LEFT_TRIGGER, state->trigger_raw_l, time, FALSE);
+
+  if (self->last_trigger_r != state->trigger_raw_r)
+    send_absolute_event (self, MANETTE_AXIS_RIGHT_TRIGGER, state->trigger_raw_r, time, FALSE);
+
   self->last_buttons_l = state->buttons_l;
   self->last_buttons_h = state->buttons_h;
   self->last_left_stick_x = normalized_left_stick_x;
   self->last_left_stick_y = normalized_left_stick_y;
   self->last_right_stick_x = normalized_right_stick_x;
   self->last_right_stick_y = normalized_right_stick_y;
+  self->last_trigger_l = state->trigger_raw_l;
+  self->last_trigger_r = state->trigger_raw_r;
 }
 
 static void

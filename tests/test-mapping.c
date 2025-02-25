@@ -360,8 +360,6 @@ test_has_destination_input (void)
   g_assert_true (manette_mapping_has_destination_input (mapping, MANETTE_MAPPING_DESTINATION_TYPE_BUTTON, MANETTE_BUTTON_WEST));
   g_assert_true (manette_mapping_has_destination_input (mapping, MANETTE_MAPPING_DESTINATION_TYPE_BUTTON, MANETTE_BUTTON_LEFT_SHOULDER));
   g_assert_true (manette_mapping_has_destination_input (mapping, MANETTE_MAPPING_DESTINATION_TYPE_BUTTON, MANETTE_BUTTON_RIGHT_SHOULDER));
-  g_assert_true (manette_mapping_has_destination_input (mapping, MANETTE_MAPPING_DESTINATION_TYPE_BUTTON, MANETTE_BUTTON_LEFT_TRIGGER));
-  g_assert_true (manette_mapping_has_destination_input (mapping, MANETTE_MAPPING_DESTINATION_TYPE_BUTTON, MANETTE_BUTTON_RIGHT_TRIGGER));
   g_assert_true (manette_mapping_has_destination_input (mapping, MANETTE_MAPPING_DESTINATION_TYPE_BUTTON, MANETTE_BUTTON_SELECT));
   g_assert_true (manette_mapping_has_destination_input (mapping, MANETTE_MAPPING_DESTINATION_TYPE_BUTTON, MANETTE_BUTTON_START));
   g_assert_true (manette_mapping_has_destination_input (mapping, MANETTE_MAPPING_DESTINATION_TYPE_BUTTON, MANETTE_BUTTON_MODE));
@@ -375,14 +373,8 @@ test_has_destination_input (void)
   g_assert_true (manette_mapping_has_destination_input (mapping, MANETTE_MAPPING_DESTINATION_TYPE_AXIS, MANETTE_AXIS_LEFT_Y));
   g_assert_true (manette_mapping_has_destination_input (mapping, MANETTE_MAPPING_DESTINATION_TYPE_AXIS, MANETTE_AXIS_RIGHT_X));
   g_assert_true (manette_mapping_has_destination_input (mapping, MANETTE_MAPPING_DESTINATION_TYPE_AXIS, MANETTE_AXIS_RIGHT_Y));
-
-//  g_assert_false (manette_mapping_has_destination_input (mapping, MANETTE_MAPPING_DESTINATION_TYPE_BUTTON, KEY_SPACE));
-//  g_assert_false (manette_mapping_has_destination_input (mapping, MANETTE_MAPPING_DESTINATION_TYPE_BUTTON, BTN_C));
-//  g_assert_false (manette_mapping_has_destination_input (mapping, MANETTE_MAPPING_DESTINATION_TYPE_BUTTON, BTN_Z));
-//  g_assert_false (manette_mapping_has_destination_input (mapping, MANETTE_MAPPING_DESTINATION_TYPE_AXIS, ABS_Z));
-//  g_assert_false (manette_mapping_has_destination_input (mapping, MANETTE_MAPPING_DESTINATION_TYPE_AXIS, ABS_RZ));
-//  g_assert_false (manette_mapping_has_destination_input (mapping, MANETTE_MAPPING_DESTINATION_TYPE_AXIS, ABS_HAT0X));
-//  g_assert_false (manette_mapping_has_destination_input (mapping, MANETTE_MAPPING_DESTINATION_TYPE_AXIS, ABS_HAT0Y));
+  g_assert_true (manette_mapping_has_destination_input (mapping, MANETTE_MAPPING_DESTINATION_TYPE_AXIS, MANETTE_AXIS_LEFT_TRIGGER));
+  g_assert_true (manette_mapping_has_destination_input (mapping, MANETTE_MAPPING_DESTINATION_TYPE_AXIS, MANETTE_AXIS_RIGHT_TRIGGER));
 }
 
 int

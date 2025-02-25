@@ -39,8 +39,6 @@
  * @MANETTE_BUTTON_MODE: Center menu button (Home, Guide, Steam etc)
  * @MANETTE_BUTTON_LEFT_SHOULDER: Left shoulder button (L, L1 or LB)
  * @MANETTE_BUTTON_RIGHT_SHOULDER: Right shoulder button (R, R1 or RB)
- * @MANETTE_BUTTON_LEFT_TRIGGER: Left trigger (L2, LT or ZL)
- * @MANETTE_BUTTON_RIGHT_TRIGGER: Right trigger (L2, RT or ZL)
  * @MANETTE_BUTTON_LEFT_STICK: Left stick
  * @MANETTE_BUTTON_RIGHT_STICK: Right stick
  * @MANETTE_BUTTON_LEFT_PADDLE1: Upper left paddle
@@ -71,6 +69,8 @@
  * @MANETTE_AXIS_LEFT_Y: Left analog stick, vertical axis
  * @MANETTE_AXIS_RIGHT_X: Right analog stick, horizontal axis
  * @MANETTE_AXIS_RIGHT_Y: Right analog stick, vertical axis
+ * @MANETTE_AXIS_LEFT_TRIGGER: Left trigger (L2, LT or ZL)
+ * @MANETTE_AXIS_RIGHT_TRIGGER: Right trigger (R2, RT or ZR)
  *
  * Describes available axes a [class@Device] can have.
  *

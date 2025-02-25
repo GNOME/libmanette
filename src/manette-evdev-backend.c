@@ -120,6 +120,11 @@ centered_absolute_value (struct input_absinfo *abs_info,
 
   g_assert (abs_info != NULL);
 
+  value = CLAMP (value, abs_info->minimum, abs_info->maximum);
+
+  if (value > -abs_info->flat && value < abs_info->flat)
+    value = 0;
+
   /* Adapt the value and the maximum to a minimum of 0. */
   max_normalized = ((gint64) abs_info->maximum) - abs_info->minimum;
   value_normalized = ((gint64) value) - abs_info->minimum;
@@ -127,10 +132,7 @@ centered_absolute_value (struct input_absinfo *abs_info,
   max_centered = max_normalized / 2;
   value_centered = (value_normalized - max_normalized) + max_centered;
 
-  if (value_centered > -abs_info->flat && value_centered < abs_info->flat)
-    value_centered = 0;
-
-  divisor = value_centered < 0 ? max_centered + 1 : max_centered;;
+  divisor = value_centered < 0 ? max_centered + 1 : max_centered;
 
   return (double) value_centered / (double) divisor;
 }
@@ -196,10 +198,6 @@ evdev_code_to_button (guint code)
     return MANETTE_BUTTON_LEFT_SHOULDER;
   case BTN_TR:
     return MANETTE_BUTTON_RIGHT_SHOULDER;
-  case BTN_TL2:
-    return MANETTE_BUTTON_LEFT_TRIGGER;
-  case BTN_TR2:
-    return MANETTE_BUTTON_RIGHT_TRIGGER;
   case BTN_THUMBL:
     return MANETTE_BUTTON_LEFT_STICK;
   case BTN_THUMBR:
@@ -221,6 +219,10 @@ evdev_code_to_axis (guint code)
     return MANETTE_AXIS_RIGHT_X;
   case ABS_RY:
     return MANETTE_AXIS_RIGHT_Y;
+  case ABS_Z:
+    return MANETTE_AXIS_LEFT_TRIGGER;
+  case ABS_RZ:
+    return MANETTE_AXIS_RIGHT_TRIGGER;
   default:
     return -1;
   }
@@ -296,8 +298,16 @@ on_evdev_event (ManetteEvdevBackend *self,
       if (self->mapping == NULL) {
         ManetteAxis axis = evdev_code_to_axis (evdev_event->code);
 
-        if (axis != -1)
-          manette_backend_emit_axis_event (MANETTE_BACKEND (self), time, axis, value);
+        if (axis == -1)
+          break;
+
+        if (axis == MANETTE_AXIS_LEFT_TRIGGER || axis == MANETTE_AXIS_RIGHT_TRIGGER) {
+          /* Triggers only use the positive range */
+          value = (value + 1.0) / 2.0;
+        }
+
+        manette_backend_emit_axis_event (MANETTE_BACKEND (self),
+                                         time, axis, value);
       } else {
         GSList *mapped = manette_map_absolute_event (self->mapping,
                                                      evdev_event->code, value);
