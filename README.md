@@ -34,3 +34,8 @@ from game controllers. You can run it from the build directory with:
 ```
 demos/manette-test/manette-test
 ```
+
+## Code of Conduct
+
+When interacting with the project, the
+[GNOME Code of Conduct](https://conduct.gnome.org/) applies.
