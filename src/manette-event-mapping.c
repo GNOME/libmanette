@@ -125,11 +125,11 @@ map_absolute_event (ManetteMapping       *mapping,
 
         break;
       case MANETTE_MAPPING_RANGE_NEGATIVE:
-        mapped_event->absolute.value = (absolute_value / 2) - 1;
+        mapped_event->absolute.value = (absolute_value - 1) / 2;
 
         break;
       case MANETTE_MAPPING_RANGE_POSITIVE:
-        mapped_event->absolute.value = (absolute_value / 2) + 1;
+        mapped_event->absolute.value = (absolute_value + 1) / 2;
 
         break;
       default:
