@@ -89,7 +89,6 @@ map_absolute_event (ManetteMapping       *mapping,
   const ManetteMappingBinding * const *bindings;
   const ManetteMappingBinding * binding;
   GSList *mapped_events = NULL;
-  double absolute_value;
   gboolean pressed;
 
   bindings = manette_mapping_get_bindings (mapping,
@@ -100,22 +99,21 @@ map_absolute_event (ManetteMapping       *mapping,
 
   for (; *bindings != NULL; bindings++) {
     g_autoptr (ManetteEvent) mapped_event = NULL;
+    double absolute_value = event->value;
 
     binding = *bindings;
 
-    if (binding->source.range == MANETTE_MAPPING_RANGE_NEGATIVE &&
-        event->value > 0.)
-      continue;
+    if (binding->source.range == MANETTE_MAPPING_RANGE_NEGATIVE && absolute_value > 0.)
+      absolute_value = 0;
 
-    if (binding->source.range == MANETTE_MAPPING_RANGE_POSITIVE &&
-        event->value < 0.)
-      continue;
+    if (binding->source.range == MANETTE_MAPPING_RANGE_POSITIVE && absolute_value < 0.)
+      absolute_value = 0;
 
     mapped_event = manette_event_copy ((ManetteEvent *) event);
 
     switch (binding->destination.type) {
     case EV_ABS:
-      absolute_value = binding->source.invert ? -event->value : event->value;
+      absolute_value = binding->source.invert ? -absolute_value : absolute_value;
 
       mapped_event->any.type = MANETTE_EVENT_ABSOLUTE;
       mapped_event->absolute.axis = binding->destination.code;
@@ -139,11 +137,9 @@ map_absolute_event (ManetteMapping       *mapping,
       break;
     case EV_KEY:
       if (binding->source.range == MANETTE_MAPPING_RANGE_FULL)
-        pressed = binding->source.invert ? event->value < 0. :
-                                           event->value > 0.;
+        pressed = binding->source.invert ? absolute_value < 0. : absolute_value > 0.;
       else
-        pressed = binding->source.invert ? event->value == 0. :
-                                           event->value != 0.;
+        pressed = binding->source.invert ? ABS (absolute_value) < 0.5 : ABS (absolute_value) > 0.5;
 
       mapped_event->any.type = pressed ? MANETTE_EVENT_BUTTON_PRESS :
                                          MANETTE_EVENT_BUTTON_RELEASE;
