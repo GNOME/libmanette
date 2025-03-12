@@ -84,6 +84,7 @@ libmanette_lib = library(
 
 libmanette_gir_args = [
    '--quiet',
+   '--doc-format=gi-docgen',
 ]
 
 libmanette_gir_includes = [
