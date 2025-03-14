@@ -1,3 +1,23 @@
+==============
+Version 0.2.10
+==============
+
+- Port documentation to gi-docgen
+- Add support for Steam Deck gamepad
+  - Add ManetteDeviceType and manette_device_get_device_type()
+  - Add manette_device_supports_mapping()
+- Deprecate LIBMANETTE_* version check symbols, add MANETTE_* instead
+- Add runtime version check functions
+- Make hat to buttons mapping always emit button release
+  (fixes d-pad getting stuck when quickly flipping right->left etc)
+- Fix paddle keycodes
+- Fix DualSense motion sensor and touchpad being recognized as gamepads
+- Fix half-range axis mappings
+- Build
+  - Depend on hidapi-hidraw
+  - Specify --doc-format for GIR data
+  - Fix build warnings
+
 =============
 Version 0.2.9
 =============
