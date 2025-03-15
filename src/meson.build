@@ -98,6 +98,13 @@ endif
 
 built_girs = []
 if get_option('introspection')
+  gir_dep = dependency('gobject-introspection-1.0')
+  if gir_dep.version().version_compare('>=1.83.2')
+    libmanette_gir_args += [
+      '--doc-format=gi-docgen',
+    ]
+  endif
+
   libmanette_gir = gnome.generate_gir(
     libmanette_lib,
     extra_args: libmanette_gir_args,
