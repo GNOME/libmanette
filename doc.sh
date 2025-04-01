@@ -3,6 +3,7 @@
 DOC_DIR=public/doc
 REFS="
 main
+libmanette-0-2
 "
 
 IFS='
