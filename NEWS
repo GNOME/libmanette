@@ -1,4 +1,11 @@
 ==============
+Version 0.2.12
+==============
+
+- Add a deadzone for Steam Deck analog sticks
+- Fix build with older gobject-introspection
+
+==============
 Version 0.2.11
 ==============
 
