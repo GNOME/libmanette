@@ -1,0 +1,32 @@
+{
+    "app-id" : "org.gnome.Manette1.Demo",
+    "runtime" : "org.gnome.Platform",
+    "runtime-version" : "master",
+    "sdk" : "org.gnome.Sdk",
+    "command" : "manette-1-demo",
+    "finish-args" : [
+        "--device=dri",
+        "--share=ipc",
+        "--socket=wayland",
+        "--socket=fallback-x11",
+        "--device=all"
+    ],
+    "modules" : [
+        {
+            "name" : "libmanette",
+            "buildsystem" : "meson",
+            "config-opts": [
+                "-Dgudev=enabled",
+                "-Ddoc=true"
+            ],
+            "builddir" : true,
+            "sources" : [
+                {
+                    "type" : "git",
+                    "url" : "https://gitlab.gnome.org/GNOME/libmanette.git",
+                    "branch" : "main"
+                }
+            ]
+        }
+    ]
+}

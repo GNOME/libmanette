@@ -44,7 +44,7 @@ if get_option('doc')
   subdir('doc')
 endif
 if get_option('demos')
-  subdir('demos')
+  subdir('demo')
 endif
 
 summary(
