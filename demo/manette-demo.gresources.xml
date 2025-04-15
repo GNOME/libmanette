@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gresources>
+  <gresource prefix="/org/gnome/Manette1/Demo">
+    <file preprocess="xml-stripblanks">manette-demo-window.ui</file>
+    <file>style.css</file>
+    <file>style-hc.css</file>
+  </gresource>
+</gresources>

@@ -13,14 +13,14 @@ stages:
   - deploy
 
 variables:
-  FLATPAK_BUILD_DIR: app
+  FLATPAK_BUILD_DIR: build
   SHARED_MESON_ARGS: >-
     --buildtype=release
     -Ddemos=false
-  APP_ID: 'org.gnome.Manette.Test'
-  BUNDLE: 'org.gnome.Manette.Test.flatpak'
+  APP_ID: 'org.gnome.Manette1.Demo'
+  BUNDLE: 'org.gnome.Manette1.Demo.flatpak'
   RUNTIME_REPO: 'https://nightly.gnome.org/gnome-nightly.flatpakrepo'
-  MANIFEST_PATH: 'demos/manette-test/org.gnome.Manette.Test.json'
+  MANIFEST_PATH: 'demo/org.gnome.Manette1.Demo.json'
   FLATPAK_MODULE: 'libmanette'
   TARBALL_ARTIFACT_PATH: ".flatpak-builder/build/${FLATPAK_MODULE}/_flatpak_build/meson-dist/${CI_PROJECT_NAME}-${CI_COMMIT_TAG}.tar.xz"
 
@@ -35,7 +35,7 @@ dependencies:
   tags:
     - flatpak
   variables:
-    MANIFEST_PATH: demos/manette-test/org.gnome.Manette.Test.json
+    MANIFEST_PATH: demo/org.gnome.Manette1.Demo.json
     FLATPAK_MODULE: libmanette
   script:
     - flatpak-builder --user --disable-rofiles-fuse --stop-at=${FLATPAK_MODULE} ${FLATPAK_BUILD_DIR} ${MANIFEST_PATH}
@@ -54,7 +54,7 @@ unit-tests:
     MESON_ARGS: >-
       -Dgudev=disabled
   script:
-    - flatpak build ${FLATPAK_BUILD_DIR} meson --prefix=/app ${SHARED_MESON_ARGS} ${MESON_ARGS} _build
+    - flatpak build ${FLATPAK_BUILD_DIR} meson setup ${SHARED_MESON_ARGS} ${MESON_ARGS} _build
     - flatpak build ${FLATPAK_BUILD_DIR} ninja -C _build test
 
 gudev:
@@ -63,7 +63,7 @@ gudev:
   before_script:
     - dnf install -y gcc glib2-devel gobject-introspection-devel hidapi-devel libevdev-devel libgudev-devel meson vala
   script:
-    - meson _build
+    - meson setup _build -Ddemos=false
     - ninja -C _build
     - ninja -C _build test
 
@@ -86,7 +86,7 @@ doc:
       -Ddoc=true
       -Dgudev=disabled
   script:
-    - flatpak build ${FLATPAK_BUILD_DIR} meson setup --prefix=/app ${SHARED_MESON_ARGS} ${MESON_ARGS} _build
+    - flatpak build ${FLATPAK_BUILD_DIR} meson setup ${SHARED_MESON_ARGS} ${MESON_ARGS} _build
     - flatpak build ${FLATPAK_BUILD_DIR} meson compile -C _build
     - mv _build/doc/manette-1/ _doc/
   artifacts:

@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface domain="libadwaita">
+  <requires lib="gtk" version="4.0"/>
+  <template class="ManetteDemoWindow" parent="AdwApplicationWindow">
+    <property name="default-width">800</property>
+    <property name="default-height">600</property>
+    <property name="title" translatable="yes">Manette Demo</property>
+    <child>
+      <object class="AdwBreakpoint">
+        <condition>max-width: 500sp</condition>
+        <setter object="split_view" property="collapsed">True</setter>
+        <setter object="devices_list" property="selection-mode">none</setter>
+        <signal name="unapply" handler="narrow_breakpoint_unapply_cb" swapped="yes"/>
+      </object>
+    </child>
+    <property name="content">
+      <object class="GtkStack" id="empty_stack">
+        <child>
+          <object class="GtkStackPage">
+            <property name="name">empty</property>
+            <property name="child">
+              <object class="AdwToolbarView">
+                <child type="top">
+                  <object class="AdwHeaderBar">
+                    <property name="show-title">False</property>
+                  </object>
+                </child>
+                <property name="content">
+                  <object class="AdwStatusPage">
+                    <property name="icon-name">input-gaming-symbolic</property>
+                    <property name="title" translatable="yes">No Gamepads</property>
+                    <property name="description" translatable="yes">Connect gamepads to view them</property>
+                  </object>
+                </property>
+              </object>
+            </property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkStackPage">
+            <property name="name">content</property>
+            <property name="child">
+              <object class="AdwNavigationSplitView" id="split_view">
+                <property name="show-content">True</property>
+                <property name="sidebar">
+                  <object class="AdwNavigationPage">
+                    <property name="title" translatable="yes">Manette Demo</property>
+                    <property name="child">
+                      <object class="AdwToolbarView">
+                        <child type="top">
+                          <object class="AdwHeaderBar"/>
+                        </child>
+                        <property name="content">
+                          <object class="GtkScrolledWindow">
+                            <property name="hscrollbar-policy">never</property>
+                            <property name="child">
+                              <object class="GtkListBox" id="devices_list">
+                                <signal name="row-activated" handler="row_activated_cb" swapped="yes"/>
+                                <style>
+                                  <class name="navigation-sidebar"/>
+                                </style>
+                              </object>
+                            </property>
+                          </object>
+                        </property>
+                      </object>
+                    </property>
+                  </object>
+                </property>
+                <property name="content">
+                  <object class="AdwNavigationPage" id="device_page">
+                    <property name="title">Gamepad</property>
+                    <property name="child">
+                      <object class="AdwToolbarView">
+                        <child type="top">
+                          <object class="AdwHeaderBar"/>
+                        </child>
+                        <property name="content">
+                          <object class="AdwPreferencesPage">
+                            <child>
+                              <object class="AdwPreferencesGroup">
+                                <child>
+                                  <object class="AdwActionRow" id="name_row">
+                                    <property name="title" translatable="yes">Name</property>
+                                    <property name="subtitle-selectable">True</property>
+                                    <property name="use-markup">False</property>
+                                    <style>
+                                      <class name="property"/>
+                                    </style>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="AdwActionRow" id="guid_row">
+                                    <property name="title" translatable="yes">GUID</property>
+                                    <property name="subtitle-selectable">True</property>
+                                    <property name="use-markup">False</property>
+                                    <style>
+                                      <class name="property"/>
+                                    </style>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="AdwActionRow" id="device_type_row">
+                                    <property name="title" translatable="yes">Device Type</property>
+                                    <property name="subtitle-selectable">True</property>
+                                    <property name="use-markup">False</property>
+                                    <style>
+                                      <class name="property"/>
+                                    </style>
+                                  </object>
+                                </child>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="AdwPreferencesGroup" id="buttons_group">
+                                <property name="title" translatable="yes">Buttons</property>
+                                <child>
+                                  <object class="GtkFlowBox" id="buttons_flowbox">
+                                    <property name="selection-mode">none</property>
+                                    <property name="column-spacing">1</property>
+                                    <property name="row-spacing">1</property>
+                                    <property name="min-children-per-line">1</property>
+                                    <property name="max-children-per-line">4</property>
+                                    <property name="homogeneous">True</property>
+                                    <property name="overflow">hidden</property>
+                                    <style>
+                                      <class name="card"/>
+                                    </style>
+                                  </object>
+                                </child>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="AdwPreferencesGroup" id="axes_group">
+                                <property name="title" translatable="yes">Absolute Axes</property>
+                                <child>
+                                  <object class="GtkFlowBox" id="axes_flowbox">
+                                    <property name="selection-mode">none</property>
+                                    <property name="column-spacing">1</property>
+                                    <property name="row-spacing">1</property>
+                                    <property name="min-children-per-line">1</property>
+                                    <property name="max-children-per-line">3</property>
+                                    <property name="homogeneous">True</property>
+                                    <property name="overflow">hidden</property>
+                                    <style>
+                                      <class name="card"/>
+                                    </style>
+                                  </object>
+                                </child>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="AdwPreferencesGroup" id="rumble_group">
+                                <property name="title" translatable="yes">Rumble</property>
+                                <child>
+                                  <object class="AdwSpinRow">
+                                    <property name="title" translatable="yes">Strong Magnitude</property>
+                                    <property name="digits">2</property>
+                                    <property name="adjustment">
+                                      <object class="GtkAdjustment" id="strong_magnitude_adj">
+                                        <property name="lower">0</property>
+                                        <property name="upper">1</property>
+                                        <property name="value">1</property>
+                                        <property name="step-increment">0.1</property>
+                                        <property name="page-increment">0.5</property>
+                                      </object>
+                                    </property>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="AdwSpinRow">
+                                    <property name="title" translatable="yes">Weak Magnitude</property>
+                                    <property name="digits">2</property>
+                                    <property name="adjustment">
+                                      <object class="GtkAdjustment" id="weak_magnitude_adj">
+                                        <property name="lower">0</property>
+                                        <property name="upper">1</property>
+                                        <property name="value">1</property>
+                                        <property name="step-increment">0.1</property>
+                                        <property name="page-increment">0.5</property>
+                                      </object>
+                                    </property>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="AdwSpinRow">
+                                    <property name="title" translatable="yes">Duration</property>
+                                    <property name="adjustment">
+                                      <object class="GtkAdjustment" id="duration_adj">
+                                        <property name="lower">0</property>
+                                        <property name="upper">32767</property>
+                                        <property name="value">200</property>
+                                        <property name="step-increment">50</property>
+                                        <property name="page-increment">100</property>
+                                      </object>
+                                    </property>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="AdwButtonRow">
+                                    <property name="title" translatable="yes">_Rumble</property>
+                                    <property name="use-underline">True</property>
+                                    <signal name="activated" handler="rumble_activated_cb" swapped="yes"/>
+                                  </object>
+                                </child>
+                              </object>
+                            </child>
+                          </object>
+                        </property>
+                      </object>
+                    </property>
+                  </object>
+                </property>
+              </object>
+            </property>
+          </object>
+        </child>
+      </object>
+    </property>
+  </template>
+</interface>
