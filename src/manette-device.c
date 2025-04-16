@@ -664,15 +664,17 @@ manette_device_has_rumble (ManetteDevice *self)
  */
 gboolean
 manette_device_rumble (ManetteDevice *self,
-                       guint16        strong_magnitude,
-                       guint16        weak_magnitude,
+                       double         strong_magnitude,
+                       double         weak_magnitude,
                        guint16        milliseconds)
 {
+  guint16 strong, weak;
+
   g_return_val_if_fail (MANETTE_IS_DEVICE (self), FALSE);
   g_return_val_if_fail (milliseconds <= G_MAXINT16, FALSE);
 
-  return manette_backend_rumble (self->backend,
-                                 strong_magnitude,
-                                 weak_magnitude,
-                                 milliseconds);
+  strong = (guint16) (CLAMP (strong_magnitude, 0, 1) * G_MAXUINT16);
+  weak = (guint16) (CLAMP (weak_magnitude, 0, 1) * G_MAXUINT16);
+
+  return manette_backend_rumble (self->backend, strong, weak, milliseconds);
 }

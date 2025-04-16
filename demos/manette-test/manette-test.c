@@ -111,8 +111,8 @@ typedef struct {
 } RumbleData;
 
 typedef struct {
-  guint16 strong_magnitude;
-  guint16 weak_magnitude;
+  double strong_magnitude;
+  double weak_magnitude;
   guint16 duration_ms;
   guint16 wait_ms;
 } RumblePhase;
@@ -121,10 +121,10 @@ gboolean
 rumble (RumbleData *data)
 {
   static const RumblePhase phases[] = {
-    { G_MAXUINT16/16, G_MAXUINT16/2, 200, 300 },
-    { G_MAXUINT16/16, G_MAXUINT16/2, 200, 1300 },
-    { G_MAXUINT16/8, G_MAXUINT16/16, 200, 300 },
-    { G_MAXUINT16/8, G_MAXUINT16/16, 200, 1800 },
+    { 0.0625, 0.5,    200, 300 },
+    { 0.0625, 0.5,    200, 1300 },
+    { 0.125,  0.0625, 200, 300 },
+    { 0.125,  0.0625, 200, 1800 },
   };
 
   if (!MANETTE_IS_DEVICE (data->device))

@@ -73,8 +73,8 @@ gboolean manette_device_has_rumble (ManetteDevice *self);
 
 MANETTE_AVAILABLE_IN_ALL
 gboolean manette_device_rumble (ManetteDevice *self,
-                                guint16        strong_magnitude,
-                                guint16        weak_magnitude,
+                                double         strong_magnitude,
+                                double         weak_magnitude,
                                 guint16        milliseconds);
 
 G_END_DECLS
