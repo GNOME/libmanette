@@ -207,6 +207,45 @@ evdev_code_to_button (guint code)
   }
 }
 
+static guint
+manette_button_to_evdev_code (ManetteButton button)
+{
+  switch (button) {
+  case MANETTE_BUTTON_DPAD_UP:
+    return BTN_DPAD_UP;
+  case MANETTE_BUTTON_DPAD_DOWN:
+    return BTN_DPAD_DOWN;
+  case MANETTE_BUTTON_DPAD_LEFT:
+    return BTN_DPAD_LEFT;
+  case MANETTE_BUTTON_DPAD_RIGHT:
+    return BTN_DPAD_RIGHT;
+  case MANETTE_BUTTON_NORTH:
+    return BTN_NORTH;
+  case MANETTE_BUTTON_SOUTH:
+    return BTN_SOUTH;
+  case MANETTE_BUTTON_WEST:
+    return BTN_WEST;
+  case MANETTE_BUTTON_EAST:
+    return BTN_EAST;
+  case MANETTE_BUTTON_SELECT:
+    return BTN_SELECT;
+  case MANETTE_BUTTON_START:
+    return BTN_START;
+  case MANETTE_BUTTON_MODE:
+    return BTN_MODE;
+  case MANETTE_BUTTON_LEFT_SHOULDER:
+    return BTN_TL;
+  case MANETTE_BUTTON_RIGHT_SHOULDER:
+    return BTN_TR;
+  case MANETTE_BUTTON_LEFT_STICK:
+    return BTN_THUMBL;
+  case MANETTE_BUTTON_RIGHT_STICK:
+    return BTN_THUMBR;
+  default:
+    return 0;
+  }
+}
+
 static ManetteAxis
 evdev_code_to_axis (guint code)
 {
@@ -224,7 +263,28 @@ evdev_code_to_axis (guint code)
   case ABS_RZ:
     return MANETTE_AXIS_RIGHT_TRIGGER;
   default:
-    return -1;
+    return 0;
+  }
+}
+
+static guint
+manette_axis_to_evdev_code (ManetteAxis axis)
+{
+  switch (axis) {
+  case MANETTE_AXIS_LEFT_X:
+    return ABS_X;
+  case MANETTE_AXIS_LEFT_Y:
+    return ABS_Y;
+  case MANETTE_AXIS_RIGHT_X:
+    return ABS_RX;
+  case MANETTE_AXIS_RIGHT_Y:
+    return ABS_RY;
+  case MANETTE_AXIS_LEFT_TRIGGER:
+    return ABS_Z;
+  case MANETTE_AXIS_RIGHT_TRIGGER:
+    return ABS_RZ;
+  default:
+    return 0;
   }
 }
 
@@ -501,30 +561,45 @@ manette_evdev_backend_set_mapping (ManetteBackend *backend,
 }
 
 gboolean
+manette_evdev_backend_has_button (ManetteBackend *backend,
+                                  ManetteButton   button)
+{
+  ManetteEvdevBackend *self = MANETTE_EVDEV_BACKEND (backend);
+  guint code;
+
+  if (self->mapping)
+    return manette_mapping_has_destination_button (self->mapping, button);
+
+  code = manette_button_to_evdev_code (button);
+  if (code == 0)
+    return FALSE;
+
+  return libevdev_has_event_code (self->evdev_device, EV_KEY, code);
+}
+
+gboolean
+manette_evdev_backend_has_axis (ManetteBackend *backend,
+                                ManetteAxis     axis)
+{
+  ManetteEvdevBackend *self = MANETTE_EVDEV_BACKEND (backend);
+  guint code;
+
+  if (self->mapping)
+    return manette_mapping_has_destination_axis (self->mapping, axis);
+
+  code = manette_axis_to_evdev_code (axis);
+  if (code == 0)
+    return FALSE;
+
+  return libevdev_has_event_code (self->evdev_device, EV_ABS, code);
+}
+
+gboolean
 manette_evdev_backend_has_input (ManetteBackend *backend,
                                  guint           type,
                                  guint           code)
 {
   ManetteEvdevBackend *self = MANETTE_EVDEV_BACKEND (backend);
-
-  if (self->mapping) {
-    ManetteMappingDestinationType dest_type;
-
-    switch (type) {
-    case EV_ABS:
-      dest_type = MANETTE_MAPPING_DESTINATION_TYPE_AXIS;
-      break;
-
-    case EV_KEY:
-      dest_type = MANETTE_MAPPING_DESTINATION_TYPE_BUTTON;
-      break;
-
-    default:
-      return FALSE;
-    }
-
-    return manette_mapping_has_destination_input (self->mapping, dest_type, code);
-  }
 
   return libevdev_has_event_code (self->evdev_device, type, code);
 }
@@ -587,6 +662,8 @@ manette_evdev_backend_backend_init (ManetteBackendInterface *iface)
   iface->get_bustype_id = manette_evdev_backend_get_bustype_id;
   iface->get_version_id = manette_evdev_backend_get_version_id;
   iface->set_mapping = manette_evdev_backend_set_mapping;
+  iface->has_button = manette_evdev_backend_has_button;
+  iface->has_axis = manette_evdev_backend_has_axis;
   iface->has_input = manette_evdev_backend_has_input;
   iface->has_rumble = manette_evdev_backend_has_rumble;
   iface->rumble = manette_evdev_backend_rumble;

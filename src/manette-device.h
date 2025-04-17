@@ -27,6 +27,7 @@
 #include <glib-object.h>
 
 #include "manette-device-type.h"
+#include "manette-inputs.h"
 
 G_BEGIN_DECLS
 
@@ -34,6 +35,14 @@ G_BEGIN_DECLS
 
 MANETTE_AVAILABLE_IN_ALL
 G_DECLARE_FINAL_TYPE (ManetteDevice, manette_device, MANETTE, DEVICE, GObject)
+
+MANETTE_AVAILABLE_IN_ALL
+gboolean manette_device_has_button (ManetteDevice *self,
+                                    ManetteButton  button);
+
+MANETTE_AVAILABLE_IN_ALL
+gboolean manette_device_has_axis (ManetteDevice *self,
+                                  ManetteAxis    axis);
 
 MANETTE_AVAILABLE_IN_ALL
 gboolean manette_device_has_input (ManetteDevice *self,

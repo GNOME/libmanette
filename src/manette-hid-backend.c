@@ -217,13 +217,29 @@ manette_hid_backend_set_mapping (ManetteBackend *backend,
 }
 
 gboolean
+manette_hid_backend_has_button (ManetteBackend *backend,
+                                ManetteButton   button)
+{
+  ManetteHidBackend *self = MANETTE_HID_BACKEND (backend);
+
+  return manette_hid_driver_has_button (self->driver, button);
+}
+
+gboolean
+manette_hid_backend_has_axis (ManetteBackend *backend,
+                              ManetteAxis     axis)
+{
+  ManetteHidBackend *self = MANETTE_HID_BACKEND (backend);
+
+  return manette_hid_driver_has_axis (self->driver, axis);
+}
+
+gboolean
 manette_hid_backend_has_input (ManetteBackend *backend,
                                guint           type,
                                guint           code)
 {
-  ManetteHidBackend *self = MANETTE_HID_BACKEND (backend);
-
-  return manette_hid_driver_has_input (self->driver, type, code);
+  return FALSE;
 }
 
 static gboolean
@@ -258,6 +274,8 @@ manette_hid_backend_backend_init (ManetteBackendInterface *iface)
   iface->get_bustype_id = manette_hid_backend_get_bustype_id;
   iface->get_version_id = manette_hid_backend_get_version_id;
   iface->set_mapping = manette_hid_backend_set_mapping;
+  iface->has_button = manette_hid_backend_has_button;
+  iface->has_axis = manette_hid_backend_has_axis;
   iface->has_input = manette_hid_backend_has_input;
   iface->has_rumble = manette_hid_backend_has_rumble;
   iface->rumble = manette_hid_backend_rumble;

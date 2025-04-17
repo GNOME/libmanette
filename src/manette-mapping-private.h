@@ -74,8 +74,9 @@ const ManetteMappingBinding * const *manette_mapping_get_bindings (ManetteMappin
 
 ManetteMappingBinding *manette_mapping_binding_copy (ManetteMappingBinding *self);
 void manette_mapping_binding_free (ManetteMappingBinding *self);
-gboolean manette_mapping_has_destination_input (ManetteMapping                *self,
-                                                ManetteMappingDestinationType  type,
-                                                int                            code);
+gboolean manette_mapping_has_destination_button (ManetteMapping *self,
+                                                 ManetteButton   button);
+gboolean manette_mapping_has_destination_axis (ManetteMapping *self,
+                                               ManetteAxis     axis);
 
 G_END_DECLS

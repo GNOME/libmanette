@@ -188,6 +188,36 @@ manette_backend_set_mapping (ManetteBackend *self,
 }
 
 gboolean
+manette_backend_has_button (ManetteBackend *self,
+                            ManetteButton   button)
+{
+  ManetteBackendInterface *iface;
+
+  g_assert (MANETTE_IS_BACKEND (self));
+
+  iface = MANETTE_BACKEND_GET_IFACE (self);
+
+  g_assert (iface->has_button);
+
+  return iface->has_button (self, button);
+}
+
+gboolean
+manette_backend_has_axis (ManetteBackend *self,
+                          ManetteAxis     axis)
+{
+  ManetteBackendInterface *iface;
+
+  g_assert (MANETTE_IS_BACKEND (self));
+
+  iface = MANETTE_BACKEND_GET_IFACE (self);
+
+  g_assert (iface->has_axis);
+
+  return iface->has_axis (self, axis);
+}
+
+gboolean
 manette_backend_has_input (ManetteBackend *self,
                            guint           type,
                            guint           code)

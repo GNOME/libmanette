@@ -710,43 +710,53 @@ manette_steam_deck_driver_get_name (ManetteHidDriver *driver)
 }
 
 static gboolean
-manette_steam_deck_driver_has_input (ManetteHidDriver *driver,
-                                     guint type,
-                                     guint code)
+manette_steam_deck_driver_has_button (ManetteHidDriver *driver,
+                                      ManetteButton     button)
 {
-  if (type == EV_ABS) {
-    return code == ABS_X ||
-           code == ABS_Y ||
-           code == ABS_RX ||
-           code == ABS_RY;
-  }
+  switch (button) {
+  case MANETTE_BUTTON_DPAD_UP:
+  case MANETTE_BUTTON_DPAD_DOWN:
+  case MANETTE_BUTTON_DPAD_LEFT:
+  case MANETTE_BUTTON_DPAD_RIGHT:
+  case MANETTE_BUTTON_NORTH:
+  case MANETTE_BUTTON_SOUTH:
+  case MANETTE_BUTTON_WEST:
+  case MANETTE_BUTTON_EAST:
+  case MANETTE_BUTTON_SELECT:
+  case MANETTE_BUTTON_START:
+  case MANETTE_BUTTON_MODE:
+  case MANETTE_BUTTON_LEFT_SHOULDER:
+  case MANETTE_BUTTON_RIGHT_SHOULDER:
+  case MANETTE_BUTTON_LEFT_STICK:
+  case MANETTE_BUTTON_RIGHT_STICK:
+  case MANETTE_BUTTON_LEFT_PADDLE1:
+  case MANETTE_BUTTON_LEFT_PADDLE2:
+  case MANETTE_BUTTON_RIGHT_PADDLE1:
+  case MANETTE_BUTTON_RIGHT_PADDLE2:
+  case MANETTE_BUTTON_MISC1:
+    return TRUE;
 
-  if (type == EV_KEY) {
-    return code == BTN_DPAD_UP ||
-           code == BTN_DPAD_DOWN ||
-           code == BTN_DPAD_LEFT ||
-           code == BTN_DPAD_RIGHT ||
-           code == BTN_A ||
-           code == BTN_B ||
-           code == BTN_X ||
-           code == BTN_Y ||
-           code == BTN_MODE ||
-           code == BTN_SELECT ||
-           code == BTN_START ||
-           code == BTN_TL ||
-           code == BTN_TR ||
-           code == BTN_TL2 ||
-           code == BTN_TR2 ||
-           code == BTN_THUMBL ||
-           code == BTN_THUMBR ||
-           code == BTN_TRIGGER_HAPPY1 ||
-           code == BTN_TRIGGER_HAPPY2 ||
-           code == BTN_TRIGGER_HAPPY3 ||
-           code == BTN_TRIGGER_HAPPY4 ||
-           code == BTN_TRIGGER_HAPPY5;
+  default:
+    return FALSE;
   }
+}
 
-  return FALSE;
+static gboolean
+manette_steam_deck_driver_has_axis (ManetteHidDriver *driver,
+                                    ManetteAxis       axis)
+{
+  switch (axis) {
+  case MANETTE_AXIS_LEFT_X:
+  case MANETTE_AXIS_LEFT_Y:
+  case MANETTE_AXIS_RIGHT_X:
+  case MANETTE_AXIS_RIGHT_Y:
+  case MANETTE_AXIS_LEFT_TRIGGER:
+  case MANETTE_AXIS_RIGHT_TRIGGER:
+    return TRUE;
+
+  default:
+    return FALSE;
+  }
 }
 
 static guint
@@ -860,7 +870,8 @@ manette_steam_deck_hid_driver_init (ManetteHidDriverInterface *iface)
 {
   iface->initialize = manette_steam_deck_driver_initialize;
   iface->get_name = manette_steam_deck_driver_get_name;
-  iface->has_input = manette_steam_deck_driver_has_input;
+  iface->has_button = manette_steam_deck_driver_has_button;
+  iface->has_axis = manette_steam_deck_driver_has_axis;
   iface->get_poll_rate = manette_steam_deck_driver_get_poll_rate;
   iface->poll = manette_steam_deck_driver_poll;
   iface->has_rumble = manette_steam_deck_driver_has_rumble;

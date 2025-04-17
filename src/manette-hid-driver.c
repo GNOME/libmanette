@@ -122,9 +122,8 @@ manette_hid_driver_get_name (ManetteHidDriver *self)
 }
 
 gboolean
-manette_hid_driver_has_input (ManetteHidDriver *self,
-                              guint             type,
-                              guint             code)
+manette_hid_driver_has_button (ManetteHidDriver *self,
+                               ManetteButton     button)
 {
   ManetteHidDriverInterface *iface;
 
@@ -132,9 +131,24 @@ manette_hid_driver_has_input (ManetteHidDriver *self,
 
   iface = MANETTE_HID_DRIVER_GET_IFACE (self);
 
-  g_assert (iface->has_input);
+  g_assert (iface->has_button);
 
-  return iface->has_input (self, type, code);
+  return iface->has_button (self, button);
+}
+
+gboolean
+manette_hid_driver_has_axis (ManetteHidDriver *self,
+                             ManetteAxis       axis)
+{
+  ManetteHidDriverInterface *iface;
+
+  g_assert (MANETTE_IS_HID_DRIVER (self));
+
+  iface = MANETTE_HID_DRIVER_GET_IFACE (self);
+
+  g_assert (iface->has_axis);
+
+  return iface->has_axis (self, axis);
 }
 
 void

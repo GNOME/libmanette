@@ -48,6 +48,11 @@ struct _ManetteBackendInterface
   void (* set_mapping) (ManetteBackend *self,
                         ManetteMapping *mapping);
 
+  gboolean (* has_button) (ManetteBackend *self,
+                           ManetteButton  button);
+  gboolean (* has_axis)   (ManetteBackend *self,
+                           ManetteAxis     axis);
+
   gboolean (* has_input) (ManetteBackend *self,
                           guint           type,
                           guint           code);
@@ -69,6 +74,11 @@ int manette_backend_get_version_id (ManetteBackend *self);
 
 void manette_backend_set_mapping (ManetteBackend *self,
                                   ManetteMapping *mapping);
+
+gboolean manette_backend_has_button (ManetteBackend *self,
+                                     ManetteButton   button);
+gboolean manette_backend_has_axis   (ManetteBackend *self,
+                                     ManetteAxis     axis);
 
 gboolean manette_backend_has_input (ManetteBackend *self,
                                     guint           type,

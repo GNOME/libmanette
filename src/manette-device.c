@@ -27,7 +27,6 @@
 #include <unistd.h>
 #include "manette-backend-private.h"
 #include "manette-device-type-private.h"
-#include "manette-inputs.h"
 #include "manette-mapping-manager-private.h"
 
 /**
@@ -346,6 +345,42 @@ manette_device_get_guid (ManetteDevice *self)
     self->guid = compute_guid_string (self);
 
   return self->guid;
+}
+
+/**
+ * manette_device_has_button:
+ * @self: a device
+ * @button: a button
+ *
+ * Gets whether the device has @button.
+ *
+ * Returns: whether the device has @button
+ */
+gboolean
+manette_device_has_button (ManetteDevice *self,
+                           ManetteButton  button)
+{
+  g_return_val_if_fail (MANETTE_IS_DEVICE (self), FALSE);
+
+  return manette_backend_has_button (self->backend, button);
+}
+
+/**
+ * manette_device_has_axis:
+ * @self: a device
+ * @axis: an axis
+ *
+ * Gets whether the device has @axis.
+ *
+ * Returns: whether the device has @axis
+ */
+gboolean
+manette_device_has_axis (ManetteDevice *self,
+                         ManetteAxis    axis)
+{
+  g_return_val_if_fail (MANETTE_IS_DEVICE (self), FALSE);
+
+  return manette_backend_has_axis (self->backend, axis);
 }
 
 /**

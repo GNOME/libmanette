@@ -558,6 +558,23 @@ g_array_try_free (GArray **array)
     g_clear_pointer (array, g_array_unref);
 }
 
+static gboolean
+has_destination_input (ManetteMapping                *self,
+                       ManetteMappingDestinationType  type,
+                       int                            code)
+{
+  if (bindings_array_has_destination_input (self->axis_bindings, type, code))
+    return TRUE;
+
+  if (bindings_array_has_destination_input (self->button_bindings, type, code))
+    return TRUE;
+
+  if (bindings_array_has_destination_input (self->hat_bindings, type, code))
+    return TRUE;
+
+  return FALSE;
+}
+
 ManetteMapping *
 manette_mapping_new (const char   *mapping_string,
                      GError      **error)
@@ -674,30 +691,37 @@ manette_mapping_binding_free (ManetteMappingBinding *self)
 }
 
 /**
- * manette_mapping_has_destination_input:
- * @self: a #ManetteMapping
- * @type: the input type
- * @code: the input code
+ * manette_mapping_has_destination_button:
+ * @self: a mapping
+ * @button: a button
  *
- * Gets whether the mapping has the given destination input.
+ * Gets whether the mapping has the given destination button.
  *
- * Returns: whether the device has the given destination input
+ * Returns: whether the device has the given destination button
  */
 gboolean
-manette_mapping_has_destination_input (ManetteMapping                *self,
-                                       ManetteMappingDestinationType  type,
-                                       int                            code)
+manette_mapping_has_destination_button (ManetteMapping *self,
+                                        ManetteButton   button)
 {
   g_return_val_if_fail (MANETTE_IS_MAPPING (self), FALSE);
 
-  if (bindings_array_has_destination_input (self->axis_bindings, type, code))
-    return TRUE;
+  return has_destination_input (self, MANETTE_MAPPING_DESTINATION_TYPE_BUTTON, button);
+}
 
-  if (bindings_array_has_destination_input (self->button_bindings, type, code))
-    return TRUE;
+/**
+ * manette_mapping_has_destination_axis:
+ * @self: a mapping
+ * @axis: an axis
+ *
+ * Gets whether the mapping has the given destination axis.
+ *
+ * Returns: whether the device has the given destination button
+ */
+gboolean
+manette_mapping_has_destination_axis (ManetteMapping *self,
+                                      ManetteAxis     axis)
+{
+  g_return_val_if_fail (MANETTE_IS_MAPPING (self), FALSE);
 
-  if (bindings_array_has_destination_input (self->hat_bindings, type, code))
-    return TRUE;
-
-  return FALSE;
+  return has_destination_input (self, MANETTE_MAPPING_DESTINATION_TYPE_AXIS, axis);
 }

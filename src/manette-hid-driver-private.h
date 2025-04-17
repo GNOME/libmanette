@@ -42,9 +42,10 @@ struct _ManetteHidDriverInterface
 
   char * (* get_name) (ManetteHidDriver *self);
 
-  gboolean (* has_input) (ManetteHidDriver *self,
-                          guint             type,
-                          guint             code);
+  gboolean (* has_button) (ManetteHidDriver *self,
+                           ManetteButton     button);
+  gboolean (* has_axis)   (ManetteHidDriver *self,
+                           ManetteAxis       axis);
 
   void (* poll) (ManetteHidDriver *self,
                  gint64            time);
@@ -62,9 +63,10 @@ guint manette_hid_driver_get_poll_rate (ManetteHidDriver *self);
 
 char *manette_hid_driver_get_name (ManetteHidDriver *self);
 
-gboolean manette_hid_driver_has_input (ManetteHidDriver *self,
-                                       guint             type,
-                                       guint             code);
+gboolean manette_hid_driver_has_button (ManetteHidDriver *self,
+                                        ManetteButton     button);
+gboolean manette_hid_driver_has_axis   (ManetteHidDriver *self,
+                                        ManetteAxis       axis);
 
 void manette_hid_driver_poll (ManetteHidDriver *self,
                               gint64            time);
