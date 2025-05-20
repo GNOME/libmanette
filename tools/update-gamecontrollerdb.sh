@@ -26,10 +26,10 @@ footer () {
 rm $OUTPUT
 
 # Add the SDL DB header
-printf "# Source: https://github.com/SDL-mirror/SDL/blob/master/src/joystick/SDL_gamecontrollerdb.h\n\n" >> $OUTPUT
+printf "# Source: https://raw.githubusercontent.com/libsdl-org/SDL/refs/heads/main/src/joystick/SDL_gamepad_db.h\n\n" >> $OUTPUT
 
 # Add the SDL DB
-curl https://raw.githubusercontent.com/SDL-mirror/SDL/master/src/joystick/SDL_gamecontrollerdb.h \
+curl https://raw.githubusercontent.com/libsdl-org/SDL/refs/heads/main/src/joystick/SDL_gamepad_db.h \
   | awk '/LINUX/{flag=1;next}/endif/{flag=0}flag' \
   | sed -n 's/.*"\(.*\)".*/\1/p' \
   | filter_use_button_labels_hint \
