@@ -19,6 +19,7 @@ libmanette_module = 'manette-' + libmanette_api_version
 glib_version = '>= 2.50'
 gudev_version = '>= 1.0'
 libevdev_version = '>= 1.4.5'
+libadwaita_version = '>= 1.6.0'
 
 gio = dependency ('gio-2.0', version: glib_version)
 glib = dependency ('glib-2.0', version: glib_version)
@@ -26,6 +27,7 @@ gobject = dependency ('gobject-2.0', version: glib_version)
 gudev = dependency ('gudev-1.0', version: gudev_version, required : get_option('gudev'))
 libevdev = dependency ('libevdev', version: libevdev_version)
 hidapi = dependency ('hidapi-hidraw')
+libadwaita = dependency ('libadwaita-1', version: libadwaita_version, required : get_option('demos'), not_found_message : 'libadwaita is required when building demos')
 
 config_h = configuration_data()
 
