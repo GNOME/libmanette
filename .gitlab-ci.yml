@@ -32,7 +32,7 @@ build-flatpak:
   needs: []
 
 gudev:
-  image: fedora:42
+  image: quay.io/fedora/fedora:latest
   stage: build
   before_script:
     - dnf install -y gcc glib2-devel gobject-introspection-devel hidapi-devel libevdev-devel libgudev-devel meson vala
@@ -42,7 +42,7 @@ gudev:
     - ninja -C _build test
 
 doc:
-  image: fedora:42
+  image: quay.io/fedora/fedora:latest
   stage: build
   before_script:
     - dnf install -y gcc glib2-devel gobject-introspection-devel hidapi-devel libevdev-devel libgudev-devel meson gi-docgen
@@ -64,7 +64,7 @@ doc:
       - _doc
 
 refresh-doc:
-  image: fedora:42
+  image: quay.io/fedora/fedora:latest
   stage: deploy
   needs: ['doc']
   only:
