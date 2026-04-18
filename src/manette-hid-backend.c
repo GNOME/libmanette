@@ -66,7 +66,7 @@ manette_hid_backend_finalize (GObject *object)
   ManetteHidBackend *self = MANETTE_HID_BACKEND (object);
 
   g_clear_handle_id (&self->event_source_id, g_source_remove);
-  g_free (self->driver);
+  g_clear_object (&self->driver);
   hid_close (self->hid);
   g_free (self->filename);
   g_free (self->name);
