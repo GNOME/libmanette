@@ -152,6 +152,7 @@ if gudev.found()
 endif
 
 built_girs = []
+built_vapis = []
 if get_option('introspection')
   gir_dep = dependency('gobject-introspection-1.0')
   if gir_dep.version().version_compare('>=1.83.2')
@@ -185,7 +186,7 @@ if get_option('introspection')
       libmanette_vapi_packages += [ 'gudev-1.0' ]
     endif
 
-    gnome.generate_vapi(
+    built_vapis += gnome.generate_vapi(
       libmanette_module,
       install: true,
       packages: libmanette_vapi_packages,
@@ -198,7 +199,7 @@ libmanette_dep = declare_dependency(
   link_with: libmanette_lib,
   sources: libmanette_generated_headers,
   include_directories: include_directories('.'),
-  dependencies: libmanette_deps,
+  dependencies: libmanette_deps + built_vapis,
 )
 
 install_headers(libmanette_headers, subdir: libmanette_module)
