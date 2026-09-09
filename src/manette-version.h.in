@@ -93,7 +93,7 @@ G_BEGIN_DECLS
  * @micro: required micro version
  *
  * Compile-time version checking. Evaluates to `TRUE` if the version
- * of libmanette is greater than the required one.
+ * of libmanette is greater than or equal to the required one.
  *
  * Since: 0.2.10
  */
