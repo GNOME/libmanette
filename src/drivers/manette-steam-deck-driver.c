@@ -369,7 +369,7 @@ struct _ManetteSteamDeckDriver {
 
   hid_device *hid;
 
-  guint rumble_timeout;
+  GSource *rumble_source;
 
   guint32 last_packet;
   guint32 last_buttons_l;
@@ -690,7 +690,7 @@ manette_steam_deck_driver_finalize (GObject *object)
 {
   ManetteSteamDeckDriver *self = MANETTE_STEAM_DECK_DRIVER (object);
 
-  g_clear_handle_id (&self->rumble_timeout, g_source_remove);
+  g_clear_pointer (&self->rumble_source, g_source_destroy);
 
   G_OBJECT_CLASS (manette_steam_deck_driver_parent_class)->finalize (object);
 }
@@ -848,9 +848,17 @@ send_rumble (ManetteSteamDeckDriver *self,
 static void
 stop_rumble_cb (ManetteSteamDeckDriver *self)
 {
-  self->rumble_timeout = 0;
+  self->rumble_source = NULL;
 
   send_rumble (self, 0, 0);
+}
+
+static gboolean
+stop_rumble_source_cb (gpointer data)
+{
+  stop_rumble_cb (data);
+
+  return G_SOURCE_REMOVE;
 }
 
 static gboolean
@@ -867,11 +875,12 @@ manette_steam_deck_driver_rumble (ManetteHidDriver *driver,
     return FALSE;
   }
 
-  g_clear_handle_id (&self->rumble_timeout, g_source_remove);
+  g_clear_pointer (&self->rumble_source, g_source_destroy);
 
-  self->rumble_timeout = g_timeout_add_once (milliseconds,
-                                             (GSourceOnceFunc) stop_rumble_cb,
-                                             self);
+  g_autoptr (GSource) source = g_timeout_source_new (milliseconds);
+  g_source_set_callback (source, stop_rumble_source_cb, self, NULL);
+  g_source_attach (source, g_main_context_get_thread_default ());
+  self->rumble_source = source;
 
   return TRUE;
 }
