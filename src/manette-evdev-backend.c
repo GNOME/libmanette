@@ -41,7 +41,7 @@ struct _ManetteEvdevBackend
   char *filename;
 
   int fd;
-  guint event_source_id;
+  GSource *event_source;
   struct libevdev *evdev_device;
 
   guint8 key_map[KEY_MAX];
@@ -410,7 +410,7 @@ manette_evdev_backend_finalize (GObject *object)
   ManetteEvdevBackend *self = MANETTE_EVDEV_BACKEND (object);
 
   g_clear_object (&self->mapping);
-  g_clear_handle_id (&self->event_source_id, g_source_remove);
+  g_clear_pointer (&self->event_source, g_source_destroy);
   close (self->fd);
   libevdev_free (self->evdev_device);
   g_free (self->filename);
@@ -464,9 +464,11 @@ manette_evdev_backend_initialize (ManetteBackend *backend)
   if (manette_device_type_guess (vendor, product) != MANETTE_DEVICE_GENERIC)
     return FALSE;
 
-  // Poll the events in the main loop.
   channel = g_io_channel_unix_new (self->fd);
-  self->event_source_id = g_io_add_watch (channel, G_IO_IN, (GIOFunc) poll_events, self);
+  g_autoptr (GSource) source = g_io_create_watch (channel, G_IO_IN);
+  g_source_set_callback (source, (GSourceFunc) poll_events, self, NULL);
+  g_source_attach (source, g_main_context_get_thread_default ());
+  self->event_source = source;
 
   buttons_number = 0;
 

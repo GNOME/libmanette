@@ -39,7 +39,7 @@ struct _ManetteHidBackend
   ManetteDeviceType device_type;
   ManetteHidDriver *driver;
   char *name;
-  guint event_source_id;
+  GSource *event_source;
 };
 
 static void manette_hid_backend_backend_init (ManetteBackendInterface *iface);
@@ -65,7 +65,7 @@ manette_hid_backend_finalize (GObject *object)
 {
   ManetteHidBackend *self = MANETTE_HID_BACKEND (object);
 
-  g_clear_handle_id (&self->event_source_id, g_source_remove);
+  g_clear_pointer (&self->event_source, g_source_destroy);
   g_clear_object (&self->driver);
   hid_close (self->hid);
   g_free (self->filename);
@@ -133,9 +133,11 @@ manette_hid_backend_initialize (ManetteBackend *backend)
   if (!manette_hid_driver_initialize (self->driver))
     return FALSE;
 
-  // Poll the events in the main loop.
   poll_rate = manette_hid_driver_get_poll_rate (self->driver);
-  self->event_source_id = g_timeout_add (poll_rate, G_SOURCE_FUNC (poll_events), self);
+  g_autoptr (GSource) source = g_timeout_source_new (poll_rate);
+  g_source_set_callback (source, G_SOURCE_FUNC (poll_events), self, NULL);
+  g_source_attach (source, g_main_context_get_thread_default ());
+  self->event_source = source;
 
   return TRUE;
 }
